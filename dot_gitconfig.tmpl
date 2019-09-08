@@ -1,0 +1,59 @@
+[user]
+	name = {{ .name }}
+	email = {{ .email }}
+[alias]
+	ups = commit --amend --no-edit
+	ll = log --oneline -10
+	s = status
+	ch = checkout
+	co = commit
+	amend = commit --amend
+	ammend = commit amend
+	lst = show
+	sh = show --color-words='[^[:space:]]'
+	df = diff --color-words=.
+	last = show
+	r = rebase
+	st = status -sb
+	b = branch
+	a = add
+	cp = cherry-pick
+	diffu = diff @{u}
+	rtr = !git fetch && git reset --hard @{u}
+[push]
+	default = simple
+[core]
+	editor = nvim
+	whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
+	pager = less -iXFR
+[color]
+	diff = auto
+	status = auto
+	branch = auto
+	interactive = auto
+	ui = true
+	pager = true
+[color "branch"]
+	current = yellow bold
+	local = green bold
+	remote = cyan bold
+[color "diff"]
+	meta = yellow bold
+	frag = magenta bold
+	old = red bold
+	new = green bold
+	whitespace = red reverse
+[color "status"]
+	added = green bold
+	changed = yellow bold
+	untracked = red bold
+[gitflow "prefix"]
+	feature = feature-
+	release = release-
+	bugfix = bugfix-
+[rebase]
+	autosquash = true
+[credential]
+	helper = cache --timeout=3600
+[merge]
+	renameLimit = 99999999
