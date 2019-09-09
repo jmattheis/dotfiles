@@ -1,0 +1,23 @@
+nmap gu :action ShowUsages<CR>
+nmap gs :action GotoSuperMethod<CR>
+nmap ,n :action NextOccurence<CR>
+nmap ,p :action PreviousOccurence<CR>
+nmap ,wl :action MoveTabRight<CR>
+nmap ,wh :action MoveTabLeft<CR>
+nmap ,l :so ~/.ideavimrc<CR>
+nmap ge :action RecentFiles<CR>
+nmap gE :action RecentChangedFiles<CR>
+nmap gn :action GotoClass<CR>
+nmap gN :action GotoFile<CR>
+nmap gi :action GotoImplementation<CR>
+nmap gm :action FileStructurePopup<CR>
+nmap gb :action Back<CR>
+nmap gf :action Forward<CR>
+nmap ,r :action ChooseRunConfiguration<CR>
+nmap ,d :action ChooseDebugConfiguration<CR>
+nmap ,e :action GotoNextError<CR>
+nmap ,E :action GotoPreviousError<CR>
+nmap ,b :action ToggleBreakpointEnabled<CR>
+set incsearch
+set ignorecase smartcase
+set number
