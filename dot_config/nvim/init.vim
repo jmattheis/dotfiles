@@ -3,10 +3,13 @@ call plug#begin('~/.local/share/nvim/plugged')
     Plug 'chase/vim-ansible-yaml'
     Plug 'ctrlpvim/ctrlp.vim'
     Plug 'lifepillar/vim-solarized8'
+    Plug 'morhetz/gruvbox'
 call plug#end()
 
 set background=dark
-colorscheme solarized8
+colorscheme gruvbox
+"colorscheme solarized8
+let g:gruvbox_hls_cursor="red"
 
 syntax on
 
@@ -51,3 +54,14 @@ map <Leader>d "+d
 
 map ZW :w<CR>
 vmap <Leader>d "+d
+
+" https://github.com/morhetz/gruvbox/wiki/Usage
+map  <silent> <F4> :call gruvbox#hls_toggle()<CR>
+imap <silent> <F4> <ESC>:call gruvbox#hls_toggle()<CR>a
+vmap <silent> <F4> <ESC>:call gruvbox#hls_toggle()<CR>gv
+
+nnoremap <silent> <CR> :call gruvbox#hls_hide()<CR><CR>
+
+nnoremap * :let @/ = ""<CR>:call gruvbox#hls_show()<CR>*
+nnoremap / :let @/ = ""<CR>:call gruvbox#hls_show()<CR>/
+nnoremap ? :let @/ = ""<CR>:call gruvbox#hls_show()<CR>?
