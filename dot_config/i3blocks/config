@@ -1,0 +1,77 @@
+# i3blocks config file
+#
+# Please see man i3blocks for a complete reference!
+# The man page is also hosted at http://vivien.github.io/i3blocks
+#
+# List of valid properties:
+#
+# align
+# color
+# command
+# full_text
+# instance
+# interval
+# label
+# min_width
+# name
+# separator
+# separator_block_width
+# short_text
+# signal
+# urgent
+
+# Global properties
+#
+# The top properties below are applied to every block, but can be overridden.
+# Each block command defaults to the script name to avoid boilerplate.
+command=/usr/lib/i3blocks/$BLOCK_NAME/$BLOCK_NAME
+separator_block_width=15
+markup=none
+
+# Volume in %
+[volume]
+label=VOL 
+command=pacmd list-sinks | grep RUNNING -A4 | grep -o '[0-9]\{1,2\}%' | head -n1
+interval=2s
+signal=10
+
+# CPU Usage in %
+[cpu_usage]
+interval=10
+LABEL=CPU 
+min_width=CPU 00%
+T_WARN=50
+T_CRIT=80
+DECIMALS=0
+
+# CPU Load
+[load_average]
+label=LOAD 
+interval=10
+
+# Memory Usage in %
+[memory]
+#command=free | grep Mem | awk '{ printf("%.0f%\n", $4/$2 * 100.0) }'
+label=MEM 
+interval=5s
+
+[disk]
+label=/home 
+interval=30
+
+[iface]
+interval=10
+
+[ip]
+interval=300
+label=PUB 
+command=dig @resolver1.opendns.com ANY myip.opendns.com +short -4
+
+[vpn]
+label=VPN 
+command=if [ "$(pgrep openvpn)" ]; then echo Yey;echo;echo "#27ae60"; else echo Ney; echo; echo "#c0392b"; fi 
+interval=60
+
+[time]
+command=date '+%d.%m.%Y %H:%M:%S '
+interval=1
