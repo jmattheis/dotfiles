@@ -1,3 +1,21 @@
+let mapleader = ' '
+nmap <leader>n :action GotoClass<CR>
+nmap <leader>N :action GotoFile<CR>
+nmap <leader>i :action GotoImplementation<CR>
+nmap <leader>m :action FileStructurePopup<CR>
+nmap <leader>b :action Back<CR>
+nmap <leader>f :action Forward<CR>
+nmap <leader>u :action ShowUsages<CR>
+nmap <leader>r :action ChooseRunConfiguration<CR>
+nmap <leader>d :action ChooseDebugConfiguration<CR>
+nmap <leader>e :action GotoNextError<CR>
+
+" to system clipboard
+map <leader>p "+p
+map <leader>P "+P
+map <leader>y "+y
+vmap <leader>y "+y
+
 nmap gu :action ShowUsages<CR>
 nmap gs :action GotoSuperMethod<CR>
 nmap ,n :action NextOccurence<CR>
@@ -11,8 +29,6 @@ nmap gn :action GotoClass<CR>
 nmap gN :action GotoFile<CR>
 nmap gi :action GotoImplementation<CR>
 nmap gm :action FileStructurePopup<CR>
-nmap gb :action Back<CR>
-nmap gf :action Forward<CR>
 nmap ,r :action ChooseRunConfiguration<CR>
 nmap ,d :action ChooseDebugConfiguration<CR>
 nmap ,e :action GotoNextError<CR>
