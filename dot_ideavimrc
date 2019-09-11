@@ -9,6 +9,10 @@ nmap <leader>u :action ShowUsages<CR>
 nmap <leader>r :action ChooseRunConfiguration<CR>
 nmap <leader>d :action ChooseDebugConfiguration<CR>
 nmap <leader>e :action GotoNextError<CR>
+nmap <leader>B :action ToggleLineBreakpoint<CR>
+nmap <leader>si :action StepInto<CR>
+nmap <leader>so :action StepOver<CR>
+nmap <leader>R :so ~/.ideavimrc<CR>
 
 " to system clipboard
 map <leader>p "+p
