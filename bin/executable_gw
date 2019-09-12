@@ -1,0 +1,11 @@
+#!/bin/bash
+slashes=${PWD//[^\/]/}
+directory="$PWD"
+for (( n=${#slashes}; n>0; --n )); do
+        gradlew=$directory/gradlew
+        java_home=$directory/.java_home
+        test -e $java_home && eval JAVA_HOME=$(cat "$java_home") && export JAVA_HOME
+        test -e "$gradlew" && echo "using $gradlew" && "$gradlew" "$@" && exit 0
+        directory="$directory/.."
+done
+error Oops, no gradlew found
