@@ -2,13 +2,12 @@ call plug#begin('~/.local/share/nvim/plugged')
     Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
     Plug 'chase/vim-ansible-yaml'
     Plug 'ctrlpvim/ctrlp.vim'
-    Plug 'lifepillar/vim-solarized8'
     Plug 'morhetz/gruvbox'
+    Plug 'christoomey/vim-tmux-navigator'
 call plug#end()
 
 set background=dark
 colorscheme gruvbox
-"colorscheme solarized8
 let g:gruvbox_hls_cursor="red"
 
 syntax on

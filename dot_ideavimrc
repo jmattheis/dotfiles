@@ -3,13 +3,11 @@ nmap <leader>n :action GotoClass<CR>
 nmap <leader>N :action GotoFile<CR>
 nmap <leader>i :action GotoImplementation<CR>
 nmap <leader>m :action FileStructurePopup<CR>
-nmap <leader>b :action Back<CR>
-nmap <leader>f :action Forward<CR>
 nmap <leader>u :action ShowUsages<CR>
 nmap <leader>r :action ChooseRunConfiguration<CR>
 nmap <leader>d :action ChooseDebugConfiguration<CR>
 nmap <leader>e :action GotoNextError<CR>
-nmap <leader>B :action ToggleLineBreakpoint<CR>
+nmap <leader>b :action ToggleLineBreakpoint<CR>
 nmap <leader>si :action StepInto<CR>
 nmap <leader>so :action StepOver<CR>
 nmap <leader>R :so ~/.ideavimrc<CR>
@@ -28,6 +26,8 @@ nmap ,wl :action MoveTabRight<CR>
 nmap ,wh :action MoveTabLeft<CR>
 nmap ,l :so ~/.ideavimrc<CR>
 nmap ge :action RecentFiles<CR>
+nmap gb :action Back<CR>
+nmap gf :action Forward<CR>
 nmap gE :action RecentChangedFiles<CR>
 nmap gn :action GotoClass<CR>
 nmap gN :action GotoFile<CR>
