@@ -44,11 +44,16 @@ ZSH_THEME="lambda-gitster"
 # Would you like to use another custom folder than $ZSH/custom?
 export ZSH_CUSTOM=$HOME/.config/oh-my-zsh/custom
 
+ARCH_HIGHLIGHT_PATH=/usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+if [ -f $ARCH_HIGHLIGHT_PATH ]; then
+    source $ARCH_HIGHLIGHT_PATH
+fi
+
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(docker zsh-syntax-highlighting sudo)
+plugins=(docker sudo)
 
 source $ZSH/oh-my-zsh.sh
 
