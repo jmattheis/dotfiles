@@ -1,9 +1,10 @@
 call plug#begin('~/.local/share/nvim/plugged')
     Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
     Plug 'chase/vim-ansible-yaml'
-    Plug 'ctrlpvim/ctrlp.vim'
     Plug 'morhetz/gruvbox'
     Plug 'christoomey/vim-tmux-navigator'
+
+    Plug 'junegunn/fzf'
 call plug#end()
 
 set background=dark
@@ -51,6 +52,13 @@ map <Leader>]P "+]P
 map <Leader>y "+y
 vmap <Leader>y "+y
 map <Leader>d "+d
+
+" FZF
+map <Leader>o :FZF<CR>
+let g:fzf_action = {
+  \ 'ctrl-t': 'tab split',
+  \ 'ctrl-s': 'split',
+  \ 'ctrl-v': 'vsplit' }
 
 map ZW :w<CR>
 vmap <Leader>d "+d
