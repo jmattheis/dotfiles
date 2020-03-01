@@ -30,48 +30,47 @@ markup=none
 
 # Volume in %
 [volume]
-label=VOL 
-command=pacmd list-sinks | grep RUNNING -A4 | grep -o '[0-9]\{1,3\}%' | head -n1
+label= 
+#command=pacmd list-sinks | grep RUNNING -A4 | grep -o '[0-9]\{1,3\}%' | head -n1
 interval=2s
 signal=10
 
 # CPU Usage in %
 [cpu_usage]
 interval=10
-LABEL=CPU 
-min_width=CPU 00%
-T_WARN=50
-T_CRIT=80
+LABEL= 
+min_width= 00%
+T_WARN=40
+T_CRIT=70
 DECIMALS=0
 
-# CPU Load
 [load_average]
-label=LOAD 
+label= 
 interval=10
 
 # Memory Usage in %
 [memory]
 #command=free | grep Mem | awk '{ printf("%.0f%\n", $4/$2 * 100.0) }'
-label=MEM 
+label= 
 interval=5s
 
 [disk]
-label=/home 
+label= 
 interval=30
 
 [iface]
+label= 
 interval=10
 
-[ip]
-interval=300
-label=PUB 
-command=dig @resolver1.opendns.com ANY myip.opendns.com +short -4
+#[ip]
+#interval=300
+#label= 
+#command=dig @resolver1.opendns.com ANY myip.opendns.com +short -4
 
-[vpn]
-label=VPN 
-command=if [ "$(pgrep openvpn)" ]; then echo Yey;echo;echo "#27ae60"; else echo Ney; echo; echo "#c0392b"; fi 
+[openvpn]
+label= 
 interval=60
 
 [time]
-command=date '+%d.%m.%Y %H:%M:%S '
+command=date '+%b %d %H:%M:%S '
 interval=1
