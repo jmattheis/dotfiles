@@ -1,0 +1,14 @@
+[icons]
+# font awesome
+TelegramDesktop = ""
+firefox = ""
+Alacritty = ""
+Thunderbird = ""
+KeePassXC = ""
+jetbrains-idea = ""
+"TeamSpeak 3" = ""
+"Portfolio Performance" = ""
+Pavucontrol = ""
+
+[general]
+separator = " | "
