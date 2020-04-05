@@ -1,0 +1,61 @@
+# A valid snippet should starts with:
+#
+#		snippet trigger_word [ "description" [ options ] ]
+#
+# and end with:
+#
+#		endsnippet
+#
+# Snippet options:
+#
+#		b - Beginning of line.
+#		i - In-word expansion.
+#		w - Word boundary.
+#		r - Regular expression
+#		e - Custom context snippet
+#		A - Snippet will be triggered automatically, when condition matches.
+#
+# Basic example:
+#
+#
+# Online reference: https://github.com/SirVer/ultisnips/blob/master/doc/UltiSnips.txt
+
+snippet "([\w.\(\)-]+).par" "Parenthesis (postfix)" r
+(`!p snip.rv = match.group(1)`)$0
+endsnippet
+
+snippet "([\w.\(\)-]+).retu?r?n?" "Return (postfix)" r
+return `!p snip.rv = match.group(1)`$0
+endsnippet
+
+snippet "([\w.\(\)-]+).nn" "if not nil (postfix)" r
+if `!p snip.rv = match.group(1)` != nil {
+	$0
+}
+endsnippet
+
+snippet "([\w.\(\)-\[\]]+).if" "if (postfix)" r
+if `!p snip.rv = match.group(1)` {
+	$0
+}
+endsnippet
+
+snippet "([\w.\(\)-\[\]]+).forr" "forr (postfix)" r
+for $1, $2 := range `!p snip.rv = match.group(1)` {
+	$0
+}
+endsnippet
+
+snippet "([\w.\(\)-]+).reterr" "reterr (postfix)" r
+if err$1 := `!p snip.rv = match.group(1)`; err != nil {
+	return err$2
+}
+endsnippet
+
+snippet "([\w.\(\)-]+)!" "not (postfix)" r
+!`!p snip.rv = match.group(1)`$0
+endsnippet
+snippet "([\w.\(\)-\[\]]+[\w.\(\)-\[\]\s]*).var" "var (postfix)" r
+$1 := `!p snip.rv = match.group(1)`$0
+endsnippet
+

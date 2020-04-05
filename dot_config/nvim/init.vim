@@ -1,12 +1,15 @@
 call plug#begin('~/.local/share/nvim/plugged')
-    Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
-    Plug 'chase/vim-ansible-yaml'
     Plug 'morhetz/gruvbox'
-    Plug 'christoomey/vim-tmux-navigator'
-
-    Plug 'junegunn/fzf'
-    Plug 'HerringtonDarkholme/yats.vim'
+    Plug 'itchyny/lightline.vim'
+    Plug 'preservim/nerdtree'
+    Plug 'luochen1990/rainbow'
+    Plug 'chase/vim-ansible-yaml'
+    Plug 'junegunn/fzf.vim'
+    Plug 'HerringtonDarkholme/yats.vim' " TypeScipt syntax
+    Plug 'vifm/vifm.vim'
     Plug 'airblade/vim-gitgutter'
+    Plug 'neoclide/coc.nvim', {'branch': 'release'}
+    Plug 'christoomey/vim-tmux-navigator'
 call plug#end()
 
 set background=dark
@@ -14,6 +17,18 @@ colorscheme gruvbox
 let g:gruvbox_hls_cursor="red"
 
 syntax on
+
+let g:lightline = {
+\ 'colorscheme': 'gruvbox',
+\ 'active': {
+\   'left': [ [ 'mode', 'paste' ],
+\             [ 'cocstatus', 'readonly', 'filename', 'modified' ] ]
+\ },
+\ 'component_function': {
+\   'cocstatus': 'coc#status'
+\ },
+\ }
+
 
 let mapleader=' '
 
@@ -34,6 +49,7 @@ set tabstop=4
 set shiftwidth=4
 set expandtab
 set smartcase
+set noshowmode
 
 " allow using the mouse
 set mouse=a
@@ -44,9 +60,9 @@ set list
 " som alternatives: tab:▸\,eol:¬
 set listchars=tab:\|\ ,trail:…
 
-map <Leader>n :NERDTreeToggle<CR>
-map <Leader>rf :NERDTreeFind<CR>
+map ZW :w<CR>
 
+" Use system clipboard
 map <Leader>p "+p
 map <Leader>P "+P
 map <Leader>]p "+]p
@@ -54,16 +70,105 @@ map <Leader>]P "+]P
 map <Leader>y "+y
 vmap <Leader>y "+y
 map <Leader>d "+d
+vmap <Leader>d "+d
 
 " FZF
+let g:fzf_layout = { 'window': 'let g:launching_fzf = 1 | keepalt topleft 100split enew' }
 map <Leader>o :FZF<CR>
+map <Leader>n :GFiles<CR>
 let g:fzf_action = {
   \ 'ctrl-t': 'tab split',
   \ 'ctrl-s': 'split',
   \ 'ctrl-v': 'vsplit' }
 
-map ZW :w<CR>
-vmap <Leader>d "+d
+" Vifm
+
+map <Leader>V :Vifm<CR>
+map <Leader>vv :VsplitVifm<CR>
+map <Leader>vs :SplitVifm<CR>
+
+" Nerdtree
+
+map <Leader>N :NERDTreeToggleVCS<CR>
+map <Leader>O :NERDTreeToggle<CR>
+" close if only window
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+autocmd FileType nerdtree let t:nerdtree_winnr = bufwinnr('%')
+autocmd BufWinEnter * call PreventBuffersInNERDTree()
+
+function! PreventBuffersInNERDTree()
+  if bufname('#') =~ 'NERD_tree' && bufname('%') !~ 'NERD_tree'
+    \ && exists('t:nerdtree_winnr') && bufwinnr('%') == t:nerdtree_winnr
+    \ && &buftype == '' && !exists('g:launching_fzf')
+    let bufnum = bufnr('%')
+    close
+    exe 'b ' . bufnum
+  endif
+  if exists('g:launching_fzf') | unlet g:launching_fzf | endif
+endfunction
+
+
+let g:rainbow_active = 1
+
+" CoC
+
+inoremap <silent><expr> <c-space> coc#refresh()
+
+if has('patch8.1.1068')
+  " Use `complete_info` if your (Neo)Vim version supports it.
+  inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+else
+  imap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+endif
+
+" Highlight the symbol and its references when holding the cursor.
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+inoremap <silent><expr> <TAB>
+      \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
+      \ pumvisible() ? coc#_select_confirm() :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+let g:coc_snippet_next = '<tab>'
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gj <Plug>(coc-references)
+nmap <silent> gb <C-o>
+nmap <silent> gf <C-i>
+nnoremap <silent> <space>m  :<C-u>CocList outline<cr>
+nnoremap <silent> <space>M  :<C-u>CocList -I symbols<cr>
+
+" Use `[g` and `]g` to navigate diagnostics
+nmap <silent> <leader>E <Plug>(coc-diagnostic-prev)
+nmap <silent> <leader>e <Plug>(coc-diagnostic-next)
+nmap <Leader>L :call CocAction('format')<CR>
+
+" Use auocmd to force lightline update.
+autocmd User CocStatusChange,CocDiagnosticChange call lightline#update()
+nmap <leader>rn <Plug>(coc-rename)
+command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
+
+function! s:cocActionsOpenFromSelected(type) abort
+  execute 'CocCommand actions.open ' . a:type
+endfunction
+xmap <silent> <leader>a :<C-u>execute 'CocCommand actions.open ' . visualmode()<CR>
+nmap <silent> <leader>a :<C-u>set operatorfunc=<SID>cocActionsOpenFromSelected<CR>g@
 
 " https://github.com/morhetz/gruvbox/wiki/Usage
 map  <silent> <F4> :call gruvbox#hls_toggle()<CR>

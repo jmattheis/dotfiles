@@ -1,0 +1,14 @@
+{
+  "languageserver": {
+    "golang": {
+      "command": "gopls",
+      "rootPatterns": ["go.mod"],
+      "filetypes": ["go"]
+    }
+  },
+  "go.goplsOptions": {
+    "completeUnimported": true
+  },
+  "suggest.noselect": false,
+  "suggest.removeDuplicateItems": true
+}
