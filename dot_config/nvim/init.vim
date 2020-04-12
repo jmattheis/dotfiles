@@ -10,6 +10,7 @@ call plug#begin('~/.local/share/nvim/plugged')
     Plug 'airblade/vim-gitgutter'
     Plug 'neoclide/coc.nvim', {'branch': 'release'}
     Plug 'christoomey/vim-tmux-navigator'
+    Plug 'tpope/vim-commentary'
 call plug#end()
 
 set background=dark
@@ -49,6 +50,7 @@ set tabstop=4
 set shiftwidth=4
 set expandtab
 set smartcase
+set ignorecase
 set noshowmode
 
 " allow using the mouse
@@ -146,9 +148,9 @@ function! s:show_documentation()
 endfunction
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gt <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gj <Plug>(coc-references)
+nmap <silent> gu <Plug>(coc-references)
 nmap <silent> gb <C-o>
 nmap <silent> gf <C-i>
 nnoremap <silent> <space>m  :<C-u>CocList outline<cr>

@@ -15,6 +15,7 @@ Wine = ""
 Steam = ""
 discord = ""
 Signal = ""
+Spotify = ""
 
 [general]
 separator = " | "
