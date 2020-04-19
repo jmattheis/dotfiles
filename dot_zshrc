@@ -58,3 +58,8 @@ plugins=(docker sudo)
 source $ZSH/oh-my-zsh.sh
 
 unsetopt nomatch
+
+ARCH_MULTIWORD_PATH=/usr/share/zsh/plugins/history-search-multi-word/history-search-multi-word.plugin.zsh
+if [ -f $ARCH_MULTIWORD_PATH ]; then
+    source $ARCH_MULTIWORD_PATH
+fi
