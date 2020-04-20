@@ -11,6 +11,7 @@ call plug#begin('~/.local/share/nvim/plugged')
     Plug 'neoclide/coc.nvim', {'branch': 'release'}
     Plug 'christoomey/vim-tmux-navigator'
     Plug 'tpope/vim-commentary'
+    Plug 'ron89/thesaurus_query.vim'
 call plug#end()
 
 set background=dark
