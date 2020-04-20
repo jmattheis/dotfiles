@@ -33,6 +33,10 @@ let g:lightline = {
 
 let mapleader=' '
 
+set updatetime=300
+set cmdheight=2
+set shortmess+=c
+set signcolumn=yes
 set backspace=indent,eol,start
 set history=1000
 set undofile
@@ -63,6 +67,12 @@ set list
 set listchars=tab:\|\ ,trail:…
 
 map ZW :w<CR>
+
+" spelling
+autocmd BufRead,BufNewFile *.md setlocal spell
+autocmd BufRead,BufNewFile *.txt setlocal spell
+set complete+=kspell
+autocmd FileType gitcommit setlocal spell
 
 " Use system clipboard
 map <Leader>p "+p
