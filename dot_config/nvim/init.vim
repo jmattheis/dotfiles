@@ -85,9 +85,9 @@ map <Leader>d "+d
 vmap <Leader>d "+d
 
 " FZF
-let g:fzf_layout = { 'window': 'let g:launching_fzf = 1 | keepalt topleft 100split enew' }
-map <Leader>o :FZF<CR>
-map <Leader>n :GFiles<CR>
+let g:fzf_layout = { 'window': 'let g:launching_fzf = 1 | keepalt topleft enew' }
+nnoremap <silent> <Leader>N :Files<CR>
+nnoremap <silent> <Leader>n :GFiles --cached --others --exclude-standard<CR>
 let g:fzf_action = {
   \ 'ctrl-t': 'tab split',
   \ 'ctrl-s': 'split',
