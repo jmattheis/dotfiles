@@ -22,18 +22,6 @@ let g:gruvbox_hls_cursor="red"
 
 syntax on
 
-let g:lightline = {
-\ 'colorscheme': 'gruvbox',
-\ 'active': {
-\   'left': [ [ 'mode', 'paste' ],
-\             [ 'cocstatus', 'readonly', 'filename', 'modified' ] ]
-\ },
-\ 'component_function': {
-\   'cocstatus': 'coc#status'
-\ },
-\ }
-
-
 let mapleader=' '
 
 set updatetime=300
@@ -129,6 +117,47 @@ endfunction
 
 
 let g:rainbow_active = 1
+
+" lightline
+
+let g:lightline = {
+\ 'colorscheme': 'gruvbox',
+\ 'active': {
+\   'left':   [ [ 'mode', 'paste' ], [  'readonly', 'filename', 'modified' ] ],
+\   'right': [ [ 'lineinfo' ], ['percent'], ['cocstatus', 'diagnostic'] ],
+\ },
+\ 'component_function': {
+\   'cocstatus': 'LightlineCocStatus',
+\   'filename': 'LightlineFilename',
+\ },
+\ 'component_expand': {
+\   'diagnostic': 'LightlineDiagnostic',
+\ },
+\ 'component_type': {
+\   'diagnostic': 'error',
+\ },
+\ }
+
+function! LightlineFilename()
+  return expand('%')
+endfunction
+
+function! LightlineDiagnostic() abort
+  let info = get(b:, 'coc_diagnostic_info', {})
+  if empty(info) | return '' | endif
+  let msgs = []
+  if get(info, 'error', 0)
+    call add(msgs, 'E' . info['error'])
+  endif
+  if get(info, 'warning', 0)
+    call add(msgs, 'W' . info['warning'])
+  endif
+  return join(msgs, ' ')
+endfunction
+
+function! LightlineCocStatus() abort
+  return get(g:, 'coc_status', '')
+endfunction
 
 " CoC
 
