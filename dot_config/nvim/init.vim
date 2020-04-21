@@ -6,7 +6,6 @@ call plug#begin('~/.local/share/nvim/plugged')
     Plug 'chase/vim-ansible-yaml'
     Plug 'junegunn/fzf.vim'
     Plug 'HerringtonDarkholme/yats.vim' " TypeScipt syntax
-    Plug 'vifm/vifm.vim'
     Plug 'airblade/vim-gitgutter'
     Plug 'neoclide/coc.nvim', {'branch': 'release'}
     Plug 'christoomey/vim-tmux-navigator'
@@ -87,12 +86,6 @@ let g:fzf_action = {
   \ 'ctrl-t': 'tab split',
   \ 'ctrl-s': 'split',
   \ 'ctrl-v': 'vsplit' }
-
-" Vifm
-
-map <Leader>V :Vifm<CR>
-map <Leader>vv :VsplitVifm<CR>
-map <Leader>vs :SplitVifm<CR>
 
 " Nerdtree
 
