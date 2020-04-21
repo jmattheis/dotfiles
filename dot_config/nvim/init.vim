@@ -14,6 +14,7 @@ call plug#begin('~/.local/share/nvim/plugged')
     Plug 'janko/vim-test'
     Plug 'rhysd/git-messenger.vim'
     Plug 'mbbill/undotree'
+    Plug 'dyng/ctrlsf.vim'
 call plug#end()
 
 set background=dark
@@ -92,6 +93,19 @@ let g:fzf_action = {
   \ 'ctrl-t': 'tab split',
   \ 'ctrl-s': 'split',
   \ 'ctrl-v': 'vsplit' }
+
+" CtrlSF
+
+nnoremap <Leader>f :CtrlSF 
+
+let g:ctrlsf_auto_preview = 1
+let g:ctrlsf_auto_focus = {
+  \ "at": "start",
+  \ }
+let g:ctrlsf_mapping = {
+    \ "next": "n",
+    \ "prev": "N",
+    \ }
 
 " Nerdtree
 
