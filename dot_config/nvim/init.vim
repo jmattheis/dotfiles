@@ -12,6 +12,8 @@ call plug#begin('~/.local/share/nvim/plugged')
     Plug 'christoomey/vim-tmux-navigator'
     Plug 'tpope/vim-commentary'
     Plug 'ron89/thesaurus_query.vim'
+    Plug 'janko/vim-test'
+    Plug 'rhysd/git-messenger.vim'
 call plug#end()
 
 set background=dark
@@ -39,6 +41,7 @@ set cmdheight=2
 set shortmess+=c
 set signcolumn=yes
 set backspace=indent,eol,start
+set hidden
 set history=1000
 set undofile
 set undolevels=1000
@@ -74,6 +77,9 @@ autocmd BufRead,BufNewFile *.md setlocal spell
 autocmd BufRead,BufNewFile *.txt setlocal spell
 set complete+=kspell
 autocmd FileType gitcommit setlocal spell
+
+" test
+nmap <silent> <Leader>rt :TestNearest<CR>
 
 " Use system clipboard
 map <Leader>p "+p
@@ -180,8 +186,8 @@ command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organize
 function! s:cocActionsOpenFromSelected(type) abort
   execute 'CocCommand actions.open ' . a:type
 endfunction
-xmap <silent> <leader>a :<C-u>execute 'CocCommand actions.open ' . visualmode()<CR>
-nmap <silent> <leader>a :<C-u>set operatorfunc=<SID>cocActionsOpenFromSelected<CR>g@
+xmap <silent> <a-cr> :<C-u>execute 'CocCommand actions.open ' . visualmode()<CR>
+nmap <silent> <a-cr> :<C-u>set operatorfunc=<SID>cocActionsOpenFromSelected<CR>g@<CR>
 
 " https://github.com/morhetz/gruvbox/wiki/Usage
 map  <silent> <F4> :call gruvbox#hls_toggle()<CR>
