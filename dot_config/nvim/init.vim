@@ -13,6 +13,7 @@ call plug#begin('~/.local/share/nvim/plugged')
     Plug 'ron89/thesaurus_query.vim'
     Plug 'janko/vim-test'
     Plug 'rhysd/git-messenger.vim'
+    Plug 'mbbill/undotree'
 call plug#end()
 
 set background=dark
@@ -59,6 +60,11 @@ set listchars=tab:\|\ ,trail:…
 
 map ZW :w<CR>
 
+" undotree
+let g:undotree_WindowLayout = 2
+let g:undotree_SetFocusWhenToggle = 1
+nnoremap <leader>u :UndotreeToggle<cr>
+
 " spelling
 autocmd BufRead,BufNewFile *.md setlocal spell
 autocmd BufRead,BufNewFile *.txt setlocal spell
@@ -89,8 +95,8 @@ let g:fzf_action = {
 
 " Nerdtree
 
-map <Leader>N :NERDTreeToggleVCS<CR>
-map <Leader>O :NERDTreeToggle<CR>
+map <Leader>e :NERDTreeToggleVCS<CR>
+map <Leader>E :NERDTreeToggle<CR>
 " close if only window
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
@@ -110,6 +116,11 @@ endfunction
 
 
 let g:rainbow_active = 1
+
+" git messenger
+let g:git_messenger_no_default_mappings = v:true
+let g:git_messenger_always_into_popup = v:true
+nmap <Leader>gb <Plug>(git-messenger)
 
 " lightline
 
@@ -185,24 +196,23 @@ function! s:show_documentation()
     call CocAction('doHover')
   endif
 endfunction
-nnoremap <silent> K :call <SID>show_documentation()<CR>
+nnoremap <silent> <Leader>h :call <SID>show_documentation()<CR>
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gt <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gu <Plug>(coc-references)
 nmap <silent> gb <C-o>
 nmap <silent> gf <C-i>
-nnoremap <silent> <space>m  :<C-u>CocList outline<cr>
-nnoremap <silent> <space>M  :<C-u>CocList -I symbols<cr>
+nnoremap <silent> gm  :<C-u>CocList outline<cr>
+nnoremap <silent> gM  :<C-u>CocList -I symbols<cr>
 
-" Use `[g` and `]g` to navigate diagnostics
-nmap <silent> <leader>E <Plug>(coc-diagnostic-prev)
-nmap <silent> <leader>e <Plug>(coc-diagnostic-next)
-nmap <Leader>L :call CocAction('format')<CR>
+nmap <silent> gE <Plug>(coc-diagnostic-prev)
+nmap <silent> ge <Plug>(coc-diagnostic-next)
+nmap <Leader>af :call CocAction('format')<CR>
 
 " Use auocmd to force lightline update.
 autocmd User CocStatusChange,CocDiagnosticChange call lightline#update()
-nmap <leader>rn <Plug>(coc-rename)
+nmap <leader>ar <Plug>(coc-rename)
 command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
 
 function! s:cocActionsOpenFromSelected(type) abort
