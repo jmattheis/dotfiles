@@ -141,7 +141,7 @@ nmap <Leader>gb <Plug>(git-messenger)
 let g:lightline = {
 \ 'colorscheme': 'gruvbox',
 \ 'active': {
-\   'left':   [ [ 'mode', 'paste' ], [  'readonly', 'filename', 'modified' ] ],
+\   'left':   [ [ 'mode', 'paste' ], [  'readonly', 'filename' ] ],
 \   'right': [ [ 'lineinfo' ], ['percent'], ['cocstatus', 'diagnostic'] ],
 \ },
 \ 'component_function': {
@@ -157,7 +157,7 @@ let g:lightline = {
 \ }
 
 function! LightlineFilename()
-  return expand('%')
+  return expand('%:t') !=# '' ? (expand('%') . (&modifiable && &modified ? '*' : '')) : '[No Name]'
 endfunction
 
 function! LightlineDiagnostic() abort
