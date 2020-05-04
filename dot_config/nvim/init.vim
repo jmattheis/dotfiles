@@ -15,6 +15,8 @@ call plug#begin('~/.local/share/nvim/plugged')
     Plug 'rhysd/git-messenger.vim'
     Plug 'mbbill/undotree'
     Plug 'dyng/ctrlsf.vim'
+    Plug 'rhysd/vim-grammarous'
+    Plug 'airblade/vim-rooter'
 call plug#end()
 
 set background=dark
@@ -45,6 +47,7 @@ set number
 set smartindent
 set tabstop=4
 set shiftwidth=4
+set showtabline=2
 set expandtab
 set smartcase
 set ignorecase
@@ -58,6 +61,14 @@ set laststatus=2
 set list
 " som alternatives: tab:▸\,eol:¬
 set listchars=tab:\|\ ,trail:…
+
+vnoremap < <gv
+vnoremap > >gv
+
+nnoremap <M-j>  :resize -2<CR>
+nnoremap <M-k>  :resize +2<CR>
+nnoremap <M-h>  :vertical resize -2<CR>
+nnoremap <M-l>  :vertical resize +2<CR>
 
 map ZW :w<CR>
 
@@ -88,6 +99,7 @@ vmap <Leader>d "+d
 " FZF
 let g:fzf_layout = { 'window': 'let g:launching_fzf = 1 | keepalt topleft enew' }
 nnoremap <silent> <Leader>N :Files<CR>
+nnoremap <silent> <Leader>o :Buffers<CR>
 nnoremap <silent> <Leader>n :GFiles --cached --others --exclude-standard<CR>
 let g:fzf_action = {
   \ 'ctrl-t': 'tab split',
@@ -144,6 +156,13 @@ let g:lightline = {
 \   'left':   [ [ 'mode', 'paste' ], [  'readonly', 'filename' ] ],
 \   'right': [ [ 'lineinfo' ], ['percent'], ['cocstatus', 'diagnostic'] ],
 \ },
+\ 'tab': {
+\   'active': [ 'tabnum', 'cwd', 'filename', 'modified' ],
+\   'inactive': [ 'tabnum', 'cwd', 'filename', 'modified' ]
+\  },
+\ 'component': {
+\   'tagbar': '%{tagbar#currenttag("[%s]", "")}',
+\  },
 \ 'component_function': {
 \   'cocstatus': 'LightlineCocStatus',
 \   'filename': 'LightlineFilename',
@@ -212,7 +231,7 @@ function! s:show_documentation()
 endfunction
 nnoremap <silent> <Leader>h :call <SID>show_documentation()<CR>
 nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gt <Plug>(coc-type-definition)
+nmap <silent> gD <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gu <Plug>(coc-references)
 nmap <silent> gb <C-o>
