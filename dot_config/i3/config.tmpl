@@ -30,7 +30,7 @@ font pango:JetBrains Mono 10
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec alacritty --command tmux new-session -A -s main
+bindsym $mod+Return exec kitty -- tmux new-session -A -s main
 
 # kill focused window
 bindsym $mod+Shift+apostrophe kill
@@ -124,7 +124,8 @@ workspace $ws10 output $mon_second
 # assignments
 {{ if eq .type "home" }}
 assign [class="Alacritty"] number $ws1
-assign [class="firefox"] number $ws3
+assign [class="kitty"] number $ws1
+# assign [class="firefox"] number $ws3
 assign [class="jetbrains-idea"] number $ws5
 assign [class="^Lutris$"] number $ws7
 assign [class=".*(league|League|Wine|wine).*"] number $ws7
