@@ -27,6 +27,7 @@ syntax on
 
 let mapleader=' '
 
+set re=0
 set updatetime=300
 set cmdheight=2
 set shortmess+=c
