@@ -8,6 +8,7 @@ bind main P !git pull
 bind status A ?git commit --amend --no-edit
 bind status D ?rm %(file)
 bind status U >!tig -- %(file)
+bind status T >!git add -N %(file)
 
 bind refs B +git checkout -b "%(prompt git checkout -b )"
 bind refs F @git fetch --prune
