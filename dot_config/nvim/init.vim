@@ -17,6 +17,7 @@ call plug#begin('~/.local/share/nvim/plugged')
     Plug 'dyng/ctrlsf.vim'
     Plug 'rhysd/vim-grammarous'
     Plug 'airblade/vim-rooter'
+    Plug 'alvan/vim-closetag'
 call plug#end()
 
 set background=dark
