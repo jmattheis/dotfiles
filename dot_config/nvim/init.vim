@@ -18,6 +18,7 @@ call plug#begin('~/.local/share/nvim/plugged')
     Plug 'rhysd/vim-grammarous'
     Plug 'airblade/vim-rooter'
     Plug 'alvan/vim-closetag'
+    Plug 'ntpeters/vim-better-whitespace'
 call plug#end()
 
 set background=dark
@@ -248,7 +249,7 @@ nmap <Leader>af :call CocAction('format')<CR>
 " Use auocmd to force lightline update.
 autocmd User CocStatusChange,CocDiagnosticChange call lightline#update()
 nmap <leader>ar <Plug>(coc-rename)
-command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
+nmap <leader>ai :call     CocAction('runCommand', 'editor.action.organizeImport')<CR>
 
 function! s:cocActionsOpenFromSelected(type) abort
   execute 'CocCommand actions.open ' . a:type
@@ -266,3 +267,5 @@ nnoremap <silent> <CR> :call gruvbox#hls_hide()<CR><CR>
 nnoremap * :let @/ = ""<CR>:call gruvbox#hls_show()<CR>*
 nnoremap / :let @/ = ""<CR>:call gruvbox#hls_show()<CR>/
 nnoremap ? :let @/ = ""<CR>:call gruvbox#hls_show()<CR>?
+
+let g:better_whitespace_enabled=1

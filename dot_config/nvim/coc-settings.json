@@ -10,5 +10,6 @@
     "completeUnimported": true
   },
   "suggest.noselect": false,
-  "suggest.removeDuplicateItems": true
+  "suggest.removeDuplicateItems": true,
+  "rust-analyzer.serverPath": "/usr/bin/rust-analyzer"
 }
