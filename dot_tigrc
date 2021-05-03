@@ -15,3 +15,5 @@ bind refs F @git fetch --prune
 bind refs P !git pull
 bind refs C @git checkout %(branch)
 bind refs L !git rebase -i %(branch)
+
+bind generic Y @sh -c "echo -n %(commit) | xclip -selection c && echo Copied %(commit) to clipboard"
