@@ -18,6 +18,11 @@ map <leader>P "+P
 map <leader>y "+y
 vmap <leader>y "+y
 
+nmap <C-h> <C-W>h
+nmap <C-l> <C-W>l
+nmap <C-k> <C-W>k
+nmap <C-j> <C-W>j
+
 nmap gu :action ShowUsages<CR>
 nmap gs :action GotoSuperMethod<CR>
 nmap ,n :action NextOccurence<CR>
