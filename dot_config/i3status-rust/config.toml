@@ -1,0 +1,61 @@
+[theme]
+name = "gruvbox-dark"
+[theme.overrides]
+separator = "|"
+separator_fg = "#bdae93"
+idle_fg = "#bdae93"
+
+[icons]
+name = "awesome"
+[icons.overrides]
+cogs = "  "
+net_wired = ""
+net_vpn = "lmao"
+time = " "
+
+[[block]]
+block = "sound"
+
+[[block]]
+block = "load"
+interval = 3
+format = "{1m}"
+
+[[block]]
+block = "memory"
+display_type = "memory"
+icons = true
+interval = 30
+warning_mem = 80
+warning_swap = 80
+critical_mem = 95
+critical_swap = 95
+
+[[block]]
+block = "disk_space"
+path = "/home"
+alias = ""
+info_type = "available"
+unit = "GB"
+interval = 20
+warning = 20.0
+alert = 10.0
+
+[[block]]
+device = "veth1"
+block = "net"
+hide_missing = true
+format = " online"
+interval = 5
+use_bits = false
+
+[[block]]
+block = "net"
+format = "{ip}"
+interval = 600
+use_bits = false
+
+[[block]]
+block = "time"
+interval = 1
+format = "%b %d %H:%M:%S"
