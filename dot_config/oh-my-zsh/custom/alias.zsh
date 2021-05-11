@@ -20,8 +20,6 @@ alias f=fuck
 
 alias xc="xclip -sel clip"
 
-alias ssh="TERM=xterm-color ssh"
-
 eval "$(fasd --init auto)"
 alias v="f -e $EDITOR"
 alias c="fasd_cd -d"
