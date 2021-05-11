@@ -6,12 +6,10 @@ separator_fg = "#bdae93"
 idle_fg = "#bdae93"
 
 [icons]
-name = "awesome"
+name = "awesome5"
 [icons.overrides]
-cogs = "  "
+cogs = ""
 net_wired = ""
-net_vpn = "lmao"
-time = " "
 
 [[block]]
 block = "sound"
@@ -24,6 +22,7 @@ format = "{1m}"
 [[block]]
 block = "memory"
 display_type = "memory"
+format_mem = "{mem_used}({mem_used_percents})"
 icons = true
 interval = 30
 warning_mem = 80
@@ -34,8 +33,8 @@ critical_swap = 95
 [[block]]
 block = "disk_space"
 path = "/home"
-alias = ""
 info_type = "available"
+format = "/home {available}"
 unit = "GB"
 interval = 20
 warning = 20.0
@@ -47,15 +46,15 @@ block = "net"
 hide_missing = true
 format = " online"
 interval = 5
-use_bits = false
 
 [[block]]
 block = "net"
 format = "{ip}"
+icons_format = " "
 interval = 600
-use_bits = false
 
 [[block]]
 block = "time"
 interval = 1
+icons_format = " "
 format = "%b %d %H:%M:%S"
