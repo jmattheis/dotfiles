@@ -15,6 +15,12 @@ net_wired = ""
 block = "sound"
 
 [[block]]
+block = "custom"
+on_click = "pactl set-source-mute @DEFAULT_SOURCE@ toggle"
+command = 'pactl list sources | grep -A 10 $(pactl info | grep "Default Source" | cut -f3 -d" ") | grep -c "Mute: yes" > /dev/null && echo  || echo '
+interval = 5
+
+[[block]]
 block = "load"
 interval = 3
 format = "{1m}"
