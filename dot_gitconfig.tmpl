@@ -4,8 +4,9 @@
 [alias]
 	ups = commit --amend --no-edit
 	ll = log --oneline -10
-	s = status
+	s = status -sb
 	ch = checkout
+    zch = !git checkout $(git branch | fzf | tr -d '[:space:]')
 	co = commit
 	amend = commit --amend
 	ammend = commit amend
