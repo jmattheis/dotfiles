@@ -9,7 +9,6 @@
     zch = !git checkout $(git branch | fzf | tr -d '[:space:]')
 	co = commit
 	amend = commit --amend
-	ammend = commit amend
 	lst = show
 	sh = show --color-words='[^[:space:]]'
 	df = diff --color-words=.
@@ -17,6 +16,7 @@
 	r = rebase
 	st = status -sb
 	b = branch
+    zb = git branch | fzf | tr -d '[:space:]'
 	a = add
 	cp = cherry-pick
 	diffu = diff @{u}
