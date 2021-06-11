@@ -202,6 +202,13 @@ bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +2%
 bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -2%
 bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
 
+bindsym --whole-window --border $mod+button1 exec xdotool key XF86Back
+bindsym --whole-window --border $mod+button2 exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym --whole-window --border $mod+button3 exec xdotool key XF86Forward
+bindsym --whole-window --border $mod+button4 exec pactl set-sink-volume @DEFAULT_SINK@ +2%
+bindsym --whole-window --border $mod+button5 exec pactl set-sink-volume @DEFAULT_SINK@ -2%
+
+
 bindsym $mod+m exec i3lock -c 000000
 
 # --------- start COLOR
