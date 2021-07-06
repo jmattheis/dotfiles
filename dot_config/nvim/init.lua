@@ -26,7 +26,7 @@ require('packer').startup(function()
     use 'junegunn/fzf.vim' -- fuzzy finder
     use 'junegunn/fzf' -- fuzzy finder
     use 'neovim/nvim-lspconfig' -- lsp configs for builtin language server client
-    use 'ojroques/nvim-lspfuzzy' -- fuzzy goto definition etc
+    use 'gfanto/fzf-lsp.nvim' -- fzf lsp definitions etc
     use 'nvim-lua/lsp-status.nvim' -- Show lsp status, used in Statusbar
     use 'hrsh7th/nvim-compe' -- Autocompletion
     use 'ntpeters/vim-better-whitespace' -- show trailing whitespaces in red
@@ -135,14 +135,13 @@ vim.cmd 'call lexima#set_default_rules()'
 
 -- key mapping
 local wk = require("which-key")
-wk.setup({
-    registers = false
-})
+wk.setup({registers = false})
 
 wk.register({
     Y = {'y$', 'yank till end of line'},
     ZW = {':w<CR>', "write file"},
     ['<leader>'] = {
+        f = {':Rg<CR>', 'find string in all files'},
         a = {
             u = {':UndotreeToggle<CR>', 'open undo tree'},
             s = {':CtrlSF ', 'find string in all files'},
@@ -199,11 +198,7 @@ require'compe'.setup {
     max_menu_width = 100,
     documentation = true,
 
-    source = {
-        nvim_lsp = {priority = 1000},
-        ultisnips = {priority = 800},
-        path = true
-    }
+    source = {nvim_lsp = {priority = 1000}, path = true}
 }
 
 -- file drawer
@@ -373,26 +368,17 @@ local on_attach = function(client, bufnr)
         },
         g = {
             name = 'go',
-            D = {'<cmd>lua vim.lsp.buf.declaration()<CR>', 'goto declaration'},
-            d = {'<cmd>lua vim.lsp.buf.definition()<CR>', 'goto definition'},
-            i = {
-                '<cmd>lua vim.lsp.buf.implementation()<CR>',
-                'goto implementation'
-            },
-            r = {'<cmd>lua vim.lsp.buf.references()<CR>', 'goto references'},
-            m = {'<cmd>lua vim.lsp.buf.document_symbol()<CR>', 'goto symbol'},
-            M = {
-                '<cmd>lua vim.lsp.buf.workspace_symbol("")<CR>',
-                'goto workspace symbol'
-            }
+            D = {':Declarations<CR>', 'goto declaration'},
+            d = {':Definitions<CR>', 'goto definition'},
+            i = {':Implementations<CR>', 'goto implementation'},
+            r = {':References<CR>', 'show usages'},
+            m = {':DocumentSynbols<CR>', 'goto symbol'},
+            M = {':WorkspaceSymbols<CR>', 'goto workspace symbol'}
         },
         ['<leader>'] = {
             a = {
                 r = {'<cmd>lua vim.lsp.buf.rename()<CR>', 'do rename'},
-                a = {
-                    '<cmd>lua vim.lsp.buf.code_action()<CR>',
-                    'show code actions'
-                },
+                a = {':CodeActions<CR>', 'show code actions'},
                 F = {'<cmd>lua vim.lsp.buf.formatting()<CR>', 'format'}
             },
             d = {
@@ -406,7 +392,7 @@ local on_attach = function(client, bufnr)
                     '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>',
                     'goto previous'
                 },
-                a = {'<cmd>LspDiagnostics 0<CR>', 'show all'}
+                a = {':Diagnostics<CR>', 'show all'}
             }
         }
     }, {buffer = bufnr})
@@ -430,4 +416,3 @@ for _, lsp in ipairs(servers) do
 end
 
 vim.g.fzf_layout = {down = '50%'}
-require('lspfuzzy').setup {fzf_preview = {right = '50%'}}
