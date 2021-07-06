@@ -45,6 +45,7 @@ require('packer').startup(function()
     use 'nvim-treesitter/nvim-treesitter'
     use 'sbdchd/neoformat'
     use 'Yggdroot/indentLine'
+    use 'editorconfig/editorconfig-vim'
 end)
 
 -- https://github.com/hrsh7th/nvim-compe#how-to-remove-pattern-not-found
