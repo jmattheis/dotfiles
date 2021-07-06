@@ -135,6 +135,9 @@ vim.cmd 'call lexima#set_default_rules()'
 
 -- key mapping
 local wk = require("which-key")
+wk.setup({
+    registers = false
+})
 
 wk.register({
     Y = {'y$', 'yank till end of line'},
@@ -231,8 +234,6 @@ vim.api.nvim_exec([[
     augroup END
 ]], false)
 
--- noremap <silent> <Leader>d :Fern . -drawer -width=35 -toggle<CR><C-w>=
-
 -- statusbar
 
 local lsp_diagnostics = require('lsp-status/diagnostics')
@@ -313,7 +314,6 @@ vim.g.lightline = {
         lsp_warn = 'v:lua.statusline_lsp_warn',
         lsp_info = 'v:lua.statusline_lsp_info',
         lsp_hint = 'v:lua.statusline_lsp_hint',
-        lsp_status = 'v:lua.lsp_status',
         lsp = 'v:lua.statusline_lsp',
         filename = 'v:lua.statusline_filename'
     },
@@ -420,10 +420,13 @@ require'nvim-treesitter.configs'.setup {
 -- Enable the following language servers
 local servers = {'gopls', 'rust_analyzer', 'tsserver'}
 for _, lsp in ipairs(servers) do
-    nvim_lsp[lsp].setup {
-        on_attach = on_attach,
-        capabilities = lsp_status.capabilities
+    local caps = lsp_status.capabilities
+    caps.textDocument.completion.completionItem.snippetSupport = true
+    caps.textDocument.completion.completionItem.resolveSupport = {
+        properties = {'documentation', 'detail', 'additionalTextEdits'}
     }
+
+    nvim_lsp[lsp].setup {on_attach = on_attach, capabilities = caps}
 end
 
 vim.g.fzf_layout = {down = '50%'}
