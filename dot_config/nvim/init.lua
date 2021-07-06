@@ -332,7 +332,7 @@ lsp_status.register_progress()
 
 local nvim_lsp = require('lspconfig')
 local on_attach = function(client, bufnr)
-    local function buf_keymap(...) vim.api.nvim_buf_set_keymap(0, ...) end
+    local function buf_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
 
     vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
     require"lsp_signature".on_attach({
