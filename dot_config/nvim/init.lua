@@ -1,5 +1,6 @@
 -- Plugins
 local execute = vim.api.nvim_command
+local keymap = vim.api.nvim_set_keymap
 
 local install_path = vim.fn.stdpath('data') ..
                          '/site/pack/packer/start/packer.nvim'
@@ -35,7 +36,6 @@ require('packer').startup(function()
     use 'christoomey/vim-tmux-navigator' -- move between tmux & vim windows with same shortcuts
     use 'rhysd/vim-grammarous' -- languagetool spellcheck
     use 'mbbill/undotree' -- undo tree
-    use 'folke/which-key.nvim' -- keymapping
     use 'cohama/lexima.vim' -- auto close ()
     use 'ray-x/lsp_signature.nvim' -- show signature while typing method
     use 'tpope/vim-fugitive' -- Git commands in nvim
@@ -105,7 +105,7 @@ vim.wo.signcolumn = "yes"
 vim.cmd [[colorscheme gruvbox]]
 
 -- Remap space as leader key
-vim.api.nvim_set_keymap('', '<Space>', '<Nop>', {noremap = true, silent = true})
+keymap('', '<Space>', '<Nop>', {noremap = true, silent = true})
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
@@ -134,43 +134,30 @@ vim.g.lexima_no_default_rules = true
 vim.cmd 'call lexima#set_default_rules()'
 
 -- key mapping
-local wk = require("which-key")
-wk.setup({registers = false})
 
-wk.register({
-    Y = {'y$', 'yank till end of line'},
-    ZW = {':w<CR>', "write file"},
-    ['<leader>'] = {
-        f = {':Rg<CR>', 'find string in all files'},
-        a = {
-            u = {':UndotreeToggle<CR>', 'open undo tree'},
-            s = {':CtrlSF ', 'find string in all files'},
-            f = {':Neoformat<CR>', 'format'}
-        },
-        p = {'"+p', "paste from clipboard"},
-        P = {'"+P', "paste from clipboard"},
-        y = {'"+y', "yank to clipboard"},
-        d = {'"+d', "delete to clipboard"},
-        n = {
-            ':GFiles --cached --others --exclude-standar<CR>', 'show git files'
-        },
-        N = {':Files<CR>', 'show files'},
-        b = {':Buffers<CR>', 'show buffers'},
-        e = {':Fern . -drawer -reveal=% -width=35 -toggle<CR>', 'show fern'}
-    }
-})
-wk.register({
-    ['<leader>'] = {
-        y = {'"+y', "yank to clipboard"},
-        d = {'"+d', "delete to clipboard"}
-    }
-}, {mode = 'v'})
-
-wk.register({
-    ['<C-Space>'] = {'<cmd>compe#complete()'},
-    ['<CR>'] = {"compe#confirm(lexima#expand('<LT>CR>', 'i'))"},
-    ['<C-e>'] = {"compe#close('<C-e>')"}
-}, {mode = 'i'})
+keymap("n", "Y", 'y$', {silent = true, noremap = true})
+keymap("n", "<leader>f", ':Rg<CR>', {silent = true, noremap = true})
+keymap("n", "<leader>au", ':UndotreeToggle<CR>', {silent = true, noremap = true})
+keymap("n", "<leader>as", ':CtrlSF ', {noremap = true})
+keymap("n", "<leader>af", ':Neoformat<CR> ', {noremap = true})
+keymap("n", "<leader>p", '"+p', {noremap = true})
+keymap("n", "<leader>P", '"+P', {noremap = true})
+keymap("n", "<leader>y", '"+y', {noremap = true})
+keymap("n", "<leader>d", '"+d', {noremap = true})
+keymap("n", "<leader>n", ':GFiles --cached --others --exclude-standar<CR>',
+       {silent = true, noremap = true})
+keymap("n", "<leader>N", ':Files<CR>', {silent = true, noremap = true})
+keymap("n", "<leader>b", ':Buffers<CR>', {silent = true, noremap = true})
+keymap("n", "<leader>e", ':Fern . -drawer -reveal=% -width=35 -toggle<CR>',
+       {silent = true, noremap = true})
+keymap("v", "<leader>y", '"+y', {silent = true, noremap = true})
+keymap("v", "<leader>d", '"+d', {silent = true, noremap = true})
+keymap("i", "<C-Space>", "compe#complete()",
+       {expr = true, silent = true, noremap = true})
+keymap("i", "<CR>", "compe#confirm('<CR>')",
+       {expr = true, silent = true, noremap = true})
+keymap("i", "<C-e>", "compe#close('<C-e>')",
+       {expr = true, silent = true, noremap = true})
 
 -- luochen1990/rainbow
 vim.g.rainbow_active = 1
@@ -207,19 +194,25 @@ vim.g['fern#disable_default_mappings'] = 1
 vim.g['fern#disable_drawer_auto_quit'] = 1
 
 function fern_init()
-    wk.register({
-        ['<CR>'] = {'<Plug>(fern-open-or-expand)', 'open or expand'},
-        m = {'<Plug>(fern-action-mark:toggle)', 'toggle mark'},
-        ['<leader>'] = {
-            r = {'<Plug>(fern-action-rename)', 'move'},
-            n = {'<Plug>(fern-action-new-path)', 'new path'},
-            t = {'<Plug>(fern-action-hidden-toggle)', 'toggle hidden'},
-            d = {'<Plug>(fern-action-remove)', 'delete'},
-            v = {'<Plug>(fern-action-open:vsplit)', 'open vsplit'},
-            h = {'<Plug>(fern-action-open:split)', 'open hsplit'},
-            R = {'<Plug>(fern-action-reload)', 'reload'}
-        }
-    }, {buffer = 0})
+    local function buf_keymap(...) vim.api.nvim_buf_set_keymap(0, ...) end
+    buf_keymap("n", "<CR>", '<Plug>(fern-open-or-expand)',
+               {silent = true, noremap = true})
+    buf_keymap("n", "m", '<Plug>(fern-action-mark:toggle)',
+               {silent = true, noremap = true})
+    buf_keymap('r', '<Plug>(fern-action-rename)',
+               {silent = true, noremap = true})
+    buf_keymap('n', '<Plug>(fern-action-new-path)',
+               {silent = true, noremap = true})
+    buf_keymap('t', '<Plug>(fern-action-hidden-toggle)',
+               {silent = true, noremap = true})
+    buf_keymap('d', '<Plug>(fern-action-remove)',
+               {silent = true, noremap = true})
+    buf_keymap('v', '<Plug>(fern-action-open:vsplit)',
+               {silent = true, noremap = true})
+    buf_keymap('h', '<Plug>(fern-action-open:split)',
+               {silent = true, noremap = true})
+    buf_keymap('R', '<Plug>(fern-action-reload)',
+               {silent = true, noremap = true})
 end
 
 vim.api.nvim_exec([[
@@ -339,6 +332,8 @@ lsp_status.register_progress()
 
 local nvim_lsp = require('lspconfig')
 local on_attach = function(client, bufnr)
+    local function buf_keymap(...) vim.api.nvim_buf_set_keymap(0, ...) end
+
     vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
     require"lsp_signature".on_attach({
         fix_pos = true,
@@ -361,41 +356,34 @@ local on_attach = function(client, bufnr)
         ]], false)
     end
 
-    wk.register({
-        K = {'<cmd>lua vim.lsp.buf.hover()<CR>', 'show documentation'},
-        ['<C-k>'] = {
-            '<cmd>lua vim.lsp.buf.signature_help()<CR>', 'show signature'
-        },
-        g = {
-            name = 'go',
-            D = {':Declarations<CR>', 'goto declaration'},
-            d = {':Definitions<CR>', 'goto definition'},
-            i = {':Implementations<CR>', 'goto implementation'},
-            r = {':References<CR>', 'show usages'},
-            m = {':DocumentSynbols<CR>', 'goto symbol'},
-            M = {':WorkspaceSymbols<CR>', 'goto workspace symbol'}
-        },
-        ['<leader>'] = {
-            a = {
-                r = {'<cmd>lua vim.lsp.buf.rename()<CR>', 'do rename'},
-                a = {':CodeActions<CR>', 'show code actions'},
-                F = {'<cmd>lua vim.lsp.buf.formatting()<CR>', 'format'}
-            },
-            d = {
-                name = 'diagnostic',
-                l = {
-                    '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>',
-                    'for line'
-                },
-                n = {'<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', 'goto next'},
-                N = {
-                    '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>',
-                    'goto previous'
-                },
-                a = {':Diagnostics<CR>', 'show all'}
-            }
-        }
-    }, {buffer = bufnr})
+    buf_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>',
+               {silent = true, noremap = true})
+    buf_keymap('n', '<C-k', '<cmd>lua vim.lsp.buf.signature_help()<CR>',
+               {silent = true, noremap = true})
+    buf_keymap('n', 'gD', ':Declarations<CR>', {silent = true, noremap = true})
+    buf_keymap('n', 'gd', ':Definitions<CR>', {silent = true, noremap = true})
+    buf_keymap('n', 'gi', ':Implementations<CR>',
+               {silent = true, noremap = true})
+    buf_keymap('n', 'gr', ':References<CR>', {silent = true, noremap = true})
+    buf_keymap('n', 'gm', ':DocumentSymbols<CR>',
+               {silent = true, noremap = true})
+    buf_keymap('n', 'gM', ':WorkspaceSymbols<CR>',
+               {silent = true, noremap = true})
+    buf_keymap('n', '<leader>ar', '<cmd>lua vim.lsp.buf.rename()<CR>',
+               {silent = true, noremap = true})
+    buf_keymap('n', '<leader>aa', ':CodeActions<CR>',
+               {silent = true, noremap = true})
+    buf_keymap('n', '<leader>aF', '<cmd>lua vim.lsp.buf.formatting()<CR>',
+               {silent = true, noremap = true})
+    buf_keymap('n', 'l',
+               '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>',
+               {silent = true, noremap = true})
+    buf_keymap('n', '<leader>dn', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>',
+               {silent = true, noremap = true})
+    buf_keymap('n', '<leader>dN', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>',
+               {silent = true, noremap = true})
+    buf_keymap('n', '<leader>da', ':Diagnostics<CR>',
+               {silent = true, noremap = true})
 end
 
 require'nvim-treesitter.configs'.setup {
