@@ -342,14 +342,28 @@ local lsp_status = require('lsp-status')
 lsp_status.register_progress()
 
 local nvim_lsp = require('lspconfig')
-local on_attach = function(_client, bufnr)
+local on_attach = function(client, bufnr)
     vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
     require"lsp_signature".on_attach({
         fix_pos = true,
         hint_enable = false,
         handler_opts = {border = 'none', doc_lines = 0, floating_window = true}
     })
-    lsp_status.on_attach(_client)
+    lsp_status.on_attach(client)
+
+    if client.resolved_capabilities.document_highlight then
+        vim.api.nvim_exec([[
+            augroup lsp_document_highlight
+                autocmd! * <buffer>
+                highlight LspReferenceText cterm=bold ctermbg=DarkGray gui=bold
+                highlight LspReferenceRead cterm=bold ctermbg=DarkGray gui=bold
+                autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
+                autocmd CursorHoldI <buffer> lua vim.lsp.buf.document_highlight()
+                autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
+                autocmd CursorMovedI <buffer> lua vim.lsp.buf.clear_references()
+            augroup END
+        ]], false)
+    end
 
     wk.register({
         K = {'<cmd>lua vim.lsp.buf.hover()<CR>', 'show documentation'},
