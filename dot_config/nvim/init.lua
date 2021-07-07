@@ -20,40 +20,51 @@ vim.api.nvim_exec([[
 local use = require('packer').use
 require('packer').startup(function()
     use 'wbthomason/packer.nvim' -- Package manager
-    use 'morhetz/gruvbox' -- Theme
-    use 'romgrk/nvim-treesitter-context' -- show method context
-    use 'hoob3rt/lualine.nvim' -- status line
-    use 'arkav/lualine-lsp-progress' -- lsp progress in statusline
-    use 'tpope/vim-commentary' -- Code Comment stuff, f.ex gc
-    use 'airblade/vim-gitgutter' -- git diff in sign column
-    use 'junegunn/fzf.vim' -- fuzzy finder
-    use 'junegunn/fzf' -- fuzzy finder
-    use 'neovim/nvim-lspconfig' -- lsp configs for builtin language server client
-    use 'gfanto/fzf-lsp.nvim' -- fzf lsp definitions etc
-    use 'hrsh7th/nvim-compe' -- Autocompletion
-    use 'ntpeters/vim-better-whitespace' -- show trailing whitespaces in red
+
     use 'airblade/vim-rooter' -- change cwd to git root
-    use 'luochen1990/rainbow' -- rainbow ()
-    use 'christoomey/vim-tmux-navigator' -- move between tmux & vim windows with same shortcuts
     use 'rhysd/vim-grammarous' -- languagetool spellcheck
     use 'mbbill/undotree' -- undo tree
-    use 'cohama/lexima.vim' -- auto close ()
-    use 'ray-x/lsp_signature.nvim' -- show signature while typing method
     use 'tpope/vim-fugitive' -- Git commands in nvim
-    use 'dyng/ctrlsf.vim' -- find string in whole project
-    use 'tpope/vim-surround' -- surround operations
-    use {'lambdalisue/fern.vim', requires = {'antoinemadec/FixCursorHold.nvim'}} -- file drawer
-    use {'nvim-treesitter/nvim-treesitter', run = ':TSUpdate'} -- syntax tree parser
     use 'sbdchd/neoformat' -- format everything
+
+    -- ui
+    use 'morhetz/gruvbox' -- Theme
+    use 'hoob3rt/lualine.nvim' -- status line
     use 'Yggdroot/indentLine' -- show spaces / tabs everywhere
+    use 'airblade/vim-gitgutter' -- git diff in sign column
+
+    -- navigation
+    use 'junegunn/fzf.vim' -- fuzzy finder
+    use 'junegunn/fzf' -- fuzzy finder
+    use 'christoomey/vim-tmux-navigator' -- move between tmux & vim windows with same shortcuts
+    use 'dyng/ctrlsf.vim' -- find string in whole project
+    use {'lambdalisue/fern.vim', requires = {'antoinemadec/FixCursorHold.nvim'}} -- file drawer
+
+    -- autocomplete / typing stuff
+    use 'tpope/vim-commentary' -- Code Comment stuff, f.ex gc
+    use 'hrsh7th/nvim-compe' -- Autocompletion
+    use 'ntpeters/vim-better-whitespace' -- show trailing whitespaces in red
+    use 'cohama/lexima.vim' -- auto close ()
+    use 'luochen1990/rainbow' -- rainbow ()
+    use 'tpope/vim-surround' -- surround operations
     use 'editorconfig/editorconfig-vim' -- use tabstop / tabwidth from .editorconfig
-    use 'simrat39/rust-tools.nvim' -- additional rust analyzer tools, f.ex show types in method chain
-    use 'windwp/nvim-ts-autotag' -- close html tags via treesitter
-    use 'haringsrob/nvim_context_vt' -- show context on cloning brackets
+
+    -- lsp
+    use 'neovim/nvim-lspconfig' -- lsp configs for builtin language server client
     use { -- show diagnostics, f.ex. eslint
         'iamcco/diagnostic-languageserver',
         requires = {'creativenull/diagnosticls-nvim'}
     }
+    use 'simrat39/rust-tools.nvim' -- additional rust analyzer tools, f.ex show types in method chain
+    use 'ray-x/lsp_signature.nvim' -- show signature while typing method
+    use 'gfanto/fzf-lsp.nvim' -- fzf lsp definitions etc
+    use 'arkav/lualine-lsp-progress' -- lsp progress in statusline
+
+    -- tree sitter
+    use {'nvim-treesitter/nvim-treesitter', run = ':TSUpdate'} -- syntax tree parser
+    use 'windwp/nvim-ts-autotag' -- close html tags via treesitter
+    use 'haringsrob/nvim_context_vt' -- show context on closing brackets
+    use 'romgrk/nvim-treesitter-context' -- show method context
 end)
 
 -- https://github.com/hrsh7th/nvim-compe#how-to-remove-pattern-not-found
