@@ -136,6 +136,7 @@ vim.cmd 'call lexima#set_default_rules()'
 -- key mapping
 
 keymap("n", "Y", 'y$', {silent = true, noremap = true})
+keymap("n", "ZW", ':w<CR>', {silent = true, noremap = true})
 keymap("n", "<leader>f", ':Rg<CR>', {silent = true, noremap = true})
 keymap("n", "<leader>au", ':UndotreeToggle<CR>', {silent = true, noremap = true})
 keymap("n", "<leader>as", ':CtrlSF ', {noremap = true})
@@ -358,7 +359,7 @@ local on_attach = function(client, bufnr)
 
     buf_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>',
                {silent = true, noremap = true})
-    buf_keymap('n', '<C-k', '<cmd>lua vim.lsp.buf.signature_help()<CR>',
+    buf_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>',
                {silent = true, noremap = true})
     buf_keymap('n', 'gD', ':Declarations<CR>', {silent = true, noremap = true})
     buf_keymap('n', 'gd', ':Definitions<CR>', {silent = true, noremap = true})
@@ -375,7 +376,7 @@ local on_attach = function(client, bufnr)
                {silent = true, noremap = true})
     buf_keymap('n', '<leader>aF', '<cmd>lua vim.lsp.buf.formatting()<CR>',
                {silent = true, noremap = true})
-    buf_keymap('n', 'l',
+    buf_keymap('n', '<leader>dl',
                '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>',
                {silent = true, noremap = true})
     buf_keymap('n', '<leader>dn', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>',
