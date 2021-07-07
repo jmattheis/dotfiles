@@ -43,13 +43,17 @@ require('packer').startup(function()
     use 'dyng/ctrlsf.vim' -- find string in whole project
     use 'tpope/vim-surround' -- surround operations
     use {'lambdalisue/fern.vim', requires = {'antoinemadec/FixCursorHold.nvim'}} -- file drawer
-    use 'nvim-treesitter/nvim-treesitter'
-    use 'sbdchd/neoformat'
-    use 'Yggdroot/indentLine'
-    use 'editorconfig/editorconfig-vim'
-    use 'simrat39/rust-tools.nvim'
-    use 'windwp/nvim-ts-autotag'
-    use 'haringsrob/nvim_context_vt'
+    use {'nvim-treesitter/nvim-treesitter', run = ':TSUpdate'} -- syntax tree parser
+    use 'sbdchd/neoformat' -- format everything
+    use 'Yggdroot/indentLine' -- show spaces / tabs everywhere
+    use 'editorconfig/editorconfig-vim' -- use tabstop / tabwidth from .editorconfig
+    use 'simrat39/rust-tools.nvim' -- additional rust analyzer tools, f.ex show types in method chain
+    use 'windwp/nvim-ts-autotag' -- close html tags via treesitter
+    use 'haringsrob/nvim_context_vt' -- show context on cloning brackets
+    use { -- show diagnostics, f.ex. eslint
+        'iamcco/diagnostic-languageserver',
+        requires = {'creativenull/diagnosticls-nvim'}
+    }
 end)
 
 -- https://github.com/hrsh7th/nvim-compe#how-to-remove-pattern-not-found
@@ -231,8 +235,8 @@ vim.api.nvim_exec([[
 
 -- statusbar
 
-local lsp_diagnostics = require('lsp-status/diagnostics')
-local lsp_messages = require('lsp-status/messaging').messages
+local lsp_diagnostics = require 'lsp-status/diagnostics'
+local lsp_messages = require'lsp-status/messaging'.messages
 
 local function statusline_make_diagnostic(prefix, diagnostics_key)
     return function()
@@ -334,15 +338,15 @@ vim.defer_fn(timed_statusbar_update, 200)
 
 -- LSP stuff
 
-local lsp_status = require('lsp-status')
+local lsp_status = require 'lsp-status'
 lsp_status.register_progress()
 
-local nvim_lsp = require('lspconfig')
+local nvim_lsp = require 'lspconfig'
 local on_attach = function(client, bufnr)
     local function buf_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
 
     vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
-    require"lsp_signature".on_attach({
+    require'lsp_signature'.on_attach({
         fix_pos = true,
         hint_enable = false,
         handler_opts = {border = 'none', doc_lines = 0, floating_window = true}
@@ -353,8 +357,8 @@ local on_attach = function(client, bufnr)
         vim.api.nvim_exec([[
             augroup lsp_document_highlight
                 autocmd! * <buffer>
-                highlight LspReferenceText cterm=bold ctermbg=DarkGray gui=bold
-                highlight LspReferenceRead cterm=bold ctermbg=DarkGray gui=bold
+                highlight LspReferenceText cterm=bold ctermbg=DarkGray gui=bold guibg=DarkGray
+                highlight LspReferenceRead cterm=bold ctermbg=DarkGray gui=bold guibg=DarkGray
                 autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
                 autocmd CursorHoldI <buffer> lua vim.lsp.buf.document_highlight()
                 autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
@@ -399,6 +403,12 @@ require'nvim-treesitter.configs'.setup {
     autotag = {enable = true},
     indent = {enable = true}
 }
+local eslint = require 'diagnosticls-nvim.linters.eslint'
+require'diagnosticls-nvim'.setup {
+    ['typescript'] = {linter = eslint},
+    ['typescriptreact'] = {linter = eslint}
+}
+require'diagnosticls-nvim'.init {on_attach = on_attach}
 
 -- Enable the following language servers
 local servers = {'gopls', 'rust_analyzer', 'tsserver'}
@@ -411,6 +421,6 @@ for _, lsp in ipairs(servers) do
 
     nvim_lsp[lsp].setup {on_attach = on_attach, capabilities = caps}
 end
-require('rust-tools').setup({})
+require'rust-tools'.setup({server = {on_attach = on_attach, capabilities = caps}})
 
 vim.g.fzf_layout = {down = '50%'}
