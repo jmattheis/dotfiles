@@ -46,6 +46,7 @@ require('packer').startup(function()
     use 'sbdchd/neoformat'
     use 'Yggdroot/indentLine'
     use 'editorconfig/editorconfig-vim'
+    use 'simrat39/rust-tools.nvim'
 end)
 
 -- https://github.com/hrsh7th/nvim-compe#how-to-remove-pattern-not-found
@@ -403,5 +404,6 @@ for _, lsp in ipairs(servers) do
 
     nvim_lsp[lsp].setup {on_attach = on_attach, capabilities = caps}
 end
+require('rust-tools').setup({})
 
 vim.g.fzf_layout = {down = '50%'}
