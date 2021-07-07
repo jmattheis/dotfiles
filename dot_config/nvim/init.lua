@@ -21,6 +21,7 @@ local use = require('packer').use
 require('packer').startup(function()
     use 'wbthomason/packer.nvim' -- Package manager
     use 'morhetz/gruvbox' -- Theme
+    use 'romgrk/nvim-treesitter-context' -- show method context
     use 'itchyny/lightline.vim' -- Statusbar
     use 'tpope/vim-commentary' -- Code Comment stuff, f.ex gc
     use 'airblade/vim-gitgutter' -- git diff in sign column
@@ -47,6 +48,8 @@ require('packer').startup(function()
     use 'Yggdroot/indentLine'
     use 'editorconfig/editorconfig-vim'
     use 'simrat39/rust-tools.nvim'
+    use 'windwp/nvim-ts-autotag'
+    use 'haringsrob/nvim_context_vt'
 end)
 
 -- https://github.com/hrsh7th/nvim-compe#how-to-remove-pattern-not-found
@@ -392,7 +395,9 @@ end
 
 require'nvim-treesitter.configs'.setup {
     ensure_installed = "maintained",
-    highlight = {enable = true}
+    highlight = {enable = true},
+    autotag = {enable = true},
+    indent = {enable = true}
 }
 
 -- Enable the following language servers
