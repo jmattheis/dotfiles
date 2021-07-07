@@ -103,6 +103,8 @@ vim.o.updatetime = 250
 vim.wo.signcolumn = "yes"
 
 -- gruvbox masterrace
+if vim.fn.has('termguicolors') then vim.o.termguicolors = true end
+
 vim.cmd [[colorscheme gruvbox]]
 
 -- Remap space as leader key
