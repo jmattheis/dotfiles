@@ -22,14 +22,14 @@ require('packer').startup(function()
     use 'wbthomason/packer.nvim' -- Package manager
     use 'morhetz/gruvbox' -- Theme
     use 'romgrk/nvim-treesitter-context' -- show method context
-    use 'itchyny/lightline.vim' -- Statusbar
+    use 'hoob3rt/lualine.nvim' -- status line
+    use 'arkav/lualine-lsp-progress' -- lsp progress in statusline
     use 'tpope/vim-commentary' -- Code Comment stuff, f.ex gc
     use 'airblade/vim-gitgutter' -- git diff in sign column
     use 'junegunn/fzf.vim' -- fuzzy finder
     use 'junegunn/fzf' -- fuzzy finder
     use 'neovim/nvim-lspconfig' -- lsp configs for builtin language server client
     use 'gfanto/fzf-lsp.nvim' -- fzf lsp definitions etc
-    use 'nvim-lua/lsp-status.nvim' -- Show lsp status, used in Statusbar
     use 'hrsh7th/nvim-compe' -- Autocompletion
     use 'ntpeters/vim-better-whitespace' -- show trailing whitespaces in red
     use 'airblade/vim-rooter' -- change cwd to git root
@@ -235,111 +235,54 @@ vim.api.nvim_exec([[
 
 -- statusbar
 
-local lsp_diagnostics = require 'lsp-status/diagnostics'
-local lsp_messages = require'lsp-status/messaging'.messages
-
-local function statusline_make_diagnostic(prefix, diagnostics_key)
-    return function()
-        local count = lsp_diagnostics(0)[diagnostics_key]
-        if count and count > 0 then
-            return prefix .. count
-        else
-            return ''
-        end
-    end
-end
-function statusline_lsp()
-    local buf_messages = lsp_messages()
-    local msgs = {}
-
-    for _, msg in ipairs(buf_messages) do
-        local contents
-        if msg.progress then
-            contents = msg.title
-            if msg.message then
-                contents = contents .. ' ' .. msg.message
-            end
-
-            -- this percentage format string escapes a percent sign once to show a percentage and one more
-            -- time to prevent errors in vim statusline's because of it's treatment of % chars
-            if msg.percentage then
-                contents = contents ..
-                               string.format(" (%.0f%%%%)", msg.percentage)
-            end
-        else
-            contents = msg.content
-        end
-
-        table.insert(msgs, msg.name .. ': ' .. contents)
-    end
-    if #msgs == 0 then
-        local clients = {}
-        for _, client in pairs(vim.lsp.buf_get_clients()) do
-            clients[#clients + 1] = client.name
-        end
-        return table.concat(clients, ' ')
-    else
-        return table.concat(msgs, '|')
-    end
-end
-
-statusline_lsp_error = statusline_make_diagnostic('E', 'errors')
-statusline_lsp_warn = statusline_make_diagnostic('W', 'warnings')
-statusline_lsp_info = statusline_make_diagnostic('I', 'info')
-statusline_lsp_hint = statusline_make_diagnostic('?', 'hints')
-
-function statusline_filename()
-    if vim.fn.expand('%:t') == '' then
-        return '[No Name]'
-    else
-        return vim.fn.expand('%')
-    end
-end
-
-vim.g.lightline = {
-    colorscheme = 'gruvbox',
-    active = {
-        left = {
-            {'mode', 'paste'}, {'gitbranch', 'readonly', 'filename', 'modified'}
+require'lualine'.setup {
+    options = {
+        icons_enabled = false,
+        theme = 'gruvbox',
+        component_separators = {'|', '|'},
+        section_separators = {'', ''},
+        disabled_filetypes = {}
+    },
+    sections = {
+        lualine_a = {'mode'},
+        lualine_b = {{'filename', file_status = true, path = 1}},
+        lualine_c = {
+            {
+                'diagnostics',
+                sources = {'nvim_lsp'},
+                symbols = {error = 'E', warn = 'W', info = 'I', hint = 'H'}
+            }
         },
-        right = {
-            {'lineinfo'}, {'percent'},
-            {'lsp_error', 'lsp_warn', 'lsp_info', 'lsp_hint', 'lsp'}
-        }
+        lualine_x = {
+            {
+                'lsp_progress',
+                display_components = {{'message', 'title', 'percentage'}},
+                seperators = {
+                    percentage = {pre = ' ', post = '%%'},
+                    title = {pre = ' ', post = ''}
+                }
+            }, function()
+                local clients = {}
+                for _, client in pairs(vim.lsp.buf_get_clients()) do
+                    clients[#clients + 1] = client.name
+                end
+                return table.concat(clients, ' ')
+            end
+        },
+        lualine_y = {'progress'},
+        lualine_z = {'location'}
     },
-    component_function = {gitbranch = 'fugitive#head'},
-    component_expand = {
-        lsp_error = 'v:lua.statusline_lsp_error',
-        lsp_warn = 'v:lua.statusline_lsp_warn',
-        lsp_info = 'v:lua.statusline_lsp_info',
-        lsp_hint = 'v:lua.statusline_lsp_hint',
-        lsp = 'v:lua.statusline_lsp',
-        filename = 'v:lua.statusline_filename'
+    inactive_sections = {
+        lualine_a = {},
+        lualine_b = {},
+        lualine_c = {'filename'},
+        lualine_x = {'location'},
+        lualine_y = {},
+        lualine_z = {}
     },
-    component_type = {
-        lsp_error = 'error',
-        lsp_warn = 'warning',
-        lsp_info = 'info',
-        lsp_hint = 'hint'
-    }
+    tabline = {},
+    extensions = {}
 }
-
-vim.cmd 'au User LspDiagnosticsChanged call lightline#update()'
-vim.cmd 'au User LspMessageUpdate call lightline#update()'
-vim.cmd 'au User LspStatusUpdate call lightline#update()'
-
--- Workaround to get progress inside the statusbar, apparently LspStatusUpdate
--- doesn't always get called
-local function timed_statusbar_update()
-    vim.cmd 'call lightline#update()'
-    vim.defer_fn(timed_statusbar_update, 200)
-end
-vim.defer_fn(timed_statusbar_update, 200)
-
--- LSP stuff
-
-local lsp_status = require 'lsp-status'
-lsp_status.register_progress()
 
 local nvim_lsp = require 'lspconfig'
 local on_attach = function(client, bufnr)
@@ -351,7 +294,6 @@ local on_attach = function(client, bufnr)
         hint_enable = false,
         handler_opts = {border = 'none', doc_lines = 0, floating_window = true}
     })
-    lsp_status.on_attach(client)
 
     if client.resolved_capabilities.document_highlight then
         vim.api.nvim_exec([[
@@ -413,7 +355,7 @@ require'diagnosticls-nvim'.init {on_attach = on_attach}
 -- Enable the following language servers
 local servers = {'gopls', 'rust_analyzer', 'tsserver'}
 for _, lsp in ipairs(servers) do
-    local caps = lsp_status.capabilities
+    local caps = vim.lsp.protocol.make_client_capabilities()
     caps.textDocument.completion.completionItem.snippetSupport = true
     caps.textDocument.completion.completionItem.resolveSupport = {
         properties = {'documentation', 'detail', 'additionalTextEdits'}
@@ -421,6 +363,8 @@ for _, lsp in ipairs(servers) do
 
     nvim_lsp[lsp].setup {on_attach = on_attach, capabilities = caps}
 end
-require'rust-tools'.setup({server = {on_attach = on_attach, capabilities = caps}})
+require'rust-tools'.setup({
+    server = {on_attach = on_attach, capabilities = caps}
+})
 
 vim.g.fzf_layout = {down = '50%'}
