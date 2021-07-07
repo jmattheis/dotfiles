@@ -275,7 +275,7 @@ require'lualine'.setup {
             }, function()
                 local clients = {}
                 for _, client in pairs(vim.lsp.buf_get_clients()) do
-                    clients[#clients + 1] = client.name
+                    table.insert(clients, client.name)
                 end
                 return table.concat(clients, ' ')
             end
