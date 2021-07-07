@@ -2,6 +2,8 @@ set newtab about:blank
 
 colorscheme gruvbox
 
+set editorcmd alacritty --title "Tridactyl Editor" --command nvim
+
 blacklistadd paypal.com
 
 unbind <C-f>
