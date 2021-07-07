@@ -1,0 +1,22 @@
+set newtab about:blank
+
+colorscheme gruvbox
+
+blacklistadd paypal.com
+
+unbind <C-f>
+unbind <F1>
+
+bind b fillcmdline buffer
+bind B fillcmdline bmarks
+bind d scrollpage 0.5
+bind u scrollpage -0.5
+bind x tabclose
+
+bindurl www.google.com f hint -Jc #search div:not(.action-menu) > a
+bindurl www.google.com F hint -Jbc #search div:not(.action-menu) > a
+
+set searchurls.aur https://aur.archlinux.org/packages/?O=0&K=
+set searchurls.npm https://www.npmjs.com/search?q=
+set searchurls.nix https://github.com/NixOS/nixpkgs/search?q=
+set searchurls.docker https://hub.docker.com/search?&type=image&q=
