@@ -63,7 +63,7 @@ require('packer').startup(function()
     -- tree sitter
     use {'nvim-treesitter/nvim-treesitter', run = ':TSUpdate'} -- syntax tree parser
     use 'windwp/nvim-ts-autotag' -- close html tags via treesitter
-    use 'haringsrob/nvim_context_vt' -- show context on closing brackets
+    -- use 'haringsrob/nvim_context_vt' -- show context on closing brackets
     use 'romgrk/nvim-treesitter-context' -- show method context
 end)
 
