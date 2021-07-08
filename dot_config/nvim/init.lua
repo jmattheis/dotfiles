@@ -365,7 +365,7 @@ require'diagnosticls-nvim'.setup {
 require'diagnosticls-nvim'.init {on_attach = on_attach}
 
 -- Enable the following language servers
-local servers = {'gopls', 'rust_analyzer', 'tsserver'}
+local servers = {'gopls', 'rust_analyzer', 'tsserver', 'jsonls'}
 for _, lsp in ipairs(servers) do
     local caps = vim.lsp.protocol.make_client_capabilities()
     caps.textDocument.completion.completionItem.snippetSupport = true
