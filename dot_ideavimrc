@@ -23,6 +23,9 @@ nmap <C-l> <C-W>l
 nmap <C-k> <C-W>k
 nmap <C-j> <C-W>j
 
+nmap <C-o> :action Back<CR>
+nmap <C-i> :action Forward<CR>
+
 nmap gu :action ShowUsages<CR>
 nmap gs :action GotoSuperMethod<CR>
 nmap ,n :action NextOccurence<CR>
