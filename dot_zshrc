@@ -1,63 +1,62 @@
-export DISABLE_MAGIC_FUNCTIONS=true
 export ZSH=/usr/share/oh-my-zsh # from aur repo
 
-# Set name of the theme to load. Optionally, if you set this to "random"
-# it'll load a random theme each time that oh-my-zsh is loaded.
-# See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-ZSH_THEME="lambda-gitster"
-
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
-
-# Uncomment the following line to use hyphen-insensitive completion. Case
-# sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
-
-# Uncomment the following line to disable bi-weekly auto-update checks.
-# DISABLE_AUTO_UPDATE="true"
-
-# Uncomment the following line to change how often to auto-update (in days).
-# export UPDATE_ZSH_DAYS=13
-
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
-
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
-
-# Uncomment the following line to display red dots whilst waiting for completion.
-# COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# HIST_STAMPS="mm/dd/yyyy"
-
-# Would you like to use another custom folder than $ZSH/custom?
-export ZSH_CUSTOM=$HOME/.config/oh-my-zsh/custom
-
-ARCH_HIGHLIGHT_PATH=/usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-if [ -f $ARCH_HIGHLIGHT_PATH ]; then
-    source $ARCH_HIGHLIGHT_PATH
-fi
-
-# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
+export DISABLE_MAGIC_FUNCTIONS=true
+export DISABLE_UNTRACKED_FILES_DIRTY=true
 plugins=(docker sudo)
 
 source $ZSH/oh-my-zsh.sh
 
 unsetopt nomatch
 
-source /usr/share/fzf/completion.zsh
-source /usr/share/fzf/key-bindings.zsh
+function optional_source() { [ -s "$1" ] && source "$1" }
+optional_source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+optional_source /usr/share/fzf/completion.zsh
+optional_source /usr/share/fzf/key-bindings.zsh
+
+local ret_status="%(?:%{$fg_bold[green]%}:%{$fg_bold[red]%})"
+
+function get_pwd(){
+  git_root=$PWD
+  while [[ $git_root != / && ! -e $git_root/.git ]]; do
+    git_root=$git_root:h
+  done
+  if [[ $git_root = / ]]; then
+    unset git_root
+    prompt_short_dir=%~
+  else
+    parent=${git_root%\/*}
+    prompt_short_dir=${PWD#$parent/}
+  fi
+  echo $prompt_short_dir
+}
+
+PROMPT='$ret_status%n@%m %{$fg[white]%}$(get_pwd)$(git_prompt_info)%{$reset_color%}%{$reset_color%} λ '
+ZSH_THEME_GIT_PROMPT_PREFIX=" %{$fg[cyan]%}"
+ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%}"
+ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[yellow]%}✗%{$reset_color%}"
+ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg[green]%}✓%{$reset_color%}"
+
+alias g="git"
+alias gs="git status"
+alias t="tig"
+alias ts="tig status"
+
+# muscle memory ftw
+alias vim=$EDITOR
+alias vi=$EDITOR
+
+alias dk="docker"
+alias dkc="docker-compose"
+alias dogger="docker-compose down -v && docker-compose pull && docker-compose up -d"
+
+alias xc="xclip -sel clip"
+
+if which fasd > /dev/null; then
+  eval "$(fasd --init auto)"
+  alias c="fasd_cd -d"
+fi
+if which exa > /dev/null; then
+  alias ll="exa -la"
+else
+  alias ll="ls -lah"
+fi
