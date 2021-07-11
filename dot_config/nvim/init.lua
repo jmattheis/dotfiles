@@ -79,7 +79,7 @@ vim.o.tabstop = 4
 vim.o.shiftwidth = 4
 
 -- Set completeopt to have a better completion experience
-vim.o.completeopt = "menuone,noinsert"
+vim.o.completeopt = "menuone,noselect"
 
 -- Map blankline
 vim.o.list = true;
@@ -88,6 +88,9 @@ vim.o.listchars = 'tab:| ,trail:•'
 -- Set highlight on search
 vim.o.hlsearch = false
 vim.o.incsearch = true
+
+-- hide default mode
+vim.o.showmode = false
 
 -- Make line numbers default
 vim.wo.number = true
@@ -263,17 +266,14 @@ require'lualine'.setup {
                 'diagnostics',
                 sources = {'nvim_lsp'},
                 symbols = {error = 'E', warn = 'W', info = 'I', hint = 'H'}
+            }, {
+                'lsp_progress',
+                color = {use = false},
+                display_components = {{'title', 'percentage', 'message'}}
             }
         },
         lualine_x = {
-            {
-                'lsp_progress',
-                display_components = {{'message', 'title', 'percentage'}},
-                seperators = {
-                    percentage = {pre = ' ', post = '%%'},
-                    title = {pre = ' ', post = ''}
-                }
-            }, function()
+            function()
                 local clients = {}
                 for _, client in pairs(vim.lsp.buf_get_clients()) do
                     table.insert(clients, client.name)
@@ -311,8 +311,8 @@ local on_attach = function(client, bufnr)
         vim.api.nvim_exec([[
             augroup lsp_document_highlight
                 autocmd! * <buffer>
-                highlight LspReferenceText cterm=bold ctermbg=DarkGray gui=bold guibg=DarkGray
-                highlight LspReferenceRead cterm=bold ctermbg=DarkGray gui=bold guibg=DarkGray
+                highlight LspReferenceText cterm=bold ctermbg=DarkGray gui=bold guibg=#a89984 guifg=#282828
+                highlight LspReferenceRead cterm=bold ctermbg=DarkGray gui=bold guibg=#a89984 guifg=#282828
                 autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
                 autocmd CursorHoldI <buffer> lua vim.lsp.buf.document_highlight()
                 autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
