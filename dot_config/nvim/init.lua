@@ -220,25 +220,17 @@ vim.g['fern#disable_default_mappings'] = 1
 vim.g['fern#disable_drawer_auto_quit'] = 1
 
 function fern_init()
-    local function buf_keymap(...) vim.api.nvim_buf_set_keymap(0, ...) end
-    buf_keymap("n", "<CR>", '<Plug>(fern-open-or-expand)',
-               {silent = true, noremap = true})
-    buf_keymap("n", "m", '<Plug>(fern-action-mark:toggle)',
-               {silent = true, noremap = true})
-    buf_keymap('r', '<Plug>(fern-action-rename)',
-               {silent = true, noremap = true})
-    buf_keymap('n', '<Plug>(fern-action-new-path)',
-               {silent = true, noremap = true})
-    buf_keymap('t', '<Plug>(fern-action-hidden-toggle)',
-               {silent = true, noremap = true})
-    buf_keymap('d', '<Plug>(fern-action-remove)',
-               {silent = true, noremap = true})
-    buf_keymap('v', '<Plug>(fern-action-open:vsplit)',
-               {silent = true, noremap = true})
-    buf_keymap('h', '<Plug>(fern-action-open:split)',
-               {silent = true, noremap = true})
-    buf_keymap('R', '<Plug>(fern-action-reload)',
-               {silent = true, noremap = true})
+    local bufnr = vim.api.nvim_get_current_buf()
+    local function buf_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+    buf_keymap("n", "<CR>", '<Plug>(fern-open-or-expand)', {})
+    buf_keymap("n", "m", '<Plug>(fern-action-mark:toggle)', {})
+    buf_keymap("n", 'r', '<Plug>(fern-action-rename)', {})
+    buf_keymap("n", 'n', '<Plug>(fern-action-new-path)', {})
+    buf_keymap("n", 't', '<Plug>(fern-action-hidden-toggle)', {})
+    buf_keymap("n", 'd', '<Plug>(fern-action-remove)', {})
+    buf_keymap("n", 'v', '<Plug>(fern-action-open:vsplit)', {})
+    buf_keymap("n", 'h', '<Plug>(fern-action-open:split)', {})
+    buf_keymap("n", 'R', '<Plug>(fern-action-reload)', {})
 end
 
 vim.api.nvim_exec([[
