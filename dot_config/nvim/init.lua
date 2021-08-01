@@ -45,7 +45,6 @@ require('packer').startup(function()
     use 'hrsh7th/nvim-compe' -- Autocompletion
     use 'ntpeters/vim-better-whitespace' -- show trailing whitespaces in red
     use 'cohama/lexima.vim' -- auto close ()
-    use 'luochen1990/rainbow' -- rainbow ()
     use 'tpope/vim-surround' -- surround operations
     use 'editorconfig/editorconfig-vim' -- use tabstop / tabwidth from .editorconfig
 
@@ -59,10 +58,13 @@ require('packer').startup(function()
     use 'ray-x/lsp_signature.nvim' -- show signature while typing method
     use 'gfanto/fzf-lsp.nvim' -- fzf lsp definitions etc
     use 'arkav/lualine-lsp-progress' -- lsp progress in statusline
+    use 'folke/lsp-colors.nvim' -- better inline diagnostics
 
     -- tree sitter
     use {'nvim-treesitter/nvim-treesitter', run = ':TSUpdate'} -- syntax tree parser
     use 'windwp/nvim-ts-autotag' -- close html tags via treesitter
+    use 'RRethy/nvim-treesitter-textsubjects'
+    use 'JoosepAlviste/nvim-ts-context-commentstring'
     -- cool but really slow
     -- use 'haringsrob/nvim_context_vt' -- show context on closing brackets
     -- use 'romgrk/nvim-treesitter-context' -- show method context
@@ -228,8 +230,8 @@ function fern_init()
     buf_keymap("n", 'n', '<Plug>(fern-action-new-path)', {})
     buf_keymap("n", 't', '<Plug>(fern-action-hidden-toggle)', {})
     buf_keymap("n", 'd', '<Plug>(fern-action-remove)', {})
-    buf_keymap("n", 'v', '<Plug>(fern-action-open:vsplit)', {})
-    buf_keymap("n", 'h', '<Plug>(fern-action-open:split)', {})
+    buf_keymap("n", 'ov', '<Plug>(fern-action-open:vsplit)', {})
+    buf_keymap("n", 'os', '<Plug>(fern-action-open:split)', {})
     buf_keymap("n", 'R', '<Plug>(fern-action-reload)', {})
 end
 
@@ -347,7 +349,15 @@ require'nvim-treesitter.configs'.setup {
     ensure_installed = "maintained",
     highlight = {enable = true},
     autotag = {enable = true},
-    indent = {enable = true}
+    indent = {enable = true},
+    context_commentstring = {enable = true},
+    textsubjects = {
+        enable = true,
+        keymaps = {
+            ['.'] = 'textsubjects-smart',
+            [';'] = 'textsubjects-container-outer'
+        }
+    }
 }
 local eslint = require 'diagnosticls-nvim.linters.eslint'
 require'diagnosticls-nvim'.setup {

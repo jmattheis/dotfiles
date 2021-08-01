@@ -22,3 +22,4 @@ set searchurls.aur https://aur.archlinux.org/packages/?O=0&K=
 set searchurls.npm https://www.npmjs.com/search?q=
 set searchurls.nix https://github.com/NixOS/nixpkgs/search?q=
 set searchurls.docker https://hub.docker.com/search?&type=image&q=
+set searchurls.protondb https://www.protondb.com/search?q=
