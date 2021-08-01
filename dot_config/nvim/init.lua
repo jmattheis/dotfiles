@@ -63,7 +63,6 @@ require('packer').startup(function()
     -- tree sitter
     use {'nvim-treesitter/nvim-treesitter', run = ':TSUpdate'} -- syntax tree parser
     use 'windwp/nvim-ts-autotag' -- close html tags via treesitter
-    use 'RRethy/nvim-treesitter-textsubjects'
     use 'JoosepAlviste/nvim-ts-context-commentstring'
     -- cool but really slow
     -- use 'haringsrob/nvim_context_vt' -- show context on closing brackets
@@ -351,11 +350,13 @@ require'nvim-treesitter.configs'.setup {
     autotag = {enable = true},
     indent = {enable = true},
     context_commentstring = {enable = true},
-    textsubjects = {
+    incremental_selection = {
         enable = true,
         keymaps = {
-            ['.'] = 'textsubjects-smart',
-            [';'] = 'textsubjects-container-outer'
+            init_selection = "gnn",
+            node_incremental = ".",
+            scope_incremental = ";",
+            node_decremental = "g."
         }
     }
 }
