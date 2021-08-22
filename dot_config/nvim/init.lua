@@ -38,7 +38,7 @@ require('packer').startup(function()
     use 'junegunn/fzf' -- fuzzy finder
     use 'christoomey/vim-tmux-navigator' -- move between tmux & vim windows with same shortcuts
     use 'dyng/ctrlsf.vim' -- find string in whole project
-    use {'kyazdani42/nvim-tree.lua', requires = 'kyazdani42/nvim-web-devicons'} -- file explorer
+    use {'kyazdani42/nvim-tree.lua'} -- file explorer
 
     -- autocomplete / typing stuff
     use 'tpope/vim-commentary' -- Code Comment stuff, f.ex gc
@@ -240,7 +240,7 @@ vim.g.nvim_tree_add_trailing = 0 -- append a trailing slash to folder names
 vim.g.nvim_tree_disable_netrw = 1
 vim.g.nvim_tree_hijack_netrw = 0
 vim.g.nvim_tree_update_cwd = 1
-vim.g.nvim_tree_show_icons = {git = 0, folders = 0, files = 0}
+vim.g.nvim_tree_show_icons = {git = 0, folders = 1, files = 0}
 
 local tree_cb = require'nvim-tree.config'.nvim_tree_callback
 vim.g.nvim_tree_bindings = {
@@ -270,6 +270,16 @@ vim.g.nvim_tree_bindings = {
     {key = "}c", cb = tree_cb "next_git_item"},
     {key = "-", cb = tree_cb "dir_up"}, {key = "q", cb = tree_cb "close"},
     {key = "g?", cb = tree_cb "toggle_help"}
+}
+vim.g.nvim_tree_icons = {
+    folder = {
+        default = "",
+        open = "",
+        empty = "",
+        empty_open = "",
+        symlink = "",
+        symlink_open = ""
+    }
 }
 
 -- gitsigns
