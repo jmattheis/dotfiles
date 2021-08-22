@@ -52,7 +52,7 @@ require('packer').startup(function()
     use 'neovim/nvim-lspconfig' -- lsp configs for builtin language server client
     use { -- show diagnostics, f.ex. eslint
         'iamcco/diagnostic-languageserver',
-        requires = {'creativenull/diagnosticls-nvim'}
+        requires = {'creativenull/diagnosticls-configs-nvim'}
     }
     use 'simrat39/rust-tools.nvim' -- additional rust analyzer tools, f.ex show types in method chain
     use 'ray-x/lsp_signature.nvim' -- show signature while typing method
@@ -360,12 +360,12 @@ require'nvim-treesitter.configs'.setup {
         }
     }
 }
-local eslint = require 'diagnosticls-nvim.linters.eslint'
-require'diagnosticls-nvim'.setup {
+local eslint = require 'diagnosticls-configs.linters.eslint'
+require'diagnosticls-configs'.setup {
     ['typescript'] = {linter = eslint},
     ['typescriptreact'] = {linter = eslint}
 }
-require'diagnosticls-nvim'.init {on_attach = on_attach}
+require'diagnosticls-configs'.init {on_attach = on_attach}
 
 -- Enable the following language servers
 local servers = {'gopls', 'rust_analyzer', 'tsserver', 'jsonls'}
