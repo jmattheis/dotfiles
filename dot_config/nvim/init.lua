@@ -31,7 +31,7 @@ require('packer').startup(function()
     use 'morhetz/gruvbox' -- Theme
     use 'hoob3rt/lualine.nvim' -- status line
     use 'Yggdroot/indentLine' -- show spaces / tabs everywhere
-    use 'airblade/vim-gitgutter' -- git diff in sign column
+    use {'lewis6991/gitsigns.nvim', requires = {'nvim-lua/plenary.nvim'}} -- git signs
 
     -- navigation
     use 'junegunn/fzf.vim' -- fuzzy finder
@@ -240,6 +240,10 @@ vim.api.nvim_exec([[
         autocmd FileType fern lua fern_init()
     augroup END
 ]], false)
+
+-- gitsigns
+
+require('gitsigns').setup()
 
 -- statusbar
 
