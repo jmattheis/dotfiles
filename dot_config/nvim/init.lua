@@ -169,6 +169,8 @@ keymap("n", "<leader>as", ':CtrlSF ', {noremap = true})
 keymap("n", "<leader>af", ':Neoformat<CR> ', {noremap = true})
 keymap("n", "<leader>p", '"+p', {noremap = true})
 keymap("n", "<leader>P", '"+P', {noremap = true})
+keymap("v", "<leader>p", '"+p', {noremap = true})
+keymap("v", "<leader>P", '"+P', {noremap = true})
 keymap("n", "<leader>y", '"+y', {noremap = true})
 keymap("n", "<leader>d", '"+d', {noremap = true})
 keymap("n", "<leader>n", ':GFiles --cached --others --exclude-standar<CR>',
