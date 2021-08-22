@@ -38,7 +38,7 @@ require('packer').startup(function()
     use 'junegunn/fzf' -- fuzzy finder
     use 'christoomey/vim-tmux-navigator' -- move between tmux & vim windows with same shortcuts
     use 'dyng/ctrlsf.vim' -- find string in whole project
-    use {'lambdalisue/fern.vim', requires = {'antoinemadec/FixCursorHold.nvim'}} -- file drawer
+    use {'kyazdani42/nvim-tree.lua', requires = 'kyazdani42/nvim-web-devicons'} -- file explorer
 
     -- autocomplete / typing stuff
     use 'tpope/vim-commentary' -- Code Comment stuff, f.ex gc
@@ -175,8 +175,7 @@ keymap("n", "<leader>n", ':GFiles --cached --others --exclude-standar<CR>',
        {silent = true, noremap = true})
 keymap("n", "<leader>N", ':Files<CR>', {silent = true, noremap = true})
 keymap("n", "<leader>b", ':Buffers<CR>', {silent = true, noremap = true})
-keymap("n", "<leader>e", ':Fern . -drawer -reveal=% -width=35 -toggle<CR>',
-       {silent = true, noremap = true})
+keymap("n", "<leader>e", ':NvimTreeToggle<CR>', {silent = true, noremap = true})
 keymap("v", "<leader>y", '"+y', {silent = true, noremap = true})
 keymap("v", "<leader>d", '"+d', {silent = true, noremap = true})
 keymap("i", "<C-Space>", "compe#complete()",
@@ -217,29 +216,59 @@ require'compe'.setup {
 
 -- file drawer
 
-vim.g['fern#disable_default_mappings'] = 1
-vim.g['fern#disable_drawer_auto_quit'] = 1
+vim.g.nvim_tree_side = "left"
+vim.g.nvim_tree_width = 30
+vim.g.nvim_tree_ignore = {".git", "node_modules", ".cache"}
+vim.g.nvim_tree_gitignore = 1
+vim.g.nvim_tree_auto_ignore_ft = {"dashboard"} -- don't open tree on specific fiypes.
+vim.g.nvim_tree_auto_open = 0
+vim.g.nvim_tree_auto_close = 1
+vim.g.nvim_tree_quit_on_open = 0 -- closes tree when file's opened
+vim.g.nvim_tree_follow = 1
+vim.g.nvim_tree_indent_markers = 1
+vim.g.nvim_tree_hide_dotfiles = 1
+vim.g.nvim_tree_git_hl = 0
+vim.g.nvim_tree_highlight_opened_files = 0
+vim.g.nvim_tree_root_folder_modifier = table.concat {
+    ":t:gs?$?/..", string.rep(" ", 1000), "?:gs?^??"
+}
+vim.g.nvim_tree_tab_open = 0
+vim.g.nvim_tree_allow_resize = 1
+vim.g.nvim_tree_add_trailing = 0 -- append a trailing slash to folder names
+vim.g.nvim_tree_disable_netrw = 1
+vim.g.nvim_tree_hijack_netrw = 0
+vim.g.nvim_tree_update_cwd = 1
+vim.g.nvim_tree_show_icons = {git = 0, folders = 0, files = 0}
 
-function fern_init()
-    local bufnr = vim.api.nvim_get_current_buf()
-    local function buf_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
-    buf_keymap("n", "<CR>", '<Plug>(fern-open-or-expand)', {})
-    buf_keymap("n", "m", '<Plug>(fern-action-mark:toggle)', {})
-    buf_keymap("n", 'r', '<Plug>(fern-action-rename)', {})
-    buf_keymap("n", 'n', '<Plug>(fern-action-new-path)', {})
-    buf_keymap("n", 't', '<Plug>(fern-action-hidden-toggle)', {})
-    buf_keymap("n", 'd', '<Plug>(fern-action-remove)', {})
-    buf_keymap("n", 'ov', '<Plug>(fern-action-open:vsplit)', {})
-    buf_keymap("n", 'os', '<Plug>(fern-action-open:split)', {})
-    buf_keymap("n", 'R', '<Plug>(fern-action-reload)', {})
-end
-
-vim.api.nvim_exec([[
-    augroup FernEvents
-        autocmd!
-        autocmd FileType fern lua fern_init()
-    augroup END
-]], false)
+local tree_cb = require'nvim-tree.config'.nvim_tree_callback
+vim.g.nvim_tree_bindings = {
+    {key = {"<CR>", "o", "<2-LeftMouse>"}, cb = tree_cb "edit"},
+    {key = {"<2-RightMouse>", "<C-]>"}, cb = tree_cb "cd"},
+    {key = "<C-v>", cb = tree_cb "vsplit"},
+    {key = "<C-x>", cb = tree_cb "split"},
+    {key = "<C-t>", cb = tree_cb "tabnew"},
+    {key = "<", cb = tree_cb "prev_sibling"},
+    {key = ">", cb = tree_cb "next_sibling"},
+    {key = "P", cb = tree_cb "parent_node"},
+    {key = "<BS>", cb = tree_cb "close_node"},
+    {key = "<S-CR>", cb = tree_cb "close_node"},
+    {key = "<Tab>", cb = tree_cb "preview"},
+    {key = "K", cb = tree_cb "first_sibling"},
+    {key = "J", cb = tree_cb "last_sibling"},
+    {key = "I", cb = tree_cb "toggle_ignored"},
+    {key = "H", cb = tree_cb "toggle_dotfiles"},
+    {key = "R", cb = tree_cb "refresh"}, {key = "a", cb = tree_cb "create"},
+    {key = "d", cb = tree_cb "remove"}, {key = "r", cb = tree_cb "rename"},
+    {key = "<C-r>", cb = tree_cb "full_rename"}, {key = "x", cb = tree_cb "cut"},
+    {key = "c", cb = tree_cb "copy"}, {key = "p", cb = tree_cb "paste"},
+    {key = "y", cb = tree_cb "copy_name"},
+    {key = "Y", cb = tree_cb "copy_path"},
+    {key = "gy", cb = tree_cb "copy_absolute_path"},
+    {key = "[c", cb = tree_cb "prev_git_item"},
+    {key = "}c", cb = tree_cb "next_git_item"},
+    {key = "-", cb = tree_cb "dir_up"}, {key = "q", cb = tree_cb "close"},
+    {key = "g?", cb = tree_cb "toggle_help"}
+}
 
 -- gitsigns
 
