@@ -239,7 +239,7 @@ vim.g.nvim_tree_allow_resize = 1
 vim.g.nvim_tree_add_trailing = 0 -- append a trailing slash to folder names
 vim.g.nvim_tree_disable_netrw = 1
 vim.g.nvim_tree_hijack_netrw = 0
-vim.g.nvim_tree_update_cwd = 1
+vim.g.nvim_tree_update_cwd = 0
 vim.g.nvim_tree_show_icons = {git = 0, folders = 1, files = 0}
 
 local tree_cb = require'nvim-tree.config'.nvim_tree_callback
