@@ -10,6 +10,7 @@ name = "awesome5"
 [icons.overrides]
 cogs = ""
 net_wired = ""
+memory_mem = ""
 
 [[block]]
 block = "sound"
