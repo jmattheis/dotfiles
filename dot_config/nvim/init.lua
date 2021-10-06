@@ -143,6 +143,14 @@ vim.api.nvim_exec([[
   augroup end
 ]], false)
 
+--
+
+vim.cmd([[
+    augroup FZFNoIndent
+        autocmd!
+        autocmd FileType fzf :IndentLinesDisable
+    augroup end
+]])
 -- indentline
 
 vim.g.indentLine_char = '┊'
@@ -444,7 +452,7 @@ for _, lsp in ipairs(servers) do
             yaml = {
                 schemas = {
                     ['http://json.schemastore.org/gitlab-ci.json'] = '*.gitlab-ci.*{yml,yaml}',
-                    ['https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/schemas/v3.0/schema.json'] = 'openapi.yaml'
+                    ['https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/schemas/v3.1/schema.json'] = 'openapi.yaml'
                 }
             }
         }
