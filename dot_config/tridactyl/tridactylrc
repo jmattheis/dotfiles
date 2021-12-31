@@ -5,6 +5,7 @@ colorscheme gruvbox
 set editorcmd alacritty --title "Tridactyl Editor" --command nvim
 
 blacklistadd paypal.com
+blacklistadd monkeytype.com
 
 unbind <C-f>
 unbind <F1>
