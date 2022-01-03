@@ -236,14 +236,9 @@ require'compe'.setup {
 
 -- file drawer
 
-vim.g.nvim_tree_ignore = {".git", "node_modules", ".cache"}
-vim.g.nvim_tree_gitignore = 1
-vim.g.nvim_tree_auto_ignore_ft = {"dashboard"} -- don't open tree on specific fiypes.
 vim.g.nvim_tree_quit_on_open = 0 -- closes tree when file's opened
 vim.g.nvim_tree_indent_markers = 1
-vim.g.nvim_tree_hide_dotfiles = 1
 vim.g.nvim_tree_git_hl = 0
-vim.g.nvim_tree_highlight_opened_files = 0
 vim.g.nvim_tree_root_folder_modifier = table.concat {
     ":t:gs?$?/..", string.rep(" ", 1000), "?:gs?^??"
 }
@@ -262,6 +257,9 @@ vim.g.nvim_tree_icons = {
 
 local tree_cb = require'nvim-tree.config'.nvim_tree_callback
 require'nvim-tree'.setup {
+    filters = {
+        custom = {".git", "node_modules", ".cache"},
+    },
     view = {
         side = "left",
         width = 30,
@@ -326,7 +324,7 @@ require'lualine'.setup {
         lualine_c = {
             {
                 'diagnostics',
-                sources = {'nvim_lsp'},
+                sources = {'nvim_diagnostic'},
                 symbols = {error = 'E', warn = 'W', info = 'I', hint = 'H'}
             }, {
                 'lsp_progress',
