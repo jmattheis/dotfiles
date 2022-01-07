@@ -151,15 +151,15 @@ vim.api.nvim_exec([[
   augroup end
 ]], false)
 
---
+-- indentline
 
 vim.cmd([[
     augroup FZFNoIndent
         autocmd!
+        autocmd FileType fzf :LeadingSpaceDisable
         autocmd FileType fzf :IndentLinesDisable
     augroup end
 ]])
--- indentline
 
 vim.g.indentLine_char = '┊'
 vim.g.indentLine_enabled = 1
@@ -203,7 +203,8 @@ keymap("n", "<leader>n", ':GFiles --cached --others --exclude-standar<CR>',
        {silent = true, noremap = true})
 keymap("n", "<leader>N", ':Files<CR>', {silent = true, noremap = true})
 keymap("n", "<leader>b", ':Buffers<CR>', {silent = true, noremap = true})
-keymap("n", "<leader>e", ':NvimTreeFindFileToggle<CR>', {silent = true, noremap = true})
+keymap("n", "<leader>e", ':NvimTreeFindFileToggle<CR>',
+       {silent = true, noremap = true})
 keymap("v", "<leader>y", '"+y', {silent = true, noremap = true})
 keymap("v", "<leader>d", '"+d', {silent = true, noremap = true})
 
