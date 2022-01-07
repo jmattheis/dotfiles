@@ -40,13 +40,21 @@ require('packer').startup(function()
     use 'dyng/ctrlsf.vim' -- find string in whole project
     use {'kyazdani42/nvim-tree.lua'} -- file explorer
 
-    -- autocomplete / typing stuff
+    -- typing stuff
     use 'tpope/vim-commentary' -- Code Comment stuff, f.ex gc
-    use 'hrsh7th/nvim-compe' -- Autocompletion
     use 'ntpeters/vim-better-whitespace' -- show trailing whitespaces in red
     use 'cohama/lexima.vim' -- auto close ()
     use 'tpope/vim-surround' -- surround operations
     use 'editorconfig/editorconfig-vim' -- use tabstop / tabwidth from .editorconfig
+
+    -- autocomplete
+    use {
+        'hrsh7th/nvim-cmp',
+        requires = {
+            'hrsh7th/cmp-nvim-lsp', 'hrsh7th/cmp-buffer', 'hrsh7th/cmp-path',
+            'L3MON4D3/LuaSnip', 'saadparwaiz1/cmp_luasnip'
+        }
+    }
 
     -- lsp
     use 'neovim/nvim-lspconfig' -- lsp configs for builtin language server client
@@ -80,7 +88,7 @@ vim.o.tabstop = 4
 vim.o.shiftwidth = 4
 
 -- Set completeopt to have a better completion experience
-vim.o.completeopt = "menuone,noselect"
+vim.o.completeopt = "menu,menuone,noselect"
 
 -- Map blankline
 vim.o.list = true;
@@ -198,12 +206,6 @@ keymap("n", "<leader>b", ':Buffers<CR>', {silent = true, noremap = true})
 keymap("n", "<leader>e", ':NvimTreeToggle<CR>', {silent = true, noremap = true})
 keymap("v", "<leader>y", '"+y', {silent = true, noremap = true})
 keymap("v", "<leader>d", '"+d', {silent = true, noremap = true})
-keymap("i", "<C-Space>", "compe#complete()",
-       {expr = true, silent = true, noremap = true})
-keymap("i", "<CR>", "compe#confirm('<CR>')",
-       {expr = true, silent = true, noremap = true})
-keymap("i", "<C-e>", "compe#close('<C-e>')",
-       {expr = true, silent = true, noremap = true})
 
 -- luochen1990/rainbow
 vim.g.rainbow_active = 1
@@ -214,25 +216,6 @@ vim.g.better_whitespace_enabled = 1
 -- undo tree
 vim.g.undotree_WindowLayout = 2
 vim.g.undetree_SetFocusWhenToggle = 1
-
--- completion
-
-require'compe'.setup {
-    enabled = true,
-    autocomplete = true,
-    debug = false,
-    min_length = 1,
-    preselect = 'always',
-    throttle_time = 80,
-    source_timeout = 200,
-    incomplete_delay = 400,
-    max_abbr_width = 100,
-    max_kind_width = 100,
-    max_menu_width = 100,
-    documentation = true,
-
-    source = {nvim_lsp = {priority = 1000}, path = true}
-}
 
 -- file drawer
 
@@ -257,9 +240,7 @@ vim.g.nvim_tree_icons = {
 
 local tree_cb = require'nvim-tree.config'.nvim_tree_callback
 require'nvim-tree'.setup {
-    filters = {
-        custom = {".git", "node_modules", ".cache"},
-    },
+    filters = {custom = {".git", "node_modules", ".cache"}},
     view = {
         side = "left",
         width = 30,
@@ -356,15 +337,40 @@ require'lualine'.setup {
     extensions = {}
 }
 
+local cmp = require 'cmp'
+
+cmp.setup({
+    snippet = {
+        expand = function(args) require('luasnip').lsp_expand(args.body) end
+    },
+    mapping = {
+        ['<C-b>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), {'i', 'c'}),
+        ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), {'i', 'c'}),
+        ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), {'i', 'c'}),
+        ['<C-y>'] = cmp.config.disable, -- Specify `cmp.config.disable` if you want to remove the default `<C-y>` mapping.
+        ['<C-e>'] = cmp.mapping({
+            i = cmp.mapping.abort(),
+            c = cmp.mapping.close()
+        }),
+        -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+        ['<CR>'] = cmp.mapping.confirm({select = true})
+    },
+    sources = cmp.config.sources({{name = 'nvim_lsp'}, {name = 'path'}})
+})
+
 local nvim_lsp = require 'lspconfig'
 local on_attach = function(client, bufnr)
     local function buf_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
 
     vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+
     require'lsp_signature'.on_attach({
-        fix_pos = true,
+        bind = true,
+        doc_lines = 0,
+        floating_window = true,
         hint_enable = false,
-        handler_opts = {border = 'none', doc_lines = 0, floating_window = true}
+        handler_opts = {border = "none"},
+        extra_trigger_chars = {"(", ","}
     })
 
     if client.resolved_capabilities.document_highlight then
@@ -438,10 +444,7 @@ require'diagnosticls-configs'.init {on_attach = on_attach}
 local servers = {'gopls', 'rust_analyzer', 'tsserver', 'jsonls', 'yamlls'}
 for _, lsp in ipairs(servers) do
     local caps = vim.lsp.protocol.make_client_capabilities()
-    caps.textDocument.completion.completionItem.snippetSupport = true
-    caps.textDocument.completion.completionItem.resolveSupport = {
-        properties = {'documentation', 'detail', 'additionalTextEdits'}
-    }
+    caps = require('cmp_nvim_lsp').update_capabilities(caps)
 
     nvim_lsp[lsp].setup {
         on_attach = on_attach,
