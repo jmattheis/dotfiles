@@ -203,7 +203,7 @@ keymap("n", "<leader>n", ':GFiles --cached --others --exclude-standar<CR>',
        {silent = true, noremap = true})
 keymap("n", "<leader>N", ':Files<CR>', {silent = true, noremap = true})
 keymap("n", "<leader>b", ':Buffers<CR>', {silent = true, noremap = true})
-keymap("n", "<leader>e", ':NvimTreeToggle<CR>', {silent = true, noremap = true})
+keymap("n", "<leader>e", ':NvimTreeFindFileToggle<CR>', {silent = true, noremap = true})
 keymap("v", "<leader>y", '"+y', {silent = true, noremap = true})
 keymap("v", "<leader>d", '"+d', {silent = true, noremap = true})
 
