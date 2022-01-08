@@ -30,7 +30,7 @@ font pango:monospace 10
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec alacritty --command tmux new-session -A -s main
+bindsym $mod+Return exec kitty -- tmux new-session -A -s main
 
 # kill focused window
 bindsym $mod+Shift+apostrophe kill
