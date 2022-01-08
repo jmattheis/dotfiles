@@ -43,10 +43,9 @@ require('packer').startup(function()
     -- typing stuff
     use 'tpope/vim-commentary' -- Code Comment stuff, f.ex gc
     use 'ntpeters/vim-better-whitespace' -- show trailing whitespaces in red
-    use 'cohama/lexima.vim' -- auto close ()
+    use 'windwp/nvim-autopairs' -- autoclose ()
     use 'tpope/vim-surround' -- surround operations
     use 'editorconfig/editorconfig-vim' -- use tabstop / tabwidth from .editorconfig
-
     -- autocomplete
     use {
         'hrsh7th/nvim-cmp',
@@ -182,8 +181,6 @@ vim.g.ctrlsf_auto_focus = {at = 'start'}
 vim.g.ctrlsf_mapping = {next = 'n', prev = 'N'}
 
 -- () auto close
-vim.g.lexima_no_default_rules = true
-vim.cmd 'call lexima#set_default_rules()'
 
 -- key mapping
 
@@ -338,6 +335,9 @@ require'lualine'.setup {
     extensions = {}
 }
 
+require('nvim-autopairs').setup {check_ts = true}
+
+local cmp_autopairs = require('nvim-autopairs.completion.cmp')
 local cmp = require 'cmp'
 
 cmp.setup({
@@ -358,6 +358,8 @@ cmp.setup({
     },
     sources = cmp.config.sources({{name = 'nvim_lsp'}, {name = 'path'}})
 })
+cmp.event:on('confirm_done',
+             cmp_autopairs.on_confirm_done({map_char = {tex = ''}}))
 
 local nvim_lsp = require 'lspconfig'
 local on_attach = function(client, bufnr)
