@@ -223,18 +223,7 @@ vim.g.nvim_tree_git_hl = 0
 vim.g.nvim_tree_root_folder_modifier = table.concat {
     ":t:gs?$?/..", string.rep(" ", 1000), "?:gs?^??"
 }
-vim.g.nvim_tree_show_icons = {git = 0, folders = 1, files = 0}
-
-vim.g.nvim_tree_icons = {
-    folder = {
-        default = "",
-        open = "",
-        empty = "",
-        empty_open = "",
-        symlink = "",
-        symlink_open = ""
-    }
-}
+vim.g.nvim_tree_show_icons = {git = 0, folders = 1, files = 1}
 
 local tree_cb = require'nvim-tree.config'.nvim_tree_callback
 require'nvim-tree'.setup {

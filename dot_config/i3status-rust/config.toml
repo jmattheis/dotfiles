@@ -6,11 +6,11 @@ separator_fg = "#bdae93"
 idle_fg = "#bdae93"
 
 [icons]
-name = "awesome5"
+name = "material-nf"
 [icons.overrides]
-cogs = ""
+cogs = ""
 net_wired = ""
-memory_mem = ""
+memory_mem = ""
 
 [[block]]
 block = "sound"

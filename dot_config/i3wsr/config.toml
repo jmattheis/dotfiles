@@ -1,3 +1,6 @@
+[aliases]
+".*" = ""
+
 [icons]
 # font awesome
 TelegramDesktop = ""
