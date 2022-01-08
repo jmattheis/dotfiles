@@ -32,6 +32,7 @@ require('packer').startup(function()
     use 'hoob3rt/lualine.nvim' -- status line
     use 'Yggdroot/indentLine' -- show spaces / tabs everywhere
     use {'lewis6991/gitsigns.nvim', requires = {'nvim-lua/plenary.nvim'}} -- git signs
+    use 'kyazdani42/nvim-web-devicons'
 
     -- navigation
     use 'junegunn/fzf.vim' -- fuzzy finder
@@ -66,6 +67,7 @@ require('packer').startup(function()
     use 'gfanto/fzf-lsp.nvim' -- fzf lsp definitions etc
     use 'arkav/lualine-lsp-progress' -- lsp progress in statusline
     use 'folke/lsp-colors.nvim' -- better inline diagnostics
+    use 'folke/trouble.nvim' -- diagnostic list
 
     -- tree sitter
     use {'nvim-treesitter/nvim-treesitter', run = ':TSUpdate'} -- syntax tree parser
@@ -165,6 +167,30 @@ vim.g.indentLine_enabled = 1
 vim.g.indentLine_leadingSpaceEnabled = 1
 vim.g.indentLine_leadingSpaceChar = '•'
 
+-- trouble
+
+require'trouble'.setup {
+    padding = false,
+    indent_lines = false,
+    icons = false,
+    signs = {
+        error = "E",
+        warning = "W",
+        hint = "H",
+        information = "I",
+        other = "?"
+    }
+}
+-- indent line
+vim.cmd([[
+    augroup NoIndentTrouble
+        autocmd!
+        autocmd FileType Trouble :LeadingSpaceDisable
+        autocmd FileType Trouble :IndentLinesDisable
+    augroup end
+]])
+keymap('n', '<leader>da', ':TroubleToggle<CR>', {silent = true, noremap = true})
+
 -- restore view
 
 vim.api.nvim_exec([[
@@ -223,7 +249,7 @@ vim.g.nvim_tree_git_hl = 0
 vim.g.nvim_tree_root_folder_modifier = table.concat {
     ":t:gs?$?/..", string.rep(" ", 1000), "?:gs?^??"
 }
-vim.g.nvim_tree_show_icons = {git = 0, folders = 1, files = 1}
+vim.g.nvim_tree_show_icons = {git = 0, folders = 1, files = 0}
 
 local tree_cb = require'nvim-tree.config'.nvim_tree_callback
 require'nvim-tree'.setup {
@@ -404,8 +430,6 @@ local on_attach = function(client, bufnr)
     buf_keymap('n', '<leader>dn', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>',
                {silent = true, noremap = true})
     buf_keymap('n', '<leader>dN', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>',
-               {silent = true, noremap = true})
-    buf_keymap('n', '<leader>da', ':Diagnostics<CR>',
                {silent = true, noremap = true})
 end
 
