@@ -243,7 +243,6 @@ vim.g.undetree_SetFocusWhenToggle = 1
 
 -- file drawer
 
-vim.g.nvim_tree_quit_on_open = 0 -- closes tree when file's opened
 vim.g.nvim_tree_indent_markers = 1
 vim.g.nvim_tree_git_hl = 0
 vim.g.nvim_tree_root_folder_modifier = table.concat {
@@ -294,8 +293,8 @@ require'nvim-tree'.setup {
         }
     },
     update_focused_file = {enabled = true},
-    auto_close = true,
-    auto_resize = true
+    auto_resize = true,
+    update_to_buf_dir = {enable = true}
 }
 
 -- gitsigns
