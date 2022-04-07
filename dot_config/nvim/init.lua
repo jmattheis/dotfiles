@@ -40,6 +40,7 @@ require('packer').startup(function()
     use 'christoomey/vim-tmux-navigator' -- move between tmux & vim windows with same shortcuts
     use 'dyng/ctrlsf.vim' -- find string in whole project
     use {'kyazdani42/nvim-tree.lua'} -- file explorer
+    use {'kevinhwang91/nvim-bqf', ft = 'qf'}
 
     -- typing stuff
     use 'tpope/vim-commentary' -- Code Comment stuff, f.ex gc
@@ -64,7 +65,6 @@ require('packer').startup(function()
     }
     use 'simrat39/rust-tools.nvim' -- additional rust analyzer tools, f.ex show types in method chain
     use 'ray-x/lsp_signature.nvim' -- show signature while typing method
-    use 'gfanto/fzf-lsp.nvim' -- fzf lsp definitions etc
     use 'arkav/lualine-lsp-progress' -- lsp progress in statusline
     use 'folke/lsp-colors.nvim' -- better inline diagnostics
     use 'folke/trouble.nvim' -- diagnostic list
@@ -157,8 +157,8 @@ vim.api.nvim_exec([[
 vim.cmd([[
     augroup FZFNoIndent
         autocmd!
-        autocmd FileType fzf :LeadingSpaceDisable
-        autocmd FileType fzf :IndentLinesDisable
+        autocmd FileType fzf,qf :LeadingSpaceDisable
+        autocmd FileType fzf,qf :IndentLinesDisable
     augroup end
 ]])
 
@@ -442,18 +442,23 @@ local on_attach = function(client, bufnr)
                {silent = true, noremap = true})
     buf_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>',
                {silent = true, noremap = true})
-    buf_keymap('n', 'gD', ':Declarations<CR>', {silent = true, noremap = true})
-    buf_keymap('n', 'gd', ':Definitions<CR>', {silent = true, noremap = true})
-    buf_keymap('n', 'gi', ':Implementations<CR>',
+    buf_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>',
                {silent = true, noremap = true})
-    buf_keymap('n', 'gr', ':References<CR>', {silent = true, noremap = true})
-    buf_keymap('n', 'gm', ':DocumentSymbols<CR>',
+    buf_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>',
                {silent = true, noremap = true})
-    buf_keymap('n', 'gM', ':WorkspaceSymbols<CR>',
+    buf_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>',
+               {silent = true, noremap = true})
+    buf_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>',
+               {silent = true, noremap = true})
+    buf_keymap('n', 'gm', '<cmd>lua vim.lsp.buf.document_symbol()<CR>',
+               {silent = true, noremap = true})
+    buf_keymap('n', 'gM', '<cmd>lua vim.lsp.buf.workspace_symbol()<CR>',
                {silent = true, noremap = true})
     buf_keymap('n', '<leader>ar', '<cmd>lua vim.lsp.buf.rename()<CR>',
                {silent = true, noremap = true})
-    buf_keymap('n', '<leader>aa', ':CodeActions<CR>',
+    buf_keymap('n', '<leader>ad', '<cmd>lua vim.lsp.buf.definition()<CR>',
+               {silent = true, noremap = true})
+    buf_keymap('n', '<leader>aa', '<cmd>lua vim.lsp.buf.code_action()<CR>',
                {silent = true, noremap = true})
     buf_keymap('n', '<leader>aF', '<cmd>lua vim.lsp.buf.formatting()<CR>',
                {silent = true, noremap = true})
