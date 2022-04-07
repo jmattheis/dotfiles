@@ -47,6 +47,7 @@ require('packer').startup(function()
     use 'ntpeters/vim-better-whitespace' -- show trailing whitespaces in red
     use 'windwp/nvim-autopairs' -- autoclose ()
     use 'tpope/vim-surround' -- surround operations
+    use 'tpope/vim-unimpaired'
     use 'editorconfig/editorconfig-vim' -- use tabstop / tabwidth from .editorconfig
     -- autocomplete
     use {
