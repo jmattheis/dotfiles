@@ -70,6 +70,10 @@ require('packer').startup(function()
     use 'folke/lsp-colors.nvim' -- better inline diagnostics
     use 'folke/trouble.nvim' -- diagnostic list
 
+    -- Remove after https://github.com/OmniSharp/omnisharp-roslyn/issues/2238 is fixed
+    use 'Hoffs/omnisharp-extended-lsp.nvim'
+    use 'nvim-telescope/telescope.nvim'
+
     -- tree sitter
     use {'nvim-treesitter/nvim-treesitter', run = ':TSUpdate'} -- syntax tree parser
     use 'windwp/nvim-ts-autotag' -- close html tags via treesitter
@@ -514,6 +518,18 @@ for _, lsp in ipairs(servers) do
         }
     }
 end
+local pid = vim.fn.getpid()
+local omnisharp_bin = "/usr/bin/omnisharp"
+local caps = vim.lsp.protocol.make_client_capabilities()
+caps = require('cmp_nvim_lsp').update_capabilities(caps)
+require'lspconfig'.omnisharp.setup {
+    on_attach = on_attach,
+    capabilities = caps,
+    handlers = {
+        ["textDocument/definition"] = require('omnisharp_extended').handler
+    },
+    cmd = {omnisharp_bin, "--languageserver", "--hostPID", tostring(pid)}
+}
 require'rust-tools'.setup({
     server = {on_attach = on_attach, capabilities = caps}
 })
