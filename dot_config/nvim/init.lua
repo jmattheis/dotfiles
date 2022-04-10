@@ -30,7 +30,7 @@ require('packer').startup(function()
     -- ui
     use 'morhetz/gruvbox' -- Theme
     use 'hoob3rt/lualine.nvim' -- status line
-    use 'Yggdroot/indentLine' -- show spaces / tabs everywhere
+    use 'lukas-reineke/indent-blankline.nvim' -- show spaces / tabs everywhere
     use {'lewis6991/gitsigns.nvim', requires = {'nvim-lua/plenary.nvim'}} -- git signs
     use 'kyazdani42/nvim-web-devicons'
 
@@ -98,7 +98,7 @@ vim.o.completeopt = "menu,menuone,noselect"
 
 -- Map blankline
 vim.o.list = true;
-vim.o.listchars = 'tab:| ,trail:•'
+vim.o.listchars = 'tab:┊ ,trail:•,space:⋅'
 
 -- Set highlight on search
 vim.o.hlsearch = false
@@ -159,18 +159,10 @@ vim.api.nvim_exec([[
 
 -- indentline
 
-vim.cmd([[
-    augroup FZFNoIndent
-        autocmd!
-        autocmd FileType fzf,qf :LeadingSpaceDisable
-        autocmd FileType fzf,qf :IndentLinesDisable
-    augroup end
-]])
-
-vim.g.indentLine_char = '┊'
-vim.g.indentLine_enabled = 1
-vim.g.indentLine_leadingSpaceEnabled = 1
-vim.g.indentLine_leadingSpaceChar = '•'
+require("indent_blankline").setup {
+    show_current_context = true,
+    use_treesitter = true
+}
 
 -- trouble
 
@@ -187,13 +179,6 @@ require'trouble'.setup {
     }
 }
 -- indent line
-vim.cmd([[
-    augroup NoIndentTrouble
-        autocmd!
-        autocmd FileType Trouble :LeadingSpaceDisable
-        autocmd FileType Trouble :IndentLinesDisable
-    augroup end
-]])
 keymap('n', '<leader>da', ':TroubleToggle<CR>', {silent = true, noremap = true})
 
 -- restore view
