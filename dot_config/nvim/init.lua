@@ -94,6 +94,9 @@ vim.o.inccommand = "nosplit"
 vim.o.tabstop = 4
 vim.o.shiftwidth = 4
 
+-- lua filetype
+vim.g.do_filetype_lua = true
+
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = "menu,menuone,noselect"
 
