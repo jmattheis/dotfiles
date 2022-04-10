@@ -462,7 +462,7 @@ local on_attach = function(client, bufnr)
 end
 
 require'nvim-treesitter.configs'.setup {
-    ensure_installed = "maintained",
+    ensure_installed = "all",
     highlight = {enable = true},
     autotag = {enable = true},
     indent = {enable = false},
