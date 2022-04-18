@@ -237,7 +237,6 @@ vim.g.undetree_SetFocusWhenToggle = 1
 
 -- file drawer
 
-vim.g.nvim_tree_indent_markers = 1
 vim.g.nvim_tree_git_hl = 0
 vim.g.nvim_tree_root_folder_modifier = table.concat {
     ":t:gs?$?/..", string.rep(" ", 1000), "?:gs?^??"
@@ -290,6 +289,8 @@ require'nvim-tree'.setup {
     auto_resize = true,
     update_to_buf_dir = {enable = true}
 }
+
+vim.cmd [[ autocmd BufEnter * ++nested if winnr('$') == 1 && bufname() == 'NvimTree_' . tabpagenr() | quit | endif ]]
 
 -- gitsigns
 
