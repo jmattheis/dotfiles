@@ -414,20 +414,6 @@ local on_attach = function(client, bufnr)
         extra_trigger_chars = {"(", ","}
     })
 
-    if client.resolved_capabilities.document_highlight then
---        vim.api.nvim_exec([[
---            augroup lsp_document_highlight
---                autocmd! * <buffer>
---                highlight LspReferenceText cterm=bold ctermbg=DarkGray gui=bold guibg=#a89984 guifg=#282828
---                highlight LspReferenceRead cterm=bold ctermbg=DarkGray gui=bold guibg=#a89984 guifg=#282828
---                autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
---                autocmd CursorHoldI <buffer> lua vim.lsp.buf.document_highlight()
---                autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
---                autocmd CursorMovedI <buffer> lua vim.lsp.buf.clear_references()
---            augroup END
---        ]], false)
-    end
-
     buf_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>',
                {silent = true, noremap = true})
     buf_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>',
