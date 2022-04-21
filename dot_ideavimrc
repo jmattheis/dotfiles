@@ -1,16 +1,16 @@
 let mapleader = ' '
-nmap <leader>n :action GotoClass<CR>
-nmap <leader>N :action GotoFile<CR>
-nmap <leader>i :action GotoImplementation<CR>
-nmap <leader>m :action FileStructurePopup<CR>
-nmap <leader>u :action ShowUsages<CR>
-nmap <leader>r :action ChooseRunConfiguration<CR>
-nmap <leader>d :action ChooseDebugConfiguration<CR>
-nmap <leader>e :action GotoNextError<CR>
-nmap <leader>b :action ToggleLineBreakpoint<CR>
-nmap <leader>si :action StepInto<CR>
-nmap <leader>so :action StepOver<CR>
-nmap <leader>R :so ~/.ideavimrc<CR>
+nmap <leader>n <Action>(GotoClass)
+nmap <leader>N <Action>(GotoFile)
+nmap <leader>i <Action>(GotoImplementation)
+nmap <leader>m <Action>(FileStructurePopup)
+nmap <leader>u <Action>(ShowUsages)
+nmap <leader>r <Action>(ChooseRunConfiguration)
+nmap <leader>d <Action>(ChooseDebugConfiguration)
+nmap <leader>e <Action>(GotoNextError)
+nmap <leader>b <Action>(ToggleLineBreakpoint)
+nmap <leader>si <Action>(StepInto)
+nmap <leader>so <Action>(StepOver)
+nmap <leader>R :so ~/.ideavimrc
 
 " to system clipboard
 map <leader>p "+p
@@ -23,29 +23,29 @@ nmap <C-l> <C-W>l
 nmap <C-k> <C-W>k
 nmap <C-j> <C-W>j
 
-nmap <C-o> :action Back<CR>
-nmap <C-i> :action Forward<CR>
+nmap <C-o> <Action>(Back)
+nmap <C-i> <Action>(Forward)
 
-nmap gu :action ShowUsages<CR>
-nmap gs :action GotoSuperMethod<CR>
-nmap ,n :action NextOccurence<CR>
-nmap ,p :action PreviousOccurence<CR>
-nmap ,wl :action MoveTabRight<CR>
-nmap ,wh :action MoveTabLeft<CR>
-nmap ,l :so ~/.ideavimrc<CR>
-nmap ge :action RecentFiles<CR>
-nmap gb :action Back<CR>
-nmap gf :action Forward<CR>
-nmap gE :action RecentChangedFiles<CR>
-nmap gn :action GotoClass<CR>
-nmap gN :action GotoFile<CR>
-nmap gi :action GotoImplementation<CR>
-nmap gm :action FileStructurePopup<CR>
-nmap ,r :action ChooseRunConfiguration<CR>
-nmap ,d :action ChooseDebugConfiguration<CR>
-nmap ,e :action GotoNextError<CR>
-nmap ,E :action GotoPreviousError<CR>
-nmap ,b :action ToggleBreakpointEnabled<CR>
+nmap gu <Action>(ShowUsages)
+nmap gs <Action>(GotoSuperMethod)
+nmap ,n <Action>(NextOccurence)
+nmap ,p <Action>(PreviousOccurence)
+nmap ,wl <Action>(MoveTabRight)
+nmap ,wh <Action>(MoveTabLeft)
+nmap ,l :so ~/.ideavimrc
+nmap ge <Action>(RecentFiles)
+nmap gb <Action>(Back)
+nmap gf <Action>(Forward)
+nmap gE <Action>(RecentChangedFiles)
+nmap gn <Action>(GotoClass)
+nmap gN <Action>(GotoFile)
+nmap gi <Action>(GotoImplementation)
+nmap gm <Action>(FileStructurePopup)
+nmap ,r <Action>(ChooseRunConfiguration)
+nmap ,d <Action>(ChooseDebugConfiguration)
+nmap ,e <Action>(GotoNextError)
+nmap ,E <Action>(GotoPreviousError)
+nmap ,b <Action>(ToggleBreakpointEnabled)
 set incsearch
 set ignorecase smartcase
 set number
