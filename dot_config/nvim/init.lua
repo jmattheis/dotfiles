@@ -78,6 +78,7 @@ require('packer').startup(function()
     use {'nvim-treesitter/nvim-treesitter', run = ':TSUpdate'} -- syntax tree parser
     use 'windwp/nvim-ts-autotag' -- close html tags via treesitter
     use 'nvim-treesitter/nvim-treesitter-refactor'
+    use 'nvim-treesitter/nvim-treesitter-textobjects'
     use 'JoosepAlviste/nvim-ts-context-commentstring'
     -- cool but really slow
     -- use 'haringsrob/nvim_context_vt' -- show context on closing brackets
@@ -462,6 +463,27 @@ require'nvim-treesitter.configs'.setup {
             node_incremental = ".",
             scope_incremental = ";",
             node_decremental = "g."
+        }
+    },
+    textobjects = {
+        select = {
+            enable = true,
+            lookahead = true,
+            keymaps = {
+                ['af'] = '@function.outer',
+                ['if'] = '@function.inner',
+                ['ab'] = '@block.outer',
+                ['ib'] = '@block.inner',
+                ['ac'] = '@conditional.outer',
+                ['ic'] = '@conditional.inner',
+                ['al'] = '@loop.outer',
+                ['il'] = '@loop.inner'
+            }
+        },
+        swap = {
+            enable = true,
+            swap_next = {['<Leader><Right>'] = '@parameter.inner'},
+            swap_previous = {['<Leader><Left>'] = '@parameter.inner'}
         }
     }
 }
