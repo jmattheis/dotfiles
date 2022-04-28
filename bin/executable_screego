@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+chromium "https://app.screego.net/?create=true&room=$1"
