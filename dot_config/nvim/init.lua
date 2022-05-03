@@ -286,9 +286,7 @@ require'nvim-tree'.setup {
             }
         }
     },
-    update_focused_file = {enabled = true},
-    auto_resize = true,
-    update_to_buf_dir = {enable = true}
+    update_focused_file = {enable = true},
 }
 
 vim.cmd [[ autocmd BufEnter * ++nested if winnr('$') == 1 && bufname() == 'NvimTree_' . tabpagenr() | quit | endif ]]
