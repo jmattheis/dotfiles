@@ -1,24 +1,20 @@
--- Plugins
-local execute = vim.api.nvim_command
 local keymap = vim.api.nvim_set_keymap
 
 local install_path = vim.fn.stdpath('data') ..
                          '/site/pack/packer/start/packer.nvim'
-
 if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
-    execute('!git clone https://github.com/wbthomason/packer.nvim ' ..
-                install_path)
+    Packer_bootstrap = vim.fn.system({
+        'git', 'clone', '--depth', '1',
+        'https://github.com/wbthomason/packer.nvim', install_path
+    })
 end
-
-vim.api.nvim_exec([[
+vim.cmd([[
     augroup Packer
         autocmd!
         autocmd BufWritePost init.lua PackerCompile
     augroup end
 ]], false)
-
-local use = require('packer').use
-require('packer').startup(function()
+require('packer').startup(function(use)
     use 'wbthomason/packer.nvim' -- Package manager
 
     use 'airblade/vim-rooter' -- change cwd to git root
@@ -29,7 +25,7 @@ require('packer').startup(function()
 
     -- ui
     use 'morhetz/gruvbox' -- Theme
-    use 'hoob3rt/lualine.nvim' -- status line
+    use 'nvim-lualine/lualine.nvim' -- status line
     use 'lukas-reineke/indent-blankline.nvim' -- show spaces / tabs everywhere
     use {'lewis6991/gitsigns.nvim', requires = {'nvim-lua/plenary.nvim'}} -- git signs
     use 'kyazdani42/nvim-web-devicons'
@@ -83,6 +79,7 @@ require('packer').startup(function()
     -- cool but really slow
     -- use 'haringsrob/nvim_context_vt' -- show context on closing brackets
     -- use 'romgrk/nvim-treesitter-context' -- show method context
+    if Packer_bootstrap then require'packer'.sync() end
 end)
 
 -- https://github.com/hrsh7th/nvim-compe#how-to-remove-pattern-not-found
@@ -286,7 +283,7 @@ require'nvim-tree'.setup {
             }
         }
     },
-    update_focused_file = {enable = true},
+    update_focused_file = {enable = true}
 }
 
 vim.cmd [[ autocmd BufEnter * ++nested if winnr('$') == 1 && bufname() == 'NvimTree_' . tabpagenr() | quit | endif ]]
