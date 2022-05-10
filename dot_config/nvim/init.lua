@@ -70,6 +70,16 @@ require('packer').startup(function(use)
     use 'Hoffs/omnisharp-extended-lsp.nvim'
     use 'nvim-telescope/telescope.nvim'
 
+    use {
+        'mickael-menu/zk-nvim',
+        config = function()
+            require"zk".setup {
+                picker = "fzf",
+                lsp = {auto_attach = {enabled = false}}
+            }
+        end
+    }
+
     -- tree sitter
     use {'nvim-treesitter/nvim-treesitter', run = ':TSUpdate'} -- syntax tree parser
     use 'windwp/nvim-ts-autotag' -- close html tags via treesitter
@@ -490,7 +500,7 @@ require'diagnosticls-configs'.setup {
 require'diagnosticls-configs'.init {on_attach = on_attach}
 
 -- Enable the following language servers
-local servers = {'gopls', 'rust_analyzer', 'tsserver', 'jsonls', 'yamlls'}
+local servers = {'gopls', 'rust_analyzer', 'tsserver', 'jsonls', 'yamlls', 'zk'}
 for _, lsp in ipairs(servers) do
     local caps = vim.lsp.protocol.make_client_capabilities()
     caps = require('cmp_nvim_lsp').update_capabilities(caps)
