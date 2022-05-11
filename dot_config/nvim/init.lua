@@ -448,9 +448,9 @@ local on_attach = function(client, bufnr)
     buf_keymap('n', '<leader>dl',
                '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>',
                {silent = true, noremap = true})
-    buf_keymap('n', '<leader>dn', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>',
+    buf_keymap('n', '<leader>dn', '<cmd>lua vim.diagnostic.goto_next()<CR>',
                {silent = true, noremap = true})
-    buf_keymap('n', '<leader>dN', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>',
+    buf_keymap('n', '<leader>dN', '<cmd>lua vim.diagnostic.goto_prev()<CR>',
                {silent = true, noremap = true})
 end
 
