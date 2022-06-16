@@ -245,6 +245,9 @@ require('packer').startup(function(use)
                         }
                     }
                 },
+                renderer = {
+                    icons = {show = {git = false, file = false, folder = true}}
+                },
                 update_focused_file = {enable = true}
             }
 
