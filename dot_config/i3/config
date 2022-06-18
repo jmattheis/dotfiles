@@ -104,26 +104,6 @@ set $ws8 8
 set $ws9 9
 set $ws10 10
 
-# monitor
-{{ if .pmon }}
-set $mon_prim "{{ .pmon }}"
-set $mon_second "{{ .smon }}"
-
-workspace $ws1 output $mon_prim
-workspace $ws3 output $mon_prim
-workspace $ws5 output $mon_prim
-workspace $ws7 output $mon_prim
-workspace $ws9 output $mon_prim
-workspace $ws2 output $mon_second
-workspace $ws4 output $mon_second
-workspace $ws6 output $mon_second
-workspace $ws8 output $mon_second
-workspace $ws10 output $mon_second
-{{ end }}
-
-# assignments
-{{ if eq .type "home" }}
-# assign [class="firefox"] number $ws3
 assign [class="jetbrains-idea"] number $ws5
 assign [class="^Lutris$"] number $ws7
 assign [class=".*(league|League|Wine|wine).*"] number $ws7
@@ -132,7 +112,7 @@ assign [class="^TeamSpeak 3$"] number $ws9
 assign [class="^Steam$"] number $ws9
 assign [class="^Signal$"] number $ws9
 assign [class="keepassxc"] number $ws10
-{{ end }}
+
 for_window [title="Microsoft Teams Notification"] floating enable
 for_window [title="Tridactyl Editor"] floating enable
 
@@ -246,8 +226,7 @@ client.urgent           $red $red $white $red $red
 
 # --------- END COLOR
 
-# execs from chezmoi.toml -> .i3auto
-{{ range .i3auto }}exec --no-startup-id {{ . }}
-{{ end }}
+exec --no-startup-id bash -c 'command -v nextcloud > /dev/null && nextcloud || true'
+exec --no-startup-id autorandr -c
 exec_always i3wsr --icons awesome --config /home/jm/.config/i3wsr/config.toml
 exec_always xset r rate 300 60

@@ -1,6 +1,5 @@
-[user]
-	name = {{ .name }}
-	email = {{ .email }}
+[include]
+	path = .gitconfig.local
 [alias]
 	ups = commit --amend --no-edit
 	ll = log --oneline -10
