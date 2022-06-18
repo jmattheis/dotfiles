@@ -1,5 +1,7 @@
 [include]
 	path = .gitconfig.local
+[user]
+	name = "Jannis Mattheis"
 [alias]
 	ups = commit --amend --no-edit
 	ll = log --oneline -10
