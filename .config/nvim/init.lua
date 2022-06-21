@@ -171,7 +171,7 @@ require('packer').startup(function(use)
         'junegunn/fzf.vim',
         requires = {'junegunn/fzf'},
         config = function()
-            vim.g.fzf_layout = {down = '50%'}
+            vim.g.fzf_layout = {down = '35%'}
             keymap("n", "<leader>f", ':Rg<CR>', {silent = true, noremap = true})
             keymap("n", "<leader>n",
                    ':GFiles --cached --others --exclude-standar<CR>',
