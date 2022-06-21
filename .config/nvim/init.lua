@@ -317,6 +317,7 @@ require('packer').startup(function(use)
             'simrat39/rust-tools.nvim', -- extra rust inline stuff
             'folke/lsp-colors.nvim', -- better lsp colors
             'ray-x/lsp_signature.nvim', -- lsp signature
+            'gfanto/fzf-lsp.nvim', -- fzf lsp
             {
                 -- omnisharp stuff
                 -- Remove after https://github.com/OmniSharp/omnisharp-roslyn/issues/2238 is fixed
@@ -393,6 +394,11 @@ require('packer').startup(function(use)
                 ['typescriptreact'] = {linter = eslint}
             }
             require'diagnosticls-configs'.init {on_attach = on_attach}
+
+            vim.lsp.handlers["textDocument/documentSymbol"] =
+                require'fzf_lsp'.document_symbol_handler
+            vim.lsp.handlers["textDocument/codeAction"] =
+                require'fzf_lsp'.code_action_handler
 
             -- Enable the following language servers
             local servers = {
