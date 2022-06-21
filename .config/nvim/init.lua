@@ -36,6 +36,12 @@ require('packer').startup(function(use)
         'sbdchd/neoformat',
         config = function()
             keymap("n", "<leader>af", ':Neoformat<CR> ', {noremap = true})
+
+            vim.g.neoformat_rust_rustfmt = {
+                exe = 'rustfmt',
+                args = {'--edition 2021'},
+                stdin = 1
+            }
         end
     }
 
