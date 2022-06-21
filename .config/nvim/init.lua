@@ -365,8 +365,7 @@ require('packer').startup(function(use)
                            {silent = true, noremap = true})
                 buf_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>',
                            {silent = true, noremap = true})
-                buf_keymap('n', 'gm',
-                           '<cmd>lua vim.lsp.buf.document_symbol()<CR>',
+                buf_keymap('n', 'gm', ':DocumentSymbols<CR>',
                            {silent = true, noremap = true})
                 buf_keymap('n', 'gM',
                            '<cmd>lua vim.lsp.buf.workspace_symbol()<CR>',
@@ -377,8 +376,7 @@ require('packer').startup(function(use)
                 buf_keymap('n', '<leader>ad',
                            '<cmd>lua vim.lsp.buf.definition()<CR>',
                            {silent = true, noremap = true})
-                buf_keymap('n', '<leader>aa',
-                           '<cmd>lua vim.lsp.buf.code_action()<CR>',
+                buf_keymap('n', '<leader>aa', ':CodeActions<CR>',
                            {silent = true, noremap = true})
                 buf_keymap('n', '<leader>aF',
                            '<cmd>lua vim.lsp.buf.formatting()<CR>',
@@ -400,11 +398,6 @@ require('packer').startup(function(use)
                 ['typescriptreact'] = {linter = eslint}
             }
             require'diagnosticls-configs'.init {on_attach = on_attach}
-
-            vim.lsp.handlers["textDocument/documentSymbol"] =
-                require'fzf_lsp'.document_symbol_handler
-            vim.lsp.handlers["textDocument/codeAction"] =
-                require'fzf_lsp'.code_action_handler
 
             -- Enable the following language servers
             local servers = {
