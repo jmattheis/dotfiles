@@ -115,6 +115,11 @@ require('packer').startup(function(use)
         end
     }
 
+    use({
+        'jakewvincent/mkdnflow.nvim',
+        config = function() require('mkdnflow').setup({}) end
+    })
+
     use { -- show spaces / tabs everywhere
         'lukas-reineke/indent-blankline.nvim',
         config = function()
