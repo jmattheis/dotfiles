@@ -117,6 +117,7 @@ require('packer').startup(function(use)
 
     use({
         'jakewvincent/mkdnflow.nvim',
+        disable = true,
         config = function() require('mkdnflow').setup({}) end
     })
 
