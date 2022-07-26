@@ -1,0 +1,70 @@
+modkey = "Mod4"
+mousekey = "Mod4"
+workspaces = []
+tags = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+layouts = [
+  "MainAndHorizontalStack",
+  "MainAndVertStack",
+  "MainAndDeck",
+
+  "GridHorizontal",
+]
+layout_mode = "Tag"
+insert_behavior = "Bottom"
+scratchpad = []
+disable_current_tag_swap = false
+disable_tile_drag = false
+focus_behaviour = "Sloppy"
+focus_new_windows = false
+
+window_rules = [
+  {window_title = "Microsoft Teams Notification", spawn_floating = true},
+  {window_class = "microsoft teams - preview", spawn_on_tag = 4},
+  {window_title = "Tridactyl Editor", spawn_floating = true},
+  {window_class = "yubioath-desktop", spawn_floating = true},
+  {window_class = "jetbrains-idea", spawn_on_tag = 5}
+]
+
+keybind = [
+  { modifier = ["modkey", "Shift"], key = "r",          command = "SoftReload" },
+  { modifier = ["modkey", "Shift"], key = "apostrophe", command = "CloseWindow" },
+
+  { modifier = ["modkey"],          key = "m",          command = "Execute", value = "slock" },
+  { modifier = ["modkey"],          key = "e",          command = "Execute", value = "rofi -show run" },
+  { modifier = ["modkey", "Shift"], key = "Return",     command = "Execute", value = "kitty -- tmux new-session -A -s main" },
+  { modifier = ["modkey"],          key = "p",          command = "Execute", value = "flameshot gui" },
+
+  { modifier = ["modkey"],          key = "w",          command = "SwapTags"},
+  { modifier = ["modkey"],          key = "f",          command = "ToggleFullScreen"},
+
+  { modifier = ["modkey"],          key = "Return",     command = "MoveWindowTop"},
+  { modifier = ["modkey"],          key = "j",          command = "MoveWindowDown"},
+  { modifier = ["modkey"],          key = "k",          command = "MoveWindowUp"},
+
+  { modifier = ["modkey"],          key = "h",          command = "FocusWindowDown"},
+  { modifier = ["modkey"],          key = "l",          command = "FocusWindowUp"},
+  { modifier = ["modkey", "Shift"], key = "l",          command = "FocusWorkspaceNext"},
+  { modifier = ["modkey", "Shift"], key = "h",          command = "FocusWorkspacePrevious"},
+
+  { modifier = ["modkey"],          key = "o",          command = "SetLayout", value = "Monocle" },
+  { modifier = ["modkey"],          key = "period",     command = "NextLayout"},
+
+  { modifier = ["modkey"],          key = "1",          command = "GotoTag", value = "1"},
+  { modifier = ["modkey"],          key = "2",          command = "GotoTag", value = "2"},
+  { modifier = ["modkey"],          key = "3",          command = "GotoTag", value = "3"},
+  { modifier = ["modkey"],          key = "4",          command = "GotoTag", value = "4"},
+  { modifier = ["modkey"],          key = "5",          command = "GotoTag", value = "5"},
+  { modifier = ["modkey"],          key = "6",          command = "GotoTag", value = "6"},
+  { modifier = ["modkey"],          key = "7",          command = "GotoTag", value = "7"},
+  { modifier = ["modkey"],          key = "8",          command = "GotoTag", value = "8"},
+  { modifier = ["modkey"],          key = "9",          command = "GotoTag", value = "9"},
+  { modifier = ["modkey", "Shift"], key = "1",          command = "MoveToTag", value = "1"},
+  { modifier = ["modkey", "Shift"], key = "2",          command = "MoveToTag", value = "2"},
+  { modifier = ["modkey", "Shift"], key = "3",          command = "MoveToTag", value = "3"},
+  { modifier = ["modkey", "Shift"], key = "4",          command = "MoveToTag", value = "4"},
+  { modifier = ["modkey", "Shift"], key = "5",          command = "MoveToTag", value = "5"},
+  { modifier = ["modkey", "Shift"], key = "6",          command = "MoveToTag", value = "6"},
+  { modifier = ["modkey", "Shift"], key = "7",          command = "MoveToTag", value = "7"},
+  { modifier = ["modkey", "Shift"], key = "8",          command = "MoveToTag", value = "8"},
+  { modifier = ["modkey", "Shift"], key = "9",          command = "MoveToTag", value = "9"},
+]
