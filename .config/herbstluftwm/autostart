@@ -8,7 +8,13 @@ hc() {
 
 hc emit_hook reload
 
-xsetroot -solid '#5A8E3A'
+c_bg_0="#1d2021"
+c_bg="#282828"
+c_bg_2="#504945"
+c_fg="#bdae93"
+c_urgent="#cc241d"
+
+xsetroot -solid "$c_bg_0"
 
 # remove all existing keybindings
 hc keyunbind --all
@@ -88,7 +94,6 @@ hc keybind $Mod-Control-m jumpto last-minimized
 hc keybind $Mod-v       split   bottom  0.5
 hc keybind $Mod-d       split   right   0.5
 
-
 hc keybind $Mod-period                                                          \
             or , and . compare tags.focus.curframe_wcount = 2                   \
                      . cycle_layout +1 vertical horizontal max vertical grid    \
@@ -96,7 +101,7 @@ hc keybind $Mod-period                                                          
 
 # mouse
 hc mouseunbind --all
-hc mousebind $Mod-Button1 call chain , set_attr clients.focus.floating true , move
+hc mousebind $Mod-Button1 move
 hc mousebind $Mod-Button2 zoom
 hc mousebind $Mod-Button3 resize
 
@@ -110,11 +115,12 @@ hc keybind $Mod-i jumpto urgent
 # theme
 hc attr theme.tiling.reset 1
 hc attr theme.floating.reset 1
-hc set frame_border_active_color '#222222cc'
-hc set frame_border_normal_color '#101010cc'
-hc set frame_bg_normal_color '#565656aa'
-hc set frame_bg_active_color '#345F0Caa'
-hc set frame_border_width 1
+hc set frame_border_width 0
+# hc set frame_border_active_color '#ignored'
+# hc set frame_border_normal_color '#ignored'
+
+hc set frame_bg_normal_color "$c_bg_2"
+hc set frame_bg_active_color "$c_fg"
 hc set always_show_frame on
 hc set frame_bg_transparent on
 hc set frame_transparent_width 5
@@ -125,37 +131,38 @@ hc attr theme.title_when always
 hc attr theme.title_font 'monospace:pixelsize=12'  # example using Xft
 # hc attr theme.title_font '-*-fixed-medium-r-*-*-13-*-*-*-*-*-*-*'
 hc attr theme.title_depth 3  # space below the title's baseline
-hc attr theme.active.color '#345F0Cef'
-hc attr theme.title_color '#ffffff'
-hc attr theme.normal.color '#323232dd'
-hc attr theme.urgent.color '#7811A1dd'
-hc attr theme.tab_color '#1F1F1Fdd'
-hc attr theme.active.tab_color '#2B4F0Add'
-hc attr theme.active.tab_outer_color '#6C8257dd'
-hc attr theme.active.tab_title_color '#ababab'
-hc attr theme.normal.title_color '#898989'
+hc attr theme.active.color "$c_fg"
+hc attr theme.title_color "$c_bg"
+hc attr theme.normal.color "$c_bg"
+hc attr theme.urgent.color "$c_urgent"
+hc attr theme.tab_color "$c_bg"
+hc attr theme.active.tab_color "$c_bg"
+hc attr theme.active.tab_outer_color "$c_bg"
+hc attr theme.active.tab_title_color "$c_fg"
+hc attr theme.active.title_then always
+hc attr theme.normal.title_color "$c_fg"
 hc attr theme.inner_width 1
 hc attr theme.inner_color black
-hc attr theme.border_width 3
+hc attr theme.border_width 2
 hc attr theme.floating.border_width 4
 hc attr theme.floating.outer_width 1
 hc attr theme.floating.outer_color black
-hc attr theme.active.inner_color '#789161'
-hc attr theme.urgent.inner_color '#9A65B0'
-hc attr theme.normal.inner_color '#606060'
+hc attr theme.active.inner_color "$c_fg"
+hc attr theme.urgent.inner_color "$c_urgent"
+hc attr theme.normal.inner_color "$c_bg"
 # copy inner color to outer_color
 for state in active urgent normal ; do
     hc substitute C theme.${state}.inner_color \
         attr theme.${state}.outer_color C
 done
 hc attr theme.tiling.outer_width 1
-hc attr theme.background_color '#141414'
+hc attr theme.background_color "$c_bg"
 
 hc set window_gap 0
 hc set frame_padding 0
 hc set smart_window_surroundings off
 hc set smart_frame_surroundings on
-hc set mouse_recenter_gap 0
+hc set mouse_recenter_gap 1
 
 # rules
 hc unrule -F
@@ -183,6 +190,7 @@ hc unlock
 hc detect_monitors
 hc set auto_detect_monitors 1
 hc set focus_follows_mouse on
+hc set swap_monitors_to_get_tag false
 # hc set show_frame_decorations focused_if_multiple
 
 xset r rate 300 60
