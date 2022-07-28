@@ -1,0 +1,14 @@
+input * {
+         xkb_layout "dvorak"
+         repeat_delay 300
+         repeat_rate 60
+}
+include "~/.config/i3/config"
+exec systemctl --user import-environment DISPLAY WAYLAND_DISPLAY SWAYSOCK
+exec hash dbus-update-activation-environment 2>/dev/null && \
+     dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK
+
+unbindsym $mod+Shift+r
+bindsym $mod+Shift+r reload
+unbindsym $mod+p
+bindsym $mod+p exec bash -c "QT_QPA_PLATFORM=xcb flameshot gui"
