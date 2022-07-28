@@ -200,7 +200,6 @@ hc set swap_monitors_to_get_tag false
 
 xset r rate 300 60
 
-
 killall polybar
 for m in $(xrandr --query | grep " connected" | cut -d" " -f1); do
   MONITOR=$m polybar --reload herbstluftwm -c ~/.config/leftwm/themes/gruvbox_polybar/polybar.config &
