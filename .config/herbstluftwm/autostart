@@ -26,6 +26,7 @@ hc keybind $Mod-Shift-r reload
 hc keybind $Mod-Shift-Return spawn kitty -- tmux new-session -A -s main
 hc keybind $Mod-e spawn rofi -show run
 hc keybind $Mod-p spawn flameshot gui
+hc keybind $Mod-m spawn slock
 
 # basic movement in tiling and floating mode
 # focusing clients
@@ -98,6 +99,7 @@ hc keybind $Mod-Control-m jumpto last-minimized
 
 hc keybind $Mod-v       split   bottom  0.5
 hc keybind $Mod-d       split   right   0.5
+hc keybind $Mod-Shift-d spawn /usr/share/doc/herbstluftwm/examples/toggledualhead.sh
 
 hc keybind $Mod-period                                                          \
             or , and . compare tags.focus.curframe_wcount = 2                   \
