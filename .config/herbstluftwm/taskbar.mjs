@@ -42,11 +42,11 @@ const print = () => {
       };
     })
     .map(({ id, name, flags }) => {
-      let left = "%{F#BDAE93}";
-      let right = "%{F-}";
+      let left = "%{B#3C3836}%{F#BDAE93}";
+      let right = "%{F-}%{B-}";
       if (id === focused) {
-        left = "%{+u}" + left;
-        right = right + "%{-u}";
+      left = "%{B#a89984}%{F#282828}";
+      right = "%{F-}%{B-}";
       }
 
       const suffix = flags.length ? `*${flags.join("")}` : "";
