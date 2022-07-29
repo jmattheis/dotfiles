@@ -10,16 +10,21 @@ const MONITOR_INDEX = execSync("polybar --list-monitors")
   .findIndex((line) => line.startsWith(MONITOR));
 
 const print = () => {
-  const clients = execSync(
-    `herbstclient list_clients --monitor=${MONITOR_INDEX}`
-  )
-    .toString()
-    .trim()
-    .split("\n");
-
   const attr = (id, name) =>
     execSync(`herbstclient attr clients.${id}.${name}`).toString().trim();
-  const focused = attr("focus", "winid");
+
+  let clients = [];
+  let focused = "";
+  try {
+    clients = execSync(`herbstclient list_clients --monitor=${MONITOR_INDEX}`)
+      .toString()
+      .trim()
+      .split("\n")
+      .filter((x) => x.trim() !== "");
+    focused = attr("focus", "winid");
+  } catch (e) {
+    // no clients or focused window
+  }
 
   const data = clients
     .map((client) => {
