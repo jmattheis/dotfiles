@@ -45,13 +45,15 @@ const print = () => {
       let left = "%{B#3C3836}%{F#BDAE93}";
       let right = "%{F-}%{B-}";
       if (id === focused) {
-      left = "%{B#a89984}%{F#282828}";
-      right = "%{F-}%{B-}";
+        left = "%{B#a89984}%{F#282828}";
+        right = "%{F-}%{B-}";
       }
 
       const suffix = flags.length ? `*${flags.join("")}` : "";
 
-      return `${left} ${name.toLowerCase()}${suffix} ${right}`;
+      const cmd = `herbstclient focus_monitor ${MONITOR_INDEX}; herbstclient jumpto ${id}`;
+
+      return `%{A1:${cmd}:}${left} ${name.toLowerCase()}${suffix} ${right}%{A}`;
     });
   console.log(data.join(" "));
 };
