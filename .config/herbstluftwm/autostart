@@ -88,7 +88,6 @@ done
 
 # layouting
 hc keybind $Mod-r remove
-hc keybind $Mod-s floating toggle
 hc keybind $Mod-f fullscreen toggle
 hc keybind $Mod-o set_layout max
 hc keybind $Mod-Shift-d set_attr clients.focus.decorated toggle
