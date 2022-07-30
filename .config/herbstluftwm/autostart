@@ -173,12 +173,19 @@ hc set mouse_recenter_gap 1
 
 # rules
 hc unrule -F
-# move all xterms to tag 3
-hc rule focus=on # normally focus new clients
-#hc rule focus=off # normally do not focus new clients
-# give focus to most common terminals
-hc rule class='jetbrains-idea' tag=5
+hc rule focus=on
+
 hc rule class='microsoft teams - preview' tag=4
+
+hc rule class='jetbrains-idea' tag=5
+
+hc rule class='Lutris' tag=7
+
+hc rule class='keepassxc' tag=9
+hc rule class='discord' tag=9
+hc rule class='Steam' tag=9
+hc rule class='TelegramDesktop' tag=9
+hc rule class='Signal' tag=9
 
 hc rule windowtype~'_NET_WM_WINDOW_TYPE_(DIALOG|UTILITY|SPLASH)' floating=on
 hc rule windowtype='_NET_WM_WINDOW_TYPE_DIALOG' focus=on
