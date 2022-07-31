@@ -13,6 +13,7 @@ c_bg="#282828"
 c_bg_2="#504945"
 c_fg="#bdae93"
 c_urgent="#cc241d"
+c_active="#fabd2f"
 
 xsetroot -solid "$c_bg_0"
 
@@ -121,16 +122,18 @@ hc keybind $Mod-i jumpto urgent
 # theme
 hc attr theme.tiling.reset 1
 hc attr theme.floating.reset 1
-hc set frame_border_width 0
+hc set frame_border_width 2
+hc set frame_border_active_color "$c_active"
+hc set frame_border_normal_color "$c_bg"
 # hc set frame_border_active_color '#ignored'
 # hc set frame_border_normal_color '#ignored'
 
 hc set frame_bg_normal_color "$c_bg_2"
-hc set frame_bg_active_color "$c_fg"
+hc set frame_bg_active_color "$c_active"
 hc set always_show_frame on
 hc set frame_bg_transparent on
 hc set frame_transparent_width 5
-hc set frame_gap 4
+hc set frame_gap 2
 
 hc attr theme.title_height 15
 hc attr theme.title_when never
@@ -153,7 +156,7 @@ hc attr theme.border_width 2
 hc attr theme.floating.border_width 4
 hc attr theme.floating.outer_width 1
 hc attr theme.floating.outer_color black
-hc attr theme.active.inner_color "$c_fg"
+hc attr theme.active.inner_color "$c_active"
 hc attr theme.urgent.inner_color "$c_urgent"
 hc attr theme.normal.inner_color "$c_bg"
 # copy inner color to outer_color
