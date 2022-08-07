@@ -208,6 +208,7 @@ hc set focus_follows_mouse on
 hc set swap_monitors_to_get_tag false
 # hc set show_frame_decorations focused_if_multiple
 
+autorandr -c
 xset r rate 300 60
 
 killall polybar
