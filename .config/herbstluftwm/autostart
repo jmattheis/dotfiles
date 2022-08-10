@@ -26,6 +26,7 @@ hc keybind $Mod-Shift-apostrophe close
 hc keybind $Mod-Shift-r reload
 hc keybind $Mod-Shift-Return spawn kitty -- tmux new-session -A -s main
 hc keybind $Mod-e spawn rofi -show run
+hc keybind $Mod-t spawn rofi -show window
 hc keybind $Mod-p spawn flameshot gui
 hc keybind $Mod-m spawn slock
 
