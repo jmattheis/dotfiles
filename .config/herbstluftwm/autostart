@@ -176,7 +176,7 @@ hc set mouse_recenter_gap 1
 hc unrule -F
 hc rule focus=on
 
-hc rule class='microsoft teams - preview' tag=4
+hc rule instance~'microsoft teams - preview' tag=4
 
 hc rule class='jetbrains-idea' tag=5
 
