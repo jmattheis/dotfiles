@@ -100,7 +100,6 @@ hc keybind $Mod-Control-m jumpto last-minimized
 
 hc keybind $Mod-v       split   bottom  0.5
 hc keybind $Mod-d       split   right   0.5
-hc keybind $Mod-Shift-d spawn /usr/share/doc/herbstluftwm/examples/toggledualhead.sh
 
 hc keybind $Mod-period                                                          \
             or , and . compare tags.focus.curframe_wcount = 2                   \
