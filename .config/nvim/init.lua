@@ -212,7 +212,6 @@ require('packer').startup(function(use)
         config = function()
             local tree_cb = require'nvim-tree.config'.nvim_tree_callback
             require'nvim-tree'.setup {
-                filters = {custom = {".git", "node_modules", ".cache"}},
                 view = {
                     side = "left",
                     width = 30,
