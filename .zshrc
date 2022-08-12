@@ -6,8 +6,8 @@ plugins=(docker sudo)
 
 source $ZSH/oh-my-zsh.sh
 
-export HISTSIZE=100000
-export SAVEHIST=100000
+export HISTSIZE=5000000
+export SAVEHIST=5000000
 unsetopt nomatch
 
 function optional_source() { [ -s "$1" ] && source "$1" }
