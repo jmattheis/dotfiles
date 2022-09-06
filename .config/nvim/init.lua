@@ -285,7 +285,8 @@ require('packer').startup(function(use)
         'hrsh7th/nvim-cmp',
         requires = {
             'hrsh7th/cmp-nvim-lsp', 'hrsh7th/cmp-buffer', 'hrsh7th/cmp-path',
-            'L3MON4D3/LuaSnip', 'saadparwaiz1/cmp_luasnip'
+            'hrsh7th/cmp-nvim-lsp-signature-help', 'L3MON4D3/LuaSnip',
+            'saadparwaiz1/cmp_luasnip'
         },
         config = function()
             require('nvim-autopairs').setup {check_ts = true}
@@ -312,7 +313,8 @@ require('packer').startup(function(use)
                     ['<CR>'] = cmp.mapping.confirm({select = true})
                 },
                 sources = cmp.config.sources({
-                    {name = 'nvim_lsp'}, {name = 'path'}
+                    {name = 'nvim_lsp'}, {name = 'path'},
+                    {name = 'nvim_lsp_signature_help'}
                 })
             })
             cmp.event:on('confirm_done',
@@ -327,7 +329,6 @@ require('packer').startup(function(use)
             'creativenull/diagnosticls-configs-nvim',
             'simrat39/rust-tools.nvim', -- extra rust inline stuff
             'folke/lsp-colors.nvim', -- better lsp colors
-            'ray-x/lsp_signature.nvim', -- lsp signature
             'gfanto/fzf-lsp.nvim', -- fzf lsp
             {
                 -- omnisharp stuff
@@ -346,16 +347,6 @@ require('packer').startup(function(use)
 
                 vim.api.nvim_buf_set_option(bufnr, 'omnifunc',
                                             'v:lua.vim.lsp.omnifunc')
-
-                require'lsp_signature'.on_attach({
-                    bind = true,
-                    doc_lines = 0,
-                    floating_window = true,
-                    hint_enable = false,
-                    handler_opts = {border = "none"},
-                    extra_trigger_chars = {"(", ","}
-                })
-
                 buf_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>',
                            {silent = true, noremap = true})
                 buf_keymap('n', '<C-k>',
