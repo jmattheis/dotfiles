@@ -378,7 +378,7 @@ require('packer').startup(function(use)
                            '<cmd>lua vim.lsp.buf.formatting()<CR>',
                            {silent = true, noremap = true})
                 buf_keymap('n', '<leader>dl',
-                           '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>',
+                           '<cmd>lua vim.diagnostic.open_float({bufno = 0})<CR>',
                            {silent = true, noremap = true})
                 buf_keymap('n', '<leader>dn',
                            '<cmd>lua vim.diagnostic.goto_next()<CR>',
@@ -399,8 +399,7 @@ require('packer').startup(function(use)
             local servers = {
                 'gopls', 'rust_analyzer', 'tsserver', 'jsonls', 'yamlls', 'zk'
             }
-            local caps = vim.lsp.protocol.make_client_capabilities()
-            caps = require('cmp_nvim_lsp').update_capabilities(caps)
+            local caps = require('cmp_nvim_lsp').default_capabilities()
             for _, lsp in ipairs(servers) do
                 nvim_lsp[lsp].setup {
                     on_attach = on_attach,
