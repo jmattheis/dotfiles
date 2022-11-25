@@ -42,6 +42,7 @@ alias g="git"
 alias gs="git status -sb"
 alias t="tig"
 alias ts="tig status"
+alias tw="timew"
 
 # muscle memory ftw
 alias vim=$EDITOR
