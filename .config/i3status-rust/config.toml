@@ -1,36 +1,22 @@
-[theme]
-name = "gruvbox-dark"
-[theme.overrides]
-separator = "|"
-separator_fg = "#bdae93"
-idle_fg = "#bdae93"
-
-[icons]
-name = "material-nf"
-[icons.overrides]
-cogs = ""
-net_wired = ""
-memory_mem = ""
-
 [[block]]
 block = "sound"
 
 [[block]]
 block = "custom"
-on_click = "pactl set-source-mute @DEFAULT_SOURCE@ toggle"
 command = 'pactl list sources | grep -A 10 $(pactl info | grep "Default Source" | cut -f3 -d" ") | grep -c "Mute: yes" > /dev/null && echo  || echo '
 interval = 5
+[[block.click]]
+button = "left"
+cmd = "pactl set-source-mute @DEFAULT_SOURCE@ toggle"
+update = true
 
 [[block]]
 block = "load"
 interval = 3
-format = "{1m}"
+format = "  $1m.eng(w:4) "
 
 [[block]]
 block = "memory"
-display_type = "memory"
-format_mem = "{mem_used}({mem_used_percents})"
-icons = true
 interval = 30
 warning_mem = 80
 warning_swap = 80
@@ -40,28 +26,17 @@ critical_swap = 95
 [[block]]
 block = "disk_space"
 path = "/home"
-info_type = "available"
-format = "/home {available}"
-unit = "GB"
+format = " /home $available "
 interval = 20
-warning = 20.0
-alert = 10.0
-
-[[block]]
-device = "veth1"
-block = "net"
-hide_missing = true
-format = " online"
-interval = 5
+warning = 15.0
+alert = 5.0
 
 [[block]]
 block = "net"
-format = "{ip}"
-icons_format = " "
+format = " $ip "
 interval = 600
 
 [[block]]
 block = "time"
 interval = 1
-icons_format = " "
-format = "%b %d %H:%M:%S"
+format = " $timestamp.datetime(f:'%b %d %H:%M:%S') "
