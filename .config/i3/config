@@ -47,6 +47,7 @@ bindsym $mod+h focus left
 bindsym $mod+j focus down
 bindsym $mod+k focus up
 bindsym $mod+l focus right
+bindsym $mod+c exec /home/jm/.config/i3/cycle.sh
 
 # alternatively, you can use the cursor keys:
 bindsym $mod+Left focus left
