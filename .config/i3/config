@@ -106,16 +106,20 @@ set $ws9 9
 set $ws10 10
 
 assign [class="jetbrains-idea"] number $ws5
+
 assign [class="^Lutris$"] number $ws7
 assign [class=".*(league|League|Wine|wine).*"] number $ws7
+assign [class="^battle.net.exe$"] number $ws7
+
 assign [class="discord"] number $ws9
 assign [class="^TeamSpeak 3$"] number $ws9
-assign [class="^Steam$"] number $ws9
+assign [class="^steamwebhelper$"] number $ws9
 assign [class="^Signal$"] number $ws9
 assign [class="keepassxc"] number $ws10
 
 for_window [title="Microsoft Teams Notification"] floating enable
 for_window [title="Tridactyl Editor"] floating enable
+for_window [title="Yubico Authenticator"] floating enable
 
 # switch to workspace
 bindsym $mod+1 workspace number $ws1

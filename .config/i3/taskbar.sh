@@ -19,7 +19,7 @@ windows() {
 }
 windows
 
-i3-msg -t subscribe -m '[ "window" ]' |
+i3-msg -t subscribe -m '[ "window", "workspace" ]' |
     while IFS= read -r _; do
         windows
     done
