@@ -110,10 +110,11 @@ assign [class="jetbrains-idea"] number $ws5
 assign [class="^Lutris$"] number $ws7
 assign [class=".*(league|League|Wine|wine).*"] number $ws7
 assign [class="^battle.net.exe$"] number $ws7
+assign [class="^steam_app_671860$"] number $ws7
 
 assign [class="discord"] number $ws9
 assign [class="^TeamSpeak 3$"] number $ws9
-assign [class="^steamwebhelper$"] number $ws9
+assign [class="^(steamwebhelper|steam)$"] number $ws9
 assign [class="^Signal$"] number $ws9
 assign [class="keepassxc"] number $ws10
 
