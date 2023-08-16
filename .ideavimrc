@@ -49,3 +49,4 @@ nmap ,b <Action>(ToggleBreakpointEnabled)
 set incsearch
 set ignorecase smartcase
 set number
+set surround
