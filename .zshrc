@@ -44,11 +44,12 @@ alias t="tig"
 alias ts="tig status"
 alias tw="timew"
 
+alias k="kubectl"
+
 # muscle memory ftw
 alias vim=$EDITOR
 alias vi=$EDITOR
 
-alias dk="docker"
 alias dkc="docker-compose"
 alias dogger="docker-compose down -v && docker-compose pull && docker-compose up -d"
 
