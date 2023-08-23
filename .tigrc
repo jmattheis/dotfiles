@@ -9,6 +9,10 @@ bind status A ?git commit --amend --no-edit
 bind status D ?rm %(file)
 bind status U >!tig -- %(file)
 bind status T >!git add -N %(file)
+bind status M >!stagemerge %(file)
+
+bind stage U >!tig -- %(file)
+bind stage M >!stagemerge %(file)
 
 bind refs B +git checkout -b "%(prompt git checkout -b )"
 bind refs F @git fetch --prune
