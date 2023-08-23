@@ -504,7 +504,7 @@ local plugins = {
         end
     }, { -- lsp
         'neovim/nvim-lspconfig',
-        ft = {"js", "ts", "tsx", "go", "rs"},
+        ft = {"js", "ts", "tsx", "go", "rs", "markdown"},
         dependencies = {
             'iamcco/diagnostic-languageserver', -- show inline diagnostics
             'creativenull/diagnosticls-configs-nvim',
@@ -578,7 +578,8 @@ local plugins = {
 
             -- Enable the following language servers
             local servers = {
-                'gopls', 'rust_analyzer', 'tsserver', 'jsonls', 'yamlls', 'zk'
+                'gopls', 'rust_analyzer', 'tsserver', 'jsonls', 'yamlls', 'zk',
+                "marksman"
             }
             local caps = require('cmp_nvim_lsp').default_capabilities()
             for _, lsp in ipairs(servers) do
