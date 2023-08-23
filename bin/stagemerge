@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 
+NAME=$(basename "$1")
+
 FILE_WORKDIR=$1
 FILE_HEAD="/dev/null"
-FILE_STAGED="$(mktemp --tmpdir staged_XXXXXXXXXX_$1)"
+FILE_STAGED="$(mktemp --tmpdir staged_XXXXXXXXXX_$NAME)"
 
 if [ "$(git show "HEAD:$FILE_WORKDIR")" ]; then
-    FILE_HEAD="$(mktemp --tmpdir "head_XXXXXXXXXX_$1")"
+    FILE_HEAD="$(mktemp --tmpdir "head_XXXXXXXXXX_$NAME")"
     git show "HEAD:$FILE_WORKDIR" > "$FILE_HEAD"
     chmod 400 "$FILE_HEAD"
 fi
