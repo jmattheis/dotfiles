@@ -5,8 +5,8 @@ bind main L !git rebase -i %(commit)
 bind main U ?git commit --amend --no-edit
 bind main P !git pull
 
-bind status A ?git commit --amend --no-edit
-bind status D ?rm %(file)
+bind status A >?git commit --amend --no-edit
+bind status D >?rm %(file)
 bind status U >!tig -- %(file)
 bind status T >!git add -N %(file)
 bind status M >!stagemerge %(file)
