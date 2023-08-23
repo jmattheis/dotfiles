@@ -1,51 +1,51 @@
 keymap = vim.api.nvim_set_keymap
 
-local install_path = vim.fn.stdpath('data') ..
-                         '/site/pack/packer/start/packer.nvim'
-if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
-    Packer_bootstrap = vim.fn.system({
-        'git', 'clone', '--depth', '1',
-        'https://github.com/wbthomason/packer.nvim', install_path
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+    vim.fn.system({
+        "git", "clone", "--filter=blob:none",
+        "https://github.com/folke/lazy.nvim.git", "--branch=stable", -- latest stable release
+        lazypath
     })
 end
+vim.opt.rtp:prepend(lazypath)
 
-vim.cmd([[
-    augroup Packer
-        autocmd!
-        autocmd BufWritePost init.lua source ~/.config/nvim/init.lua
-        autocmd BufWritePost init.lua PackerCompile
-    augroup end
-]], false)
+-- Remap space as leader key
+keymap('', '<Space>', '<Nop>', {noremap = true, silent = true})
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
 
-require('packer').startup(function(use)
-    use 'wbthomason/packer.nvim' -- Package manager
-
-    use 'airblade/vim-rooter' -- change cwd to git root
-    use 'rhysd/vim-grammarous' -- languagetool spellcheck
-    use { -- undo tree
+local plugins = {
+    'airblade/vim-rooter', -- change cwd to git root
+    'tpope/vim-fugitive', -- Git commands
+    'tpope/vim-commentary', -- Code Comment stuff, f.ex gc
+    'windwp/nvim-autopairs', -- autoclose ()
+    'tpope/vim-surround', -- surround operations
+    'editorconfig/editorconfig-vim', -- use tabstop / tabwidth from .editorconfig
+    'christoomey/vim-tmux-navigator', { -- undo tree
         'mbbill/undotree',
-        config = function()
+        keys = {
+            {"<leader>au", ":UndotreeToggle<CR>", silent = true, noremap = true}
+        },
+        init = function()
             vim.g.undotree_WindowLayout = 2
             vim.g.undetree_SetFocusWhenToggle = 1
-            keymap("n", "<leader>au", ':UndotreeToggle<CR>',
-                   {silent = true, noremap = true})
         end
-    }
-    use 'tpope/vim-fugitive' -- Git commands in nvim
-    use { -- format everything
+    }, { -- startup tracking
+        "dstein64/vim-startuptime",
+        cmd = "StartupTime",
+        init = function() vim.g.startuptime_tries = 10 end
+    }, { -- format everything
         'sbdchd/neoformat',
+        keys = {{"<leader>af", ":Neoformat<CR>", noremap = true}},
         config = function()
-            keymap("n", "<leader>af", ':Neoformat<CR> ', {noremap = true})
-
             vim.g.neoformat_rust_rustfmt = {
                 exe = 'rustfmt',
                 args = {'--edition 2021'},
                 stdin = 1
             }
         end
-    }
-
-    use { -- theme
+    }, { -- theme
         'morhetz/gruvbox',
         config = function()
             if vim.fn.has('termguicolors') then
@@ -54,16 +54,15 @@ require('packer').startup(function(use)
 
             vim.cmd [[colorscheme gruvbox]]
         end
-    }
-
-    use { -- status line
+    }, --
+    {
         'nvim-lualine/lualine.nvim',
-        requires = {'arkav/lualine-lsp-progress'},
+        dependencies = {'arkav/lualine-lsp-progress'},
         config = function()
             require'lualine'.setup {
                 options = {
+                    theme = "gruvbox",
                     icons_enabled = false,
-                    theme = 'gruvbox',
                     component_separators = {'|', '|'},
                     section_separators = {'', ''},
                     disabled_filetypes = {}
@@ -113,15 +112,7 @@ require('packer').startup(function(use)
                 extensions = {}
             }
         end
-    }
-
-    use({
-        'jakewvincent/mkdnflow.nvim',
-        disable = true,
-        config = function() require('mkdnflow').setup({}) end
-    })
-
-    use { -- show spaces / tabs everywhere
+    }, { -- show spaces / tabs everywhere
         'lukas-reineke/indent-blankline.nvim',
         config = function()
             require'indent_blankline'.setup {
@@ -129,11 +120,9 @@ require('packer').startup(function(use)
                 use_treesitter = true
             }
         end
-    }
-
-    use { -- show git signs at the left side
+    }, { -- show git signs at the left side
         'lewis6991/gitsigns.nvim',
-        requires = {'nvim-lua/plenary.nvim'},
+        dependencies = {'nvim-lua/plenary.nvim'},
         config = function()
             require('gitsigns').setup({
                 on_attach = function(bufnr)
@@ -176,39 +165,124 @@ require('packer').startup(function(use)
                 end
             })
         end
-    }
-
-    -- navigation
-    use {
+    }, -- navigation
+    {
         'junegunn/fzf.vim',
-        requires = {'junegunn/fzf'},
-        config = function()
-            vim.g.fzf_layout = {down = '35%'}
-            keymap("n", "<leader>f", ':Rg<CR>', {silent = true, noremap = true})
-            keymap("n", "<leader>n",
-                   ':GFiles --cached --others --exclude-standar<CR>',
-                   {silent = true, noremap = true})
-            keymap("n", "<leader>N", ':Files<CR>',
-                   {silent = true, noremap = true})
-            keymap("n", "<leader>b", ':Buffers<CR>',
-                   {silent = true, noremap = true})
-        end
-    }
-    use 'christoomey/vim-tmux-navigator' -- move between tmux & vim windows with same shortcuts
-
-    -- find string in whole project
-    use {
+        keys = {
+            {"<leader>f", ":Rg<CR>", silent = true, noremap = true}, {
+                "<leader>n",
+                ':GFiles --cached --others --exclude-standar<CR>',
+                silent = true,
+                noremap = true
+            }, {"<leader>N", ':Files<CR>', silent = true, noremap = true},
+            {"<leader>b", ':Buffers<CR>', silent = true, noremap = true}
+        },
+        dependencies = {'junegunn/fzf'},
+        init = function() vim.g.fzf_layout = {down = '35%'} end
+    }, -- find string in whole project
+    {
         'dyng/ctrlsf.vim',
-        config = function()
+        keys = {{"<leader>as", ":CtrlSF", noremap = true}},
+        init = function()
             vim.g.ctrlsf_auto_preview = 1
             vim.g.ctrlsf_auto_focus = {at = 'start'}
             vim.g.ctrlsf_mapping = {next = 'n', prev = 'N'}
-            keymap("n", "<leader>as", ':CtrlSF ', {noremap = true})
         end
-    }
-    use {
+    }, { -- tree sitter
+        'nvim-treesitter/nvim-treesitter',
+        lazy = true,
+        build = ':TSUpdate',
+        dependencies = {
+            {'windwp/nvim-ts-autotag', ft = {"html", "tsx"}}, -- close html tags via treesitter
+            'nvim-treesitter/nvim-treesitter-refactor',
+            'nvim-treesitter/nvim-treesitter-textobjects',
+            {
+                'JoosepAlviste/nvim-ts-context-commentstring',
+                ft = {"html", "tsx"}
+            }
+        },
+        config = function()
+            require'nvim-treesitter.configs'.setup {
+                ensure_installed = {
+                    "markdown", "go", "lua", "yaml", "json", "java",
+                    "typescript", "bash", "diff", "dockerfile", "gitcommit",
+                    "git_rebase", "gomod", "gosum", "ini", "kotlin", "sql",
+                    "tsx", "xml"
+                },
+                highlight = {enable = true},
+                autotag = {enable = true},
+                indent = {enable = false},
+                context_commentstring = {enable = true},
+                refactor = {highlight_definitions = {enable = true}},
+                incremental_selection = {
+                    enable = true,
+                    keymaps = {
+                        init_selection = "gnn",
+                        node_incremental = ".",
+                        scope_incremental = ";",
+                        node_decremental = "g."
+                    }
+                },
+                textobjects = {
+                    select = {
+                        enable = true,
+                        lookahead = true,
+                        keymaps = {
+                            ['af'] = '@function.outer',
+                            ['if'] = '@function.inner',
+                            ['ab'] = '@block.outer',
+                            ['ib'] = '@block.inner',
+                            ['ac'] = '@conditional.outer',
+                            ['ic'] = '@conditional.inner',
+                            ['al'] = '@loop.outer',
+                            ['il'] = '@loop.inner'
+                        }
+                    },
+                    swap = {
+                        enable = true,
+                        swap_next = {['<Leader><Right>'] = '@parameter.inner'},
+                        swap_previous = {
+                            ['<Leader><Left>'] = '@parameter.inner'
+                        }
+                    }
+                }
+            }
+        end
+    }, {'kevinhwang91/nvim-bqf', ft = 'qf'},
+
+    { -- show trailing whitespaces in red
+        'ntpeters/vim-better-whitespace',
+        init = function() vim.g.better_whitespace_enabled = 1 end
+    }, { -- diagnostic list
+        'folke/trouble.nvim',
+        keys = {
+            {"<leader>da", ":TroubleToggle<CR>", silent = true, noremap = true}
+        },
+        config = function()
+            require'trouble'.setup {
+                padding = false,
+                indent_lines = false,
+                icons = false,
+                signs = {
+                    error = "E",
+                    warning = "W",
+                    hint = "H",
+                    information = "I",
+                    other = "?"
+                }
+            }
+        end
+    }, {
         'kyazdani42/nvim-tree.lua',
-        requires = {'kyazdani42/nvim-web-devicons'},
+        dependencies = {'kyazdani42/nvim-web-devicons'},
+        keys = {
+            {
+                "<leader>e",
+                ":NvimTreeFindFileToggle<CR>",
+                silent = true,
+                noremap = true
+            }
+        },
         config = function()
             local function on_attach(bufnr)
                 local api = require('nvim-tree.api')
@@ -387,25 +461,11 @@ require('packer').startup(function(use)
             vim.cmd [[
                 autocmd BufEnter * ++nested if winnr('$') == 1 && bufname() == 'NvimTree_' . tabpagenr() | quit | endif
             ]]
-            keymap("n", "<leader>e", ':NvimTreeFindFileToggle<CR>',
-                   {silent = true, noremap = true})
         end
-    }
-    use {'kevinhwang91/nvim-bqf', ft = 'qf'}
-
-    -- typing stuff
-    use 'tpope/vim-commentary' -- Code Comment stuff, f.ex gc
-    use { -- show trailing whitespaces in red
-        'ntpeters/vim-better-whitespace',
-        config = function() vim.g.better_whitespace_enabled = 1 end
-    }
-    use 'windwp/nvim-autopairs' -- autoclose ()
-    use 'tpope/vim-surround' -- surround operations
-    use 'tpope/vim-unimpaired'
-    use 'editorconfig/editorconfig-vim' -- use tabstop / tabwidth from .editorconfig
-    use { -- autocomplete
+    }, { -- autocomplete
         'hrsh7th/nvim-cmp',
-        requires = {
+        event = "InsertEnter",
+        dependencies = {
             'hrsh7th/cmp-nvim-lsp', 'hrsh7th/cmp-buffer', 'hrsh7th/cmp-path',
             'hrsh7th/cmp-nvim-lsp-signature-help', 'L3MON4D3/LuaSnip',
             'saadparwaiz1/cmp_luasnip'
@@ -442,23 +502,22 @@ require('packer').startup(function(use)
             cmp.event:on('confirm_done',
                          cmp_autopairs.on_confirm_done({map_chrr = {tex = ''}}))
         end
-    }
-
-    use { -- lsp
+    }, { -- lsp
         'neovim/nvim-lspconfig',
-        requires = {
+        ft = {"js", "ts", "tsx", "go", "rs"},
+        dependencies = {
             'iamcco/diagnostic-languageserver', -- show inline diagnostics
             'creativenull/diagnosticls-configs-nvim',
             'simrat39/rust-tools.nvim', -- extra rust inline stuff
             'folke/lsp-colors.nvim', -- better lsp colors
-            'gfanto/fzf-lsp.nvim', -- fzf lsp
-            {
-                -- omnisharp stuff
-                -- Remove after https://github.com/OmniSharp/omnisharp-roslyn/issues/2238 is fixed
-                'Hoffs/omnisharp-extended-lsp.nvim',
-                disable = true,
-                requires = {'nvim-telescope/telescope.nvim'}
-            }
+            'gfanto/fzf-lsp.nvim' -- fzf lsp
+            -- {
+            -- omnisharp stuff
+            -- Remove after https://github.com/OmniSharp/omnisharp-roslyn/issues/2238 is fixed
+            --   'Hoffs/omnisharp-extended-lsp.nvim',
+            --  disable = true,
+            -- requires = {'nvim-telescope/telescope.nvim'}
+            -- }
         },
         config = function()
             local nvim_lsp = require 'lspconfig'
@@ -558,95 +617,10 @@ require('packer').startup(function(use)
 
         end
     }
-    use { -- diagnostic list
-        'folke/trouble.nvim',
-        config = function()
-            require'trouble'.setup {
-                padding = false,
-                indent_lines = false,
-                icons = false,
-                signs = {
-                    error = "E",
-                    warning = "W",
-                    hint = "H",
-                    information = "I",
-                    other = "?"
-                }
-            }
+}
 
-            keymap('n', '<leader>da', ':TroubleToggle<CR>',
-                   {silent = true, noremap = true})
-        end
-    }
-
-    use {
-        'mickael-menu/zk-nvim',
-        config = function()
-            require"zk".setup {
-                picker = "fzf",
-                lsp = {auto_attach = {enabled = false}}
-            }
-        end
-    }
-
-    use { -- tree sitter
-        'nvim-treesitter/nvim-treesitter',
-        run = ':TSUpdate',
-        requires = {
-            'windwp/nvim-ts-autotag', -- close html tags via treesitter
-            'nvim-treesitter/nvim-treesitter-refactor',
-            'nvim-treesitter/nvim-treesitter-textobjects',
-            'JoosepAlviste/nvim-ts-context-commentstring'
-        },
-        config = function()
-            require'nvim-treesitter.configs'.setup {
-                ensure_installed = "all",
-                highlight = {enable = true},
-                autotag = {enable = true},
-                indent = {enable = false},
-                context_commentstring = {enable = true},
-                refactor = {highlight_definitions = {enable = true}},
-                incremental_selection = {
-                    enable = true,
-                    keymaps = {
-                        init_selection = "gnn",
-                        node_incremental = ".",
-                        scope_incremental = ";",
-                        node_decremental = "g."
-                    }
-                },
-                textobjects = {
-                    select = {
-                        enable = true,
-                        lookahead = true,
-                        keymaps = {
-                            ['af'] = '@function.outer',
-                            ['if'] = '@function.inner',
-                            ['ab'] = '@block.outer',
-                            ['ib'] = '@block.inner',
-                            ['ac'] = '@conditional.outer',
-                            ['ic'] = '@conditional.inner',
-                            ['al'] = '@loop.outer',
-                            ['il'] = '@loop.inner'
-                        }
-                    },
-                    swap = {
-                        enable = true,
-                        swap_next = {['<Leader><Right>'] = '@parameter.inner'},
-                        swap_previous = {
-                            ['<Leader><Left>'] = '@parameter.inner'
-                        }
-                    }
-                }
-            }
-        end
-    }
-
-    -- cool but really slow
-    -- use 'haringsrob/nvim_context_vt' -- show context on closing brackets
-    -- use 'romgrk/nvim-treesitter-context' -- show method context
-    if Packer_bootstrap then require'packer'.sync() end
-end)
+local opts = {}
+require("lazy").setup(plugins, opts)
 
 -- https://github.com/hrsh7th/nvim-compe#how-to-remove-pattern-not-found
 vim.o.shortmess = vim.o.shortmess .. 'c'
@@ -706,11 +680,6 @@ vim.o.smartcase = true
 -- Decrease update time
 vim.o.updatetime = 250
 vim.wo.signcolumn = "yes"
-
--- Remap space as leader key
-keymap('', '<Space>', '<Nop>', {noremap = true, silent = true})
-vim.g.mapleader = " "
-vim.g.maplocalleader = " "
 
 -- Highlight on yank
 vim.api.nvim_exec([[
