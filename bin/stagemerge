@@ -10,7 +10,7 @@ if [ "$(git show "HEAD:$FILE_WORKDIR" 2> /dev/null)" ]; then
 fi
 chmod 400 "$FILE_HEAD"
 
-FILE_STAGED="$(mktemp --tmpdir staged_XXXXXXXXXX_$NAME)"
+FILE_STAGED="$(mktemp --tmpdir "staged_XXXXXXXXXX_$NAME")"
 if [ "$(git show ":$FILE_WORKDIR" 2> /dev/null)" ]; then
     git show ":$FILE_WORKDIR" > "$FILE_STAGED"
 fi
