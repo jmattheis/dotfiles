@@ -5,13 +5,13 @@ NAME=$(basename "$1")
 FILE_WORKDIR=$1
 
 FILE_HEAD="$(mktemp --tmpdir "head_XXXXXXXXXX_$NAME")"
-if [ "$(git show "HEAD:$FILE_WORKDIR")" ]; then
+if [ "$(git show "HEAD:$FILE_WORKDIR" 2> /dev/null)" ]; then
     git show "HEAD:$FILE_WORKDIR" > "$FILE_HEAD"
 fi
 chmod 400 "$FILE_HEAD"
 
 FILE_STAGED="$(mktemp --tmpdir staged_XXXXXXXXXX_$NAME)"
-if [ "$(git show ":$FILE_WORKDIR")" ]; then
+if [ "$(git show ":$FILE_WORKDIR" 2> /dev/null)" ]; then
     git show ":$FILE_WORKDIR" > "$FILE_STAGED"
 fi
 
