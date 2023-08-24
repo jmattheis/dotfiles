@@ -3,24 +3,21 @@
 NAME=$(basename "$1")
 
 FILE_WORKDIR=$1
-FILE_HEAD="/dev/null"
-FILE_STAGED="$(mktemp --tmpdir staged_XXXXXXXXXX_$NAME)"
 
+FILE_HEAD="$(mktemp --tmpdir "head_XXXXXXXXXX_$NAME")"
 if [ "$(git show "HEAD:$FILE_WORKDIR")" ]; then
-    FILE_HEAD="$(mktemp --tmpdir "head_XXXXXXXXXX_$NAME")"
     git show "HEAD:$FILE_WORKDIR" > "$FILE_HEAD"
-    chmod 400 "$FILE_HEAD"
 fi
+chmod 400 "$FILE_HEAD"
 
+FILE_STAGED="$(mktemp --tmpdir staged_XXXXXXXXXX_$NAME)"
 if [ "$(git show ":$FILE_WORKDIR")" ]; then
     git show ":$FILE_WORKDIR" > "$FILE_STAGED"
 fi
 
 nvim -d "$FILE_HEAD" "$FILE_STAGED" "$FILE_WORKDIR"
 
-if [ ! "/dev/null" = "$FILE_HEAD" ]; then
-    rm -f "$FILE_HEAD"
-fi
+rm -f "$FILE_HEAD"
 
 ORIG=$(cat "$FILE_WORKDIR")
 mv "$FILE_STAGED" "$FILE_WORKDIR"
