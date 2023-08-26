@@ -276,9 +276,11 @@ local plugins = {
                 }
             }
         end
-    }, {'kevinhwang91/nvim-bqf', ft = 'qf'},
-
-    { -- show trailing whitespaces in red
+    }, --
+    {'kevinhwang91/nvim-bqf', ft = 'qf'}, {
+        'https://gitlab.com/yorickpeterse/nvim-pqf.git',
+        config = function() require('pqf').setup() end
+    }, { -- show trailing whitespaces in red
         'ntpeters/vim-better-whitespace',
         init = function() vim.g.better_whitespace_enabled = 1 end
     }, { -- diagnostic list
@@ -579,8 +581,14 @@ autocmd('TextYankPost', {
     end
 })
 
--- restore view
+-- disable list
+autocmd('FileType', {
+    group = augroup('DisableList', {clear = true}),
+    pattern = {'qf'},
+    command = 'set nolist'
+})
 
+-- restore view
 autocmd('BufRead', {
     callback = function(opts)
         autocmd('BufWinEnter', {
