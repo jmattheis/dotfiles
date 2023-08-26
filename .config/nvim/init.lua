@@ -22,6 +22,7 @@ local plugins = {
     'windwp/nvim-autopairs', -- autoclose ()
     'tpope/vim-surround', -- surround operations
     'editorconfig/editorconfig-vim', -- use tabstop / tabwidth from .editorconfig
+    {'sindrets/diffview.nvim', cmd = {"DiffviewOpen", "DiffviewFileHistory"}}, -- file history
     'christoomey/vim-tmux-navigator', { -- undo tree
         'mbbill/undotree',
         keys = {
