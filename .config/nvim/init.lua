@@ -529,9 +529,8 @@ vim.o.updatetime = 250
 vim.wo.signcolumn = "yes"
 
 -- Highlight on yank
-augroup('YankHighlight', {clear = true})
 autocmd('TextYankPost', {
-    group = 'YankHighlight',
+    group = augroup('YankHighlight', {clear = true}),
     callback = function()
         vim.highlight.on_yank({higroup = 'IncSearch', timeout = '300'})
     end
