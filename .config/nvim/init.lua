@@ -20,7 +20,7 @@ vim.g.maplocalleader = " "
 local plugins = {
     'airblade/vim-rooter', -- change cwd to git root
     {'tpope/vim-fugitive', cmd = "Git"}, -- Git commands
-    'tpope/vim-commentary', -- Code Comment stuff, f.ex gc
+    {'numToStr/Comment.nvim', config = function() require'Comment'.setup() end}, -- Code Comment stuff, f.ex gc
     'windwp/nvim-autopairs', -- autoclose ()
     'tpope/vim-surround', -- surround operations
     'editorconfig/editorconfig-vim', -- use tabstop / tabwidth from .editorconfig
