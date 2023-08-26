@@ -72,7 +72,31 @@ local plugins = {
                 },
                 sections = {
                     lualine_a = {'mode'},
-                    lualine_b = {{'filename', file_status = true, path = 1}},
+                    lualine_b = {
+                        function()
+                            local fn = vim.fn.expand('%:~:.')
+                            -- https://github.com/nvim-lualine/lualine.nvim/issues/820#issuecomment-1516079714
+                            if vim.startswith(fn, "jdt://") then
+                                fn = string.sub(fn, 0, string.find(fn, "?") - 1)
+                            end
+                            if fn == '' then
+                                fn = '[No Name]'
+                            end
+                            if vim.bo.modified then
+                                fn = fn .. ' [+]'
+                            end
+                            if vim.bo.modifiable == false or vim.bo.readonly ==
+                                true then
+                                fn = fn .. ' [-]'
+                            end
+                            local tfn = vim.fn.expand('%')
+                            if tfn ~= '' and vim.bo.buftype == '' and
+                                vim.fn.filereadable(tfn) == 0 then
+                                fn = fn .. ' [New]'
+                            end
+                            return fn
+                        end
+                    },
                     lualine_c = {
                         {
                             'diagnostics',
@@ -348,13 +372,14 @@ local plugins = {
         end
     }, { -- lsp
         'neovim/nvim-lspconfig',
-        ft = {"js", "ts", "tsx", "go", "rs", "markdown"},
+        ft = {"js", "ts", "tsx", "go", "rs", "markdown", "java"},
         dependencies = {
             'iamcco/diagnostic-languageserver', -- show inline diagnostics
             'creativenull/diagnosticls-configs-nvim',
             'simrat39/rust-tools.nvim', -- extra rust inline stuff
             'folke/lsp-colors.nvim', -- better lsp colors
-            'gfanto/fzf-lsp.nvim' -- fzf lsp
+            'gfanto/fzf-lsp.nvim', -- fzf lsp
+            'mfussenegger/nvim-jdtls', -- java
             -- {
             -- omnisharp stuff
             -- Remove after https://github.com/OmniSharp/omnisharp-roslyn/issues/2238 is fixed
@@ -460,6 +485,24 @@ local plugins = {
                 server = {on_attach = on_attach, capabilities = caps}
             })
 
+            autocmd('FileType', {
+                group = augroup('JdtlsLSP', {clear = true}),
+                pattern = {'java'},
+                callback = function()
+                    local config = {
+                        handlers = {['language/status'] = function() end},
+                        on_attach = on_attach,
+                        cmd = {
+                            'java-lsp.sh',
+                            vim.fn.fnamemodify(root_dir, ":p:h:t")
+                        },
+                        root_dir = vim.fs.dirname(vim.fs.find({
+                            'gradlew', '.git', 'mvnw'
+                        }, {upward = true})[1])
+                    }
+                    require('jdtls').start_or_attach(config)
+                end
+            })
         end
     }
 }
