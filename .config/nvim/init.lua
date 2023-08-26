@@ -1,4 +1,6 @@
-keymap = vim.api.nvim_set_keymap
+local keymap = vim.api.nvim_set_keymap
+local augroup = vim.api.nvim_create_augroup
+local autocmd = vim.api.nvim_create_autocmd
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -685,22 +687,34 @@ vim.o.updatetime = 250
 vim.wo.signcolumn = "yes"
 
 -- Highlight on yank
-vim.api.nvim_exec([[
-  augroup YankHighlight
-    autocmd!
-    autocmd TextYankPost * silent! lua vim.highlight.on_yank()
-  augroup end
-]], false)
+augroup('YankHighlight', {clear = true})
+autocmd('TextYankPost', {
+    group = 'YankHighlight',
+    callback = function()
+        vim.highlight.on_yank({higroup = 'IncSearch', timeout = '300'})
+    end
+})
 
 -- restore view
 
-vim.api.nvim_exec([[
-  augroup LoadView
-    autocmd!
-    autocmd BufWinLeave *.* mkview
-    autocmd BufWinEnter *.* silent! loadview
-  augroup end
-]], false)
+autocmd('BufRead', {
+    callback = function(opts)
+        autocmd('BufWinEnter', {
+            once = true,
+            buffer = opts.buf,
+            callback = function()
+                local ft = vim.bo[opts.buf].filetype
+                local last_known_line =
+                    vim.api.nvim_buf_get_mark(opts.buf, '"')[1]
+                if not (ft:match('commit') and ft:match('rebase')) and
+                    last_known_line > 1 and last_known_line <=
+                    vim.api.nvim_buf_line_count(opts.buf) then
+                    vim.api.nvim_feedkeys([[g`"]], 'nx', false)
+                end
+            end
+        })
+    end
+})
 
 -- key mapping
 
