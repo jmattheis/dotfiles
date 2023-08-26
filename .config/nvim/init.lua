@@ -169,6 +169,7 @@ local plugins = {
     }, -- navigation
     {
         'junegunn/fzf.vim',
+        lazy = false,
         keys = {
             {"<leader>f", ":Rg<CR>", silent = true, noremap = true}, {
                 "<leader>n",
