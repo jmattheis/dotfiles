@@ -19,6 +19,11 @@ vim.g.maplocalleader = " "
 
 local plugins = {
     'airblade/vim-rooter', -- change cwd to git root
+    {
+        'akinsho/bufferline.nvim',
+        dependencies = 'nvim-tree/nvim-web-devicons',
+        config = function() require('bufferline').setup() end
+    }, --
     {'tpope/vim-fugitive', cmd = "Git"}, -- Git commands
     {'numToStr/Comment.nvim', config = function() require'Comment'.setup() end}, -- Code Comment stuff, f.ex gc
     'windwp/nvim-autopairs', -- autoclose ()
@@ -304,7 +309,7 @@ local plugins = {
         end
     }, {
         'kyazdani42/nvim-tree.lua',
-        dependencies = {'kyazdani42/nvim-web-devicons'},
+        dependencies = {'nvim-tree/nvim-web-devicons'},
         keys = {
             {
                 "<leader>e",
