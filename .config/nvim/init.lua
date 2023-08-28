@@ -320,6 +320,7 @@ local plugins = {
         },
         config = function()
             require("nvim-tree").setup({
+                view = {width = 44},
                 renderer = {icons = {show = {git = false, modified = false}}}
             })
 
