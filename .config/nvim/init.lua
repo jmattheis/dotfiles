@@ -342,8 +342,7 @@ local plugins = {
         event = "InsertEnter",
         dependencies = {
             'hrsh7th/cmp-nvim-lsp', 'hrsh7th/cmp-buffer', 'hrsh7th/cmp-path',
-            'hrsh7th/cmp-nvim-lsp-signature-help', 'L3MON4D3/LuaSnip',
-            'saadparwaiz1/cmp_luasnip'
+            'L3MON4D3/LuaSnip', 'saadparwaiz1/cmp_luasnip'
         },
         config = function()
             require('nvim-autopairs').setup {check_ts = true}
@@ -370,8 +369,7 @@ local plugins = {
                     ['<CR>'] = cmp.mapping.confirm({select = true})
                 },
                 sources = cmp.config.sources({
-                    {name = 'nvim_lsp'}, {name = 'path'},
-                    {name = 'nvim_lsp_signature_help'}
+                    {name = 'nvim_lsp'}, {name = 'path'}
                 })
             })
             cmp.event:on('confirm_done',
@@ -384,12 +382,13 @@ local plugins = {
             "java"
         },
         dependencies = {
+            'ray-x/lsp_signature.nvim', -- lsp signature
             'iamcco/diagnostic-languageserver', -- show inline diagnostics
             'creativenull/diagnosticls-configs-nvim',
             'simrat39/rust-tools.nvim', -- extra rust inline stuff
             'folke/lsp-colors.nvim', -- better lsp colors
             'gfanto/fzf-lsp.nvim', -- fzf lsp
-            'mfussenegger/nvim-jdtls', -- java
+            'mfussenegger/nvim-jdtls' -- java
             -- {
             -- omnisharp stuff
             -- Remove after https://github.com/OmniSharp/omnisharp-roslyn/issues/2238 is fixed
@@ -399,6 +398,14 @@ local plugins = {
             -- }
         },
         config = function()
+            require"lsp_signature".setup({
+                bind = true,
+                doc_lines = 0,
+                floating_window_off_x = 0,
+                hint_enable = false,
+                handler_opts = {border = "none"}
+            })
+
             local nvim_lsp = require 'lspconfig'
             local on_attach = function(client, bufnr)
                 local function buf_keymap(...)
