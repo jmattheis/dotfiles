@@ -226,12 +226,11 @@ local plugins = {
         lazy = true,
         build = ':TSUpdate',
         dependencies = {
-            {'windwp/nvim-ts-autotag', ft = {"html", "tsx"}}, -- close html tags via treesitter
+            {'windwp/nvim-ts-autotag', ft = {"html", "typescriptreact"}}, -- close html tags via treesitter
             'nvim-treesitter/nvim-treesitter-refactor',
-            'nvim-treesitter/nvim-treesitter-textobjects',
-            {
+            'nvim-treesitter/nvim-treesitter-textobjects', {
                 'JoosepAlviste/nvim-ts-context-commentstring',
-                ft = {"html", "tsx"}
+                ft = {"html", "typescriptreact"}
             }
         },
         config = function()
@@ -380,7 +379,10 @@ local plugins = {
         end
     }, { -- lsp
         'neovim/nvim-lspconfig',
-        ft = {"js", "ts", "tsx", "go", "rs", "markdown", "java"},
+        ft = {
+            "js", "typescript", "typescriptreact", "go", "rs", "markdown",
+            "java"
+        },
         dependencies = {
             'iamcco/diagnostic-languageserver', -- show inline diagnostics
             'creativenull/diagnosticls-configs-nvim',
