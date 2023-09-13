@@ -45,6 +45,7 @@ alias ts="tig status"
 alias tw="timew"
 
 alias k="kubectl"
+alias cal="cal -m"
 
 # muscle memory ftw
 alias vim=$EDITOR
