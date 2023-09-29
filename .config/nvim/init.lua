@@ -147,10 +147,7 @@ local plugins = {
     }, { -- show spaces / tabs everywhere
         'lukas-reineke/indent-blankline.nvim',
         config = function()
-            require'indent_blankline'.setup {
-                show_current_context = true,
-                use_treesitter = true
-            }
+            require'ibl'.setup {indent = {char = {"│"}}}
         end
     }, { -- show git signs at the left side
         'lewis6991/gitsigns.nvim',
