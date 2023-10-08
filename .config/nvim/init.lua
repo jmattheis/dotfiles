@@ -223,7 +223,6 @@ local plugins = {
         end
     }, { -- tree sitter
         'nvim-treesitter/nvim-treesitter',
-        lazy = true,
         build = ':TSUpdate',
         dependencies = {
             {'windwp/nvim-ts-autotag', ft = {"html", "typescriptreact"}}, -- close html tags via treesitter
