@@ -10,6 +10,9 @@ export HISTSIZE=5000000
 export SAVEHIST=5000000
 unsetopt nomatch
 
+typeset -A ZSH_HIGHLIGHT_STYLES
+ZSH_HIGHLIGHT_STYLES[comment]='fg=white'
+
 function optional_source() { [ -s "$1" ] && source "$1" }
 optional_source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 optional_source /usr/share/fzf/completion.zsh
