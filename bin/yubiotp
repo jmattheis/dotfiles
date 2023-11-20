@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+read -rsp "Enter Password: " PASS
+echo
+
+if [ -z "$1" ]; then
+    ACCOUNTS=$(echo "$PASS" | ykman oath accounts list)
+    ACCOUNT=$(echo "${ACCOUNTS/, TOTP/\n}" | fzf --height 30%)
+else
+    ACCOUNT=$1
+fi
+
+echo Account: "$ACCOUNT"
+CODE=$(echo "$PASS" | ykman oath accounts code -s "$ACCOUNT")
+echo "Code: $CODE"
+echo -n "$CODE" | xclip -sel clip
+echo "Added to clipboard"
