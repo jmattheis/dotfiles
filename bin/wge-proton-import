@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+# This script converts a protonvpn wireguard config to a wg-netns yaml and
+# places it in the /etc/wireguard directory.
+
+while IFS= read line || [ -n "$line" ]; do
+    echo $line
+  if [[ "$line" =~ (.*)\ =\ (.*) ]]; then
+    M="${BASH_REMATCH[2]}"
+    case "${BASH_REMATCH[1]}" in
+      PrivateKey) PrivateKey=$M ;;
+      PublicKey) PublicKey=$M ;;
+      Address) Address=$M ;;
+      DNS) DNS=$M ;;
+      AllowedIPs) AllowedIps=$M ;;
+      Endpoint) Endpoint=$M ;;
+    esac
+  fi
+  if [[ "$line" =~ ([A-Z]+)#([0-9]+) ]]; then
+    SERVER=$(echo "${BASH_REMATCH[1]}${BASH_REMATCH[2]}" | awk '{print tolower($0)}')
+  fi
+done < "${1:-/dev/stdin}"
+
+if [[ "$SERVER" = "" ]]; then
+  echo Invalid clipboard, aborting
+  exit 1
+fi
+
+cat <<EOF > /etc/wireguard/$SERVER.yml
+name: $SERVER
+dns-server: [$DNS]
+interfaces:
+- name: $SERVER
+  address:
+  - $Address
+  private-key: $PrivateKey
+  peers:
+  - public-key: $PublicKey
+    endpoint: $Endpoint
+    allowed-ips:
+    - $AllowedIps
+EOF
+
+echo ==== /etc/wireguard/$SERVER.yml ====
+cat /etc/wireguard/$SERVER.yml
