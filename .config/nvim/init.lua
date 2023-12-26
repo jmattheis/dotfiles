@@ -233,6 +233,7 @@ local plugins = {
             }
         },
         config = function()
+            require('nvim-treesitter.configs').setup {}
             require'nvim-treesitter.configs'.setup {
                 ensure_installed = {
                     "markdown", "go", "lua", "yaml", "json", "java",
@@ -243,7 +244,6 @@ local plugins = {
                 highlight = {enable = true},
                 autotag = {enable = true},
                 indent = {enable = false},
-                context_commentstring = {enable = true},
                 refactor = {highlight_definitions = {enable = true}},
                 incremental_selection = {
                     enable = true,

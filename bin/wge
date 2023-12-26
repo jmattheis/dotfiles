@@ -2,6 +2,13 @@
 xhost +local:vpn > /dev/null
 
 ACTIVE=$(wg-netns list)
+
+if [[ "$1" == "exit" ]]; then
+    wg-netns down $ACTIVE
+    echo Stopping
+    exit
+fi
+
 if [[ "$ACTIVE" = "" ]]; then
     START=$(\ls /etc/wireguard | fzf --height=20%)
     wg-netns up /etc/wireguard/$START
@@ -9,9 +16,5 @@ if [[ "$ACTIVE" = "" ]]; then
     ACTIVE=$(wg-netns list)
 fi
 
-if [[ "$1" == "exit" ]]; then
-    wg-netns down $ACTIVE
-    echo Stopping
-    exit
-fi
+
 ip netns exec $ACTIVE "$@"
