@@ -121,6 +121,7 @@ assign [class="keepassxc"] number $ws10
 for_window [title="Microsoft Teams Notification"] floating enable
 for_window [title="Tridactyl Editor"] floating enable
 for_window [title="Yubico Authenticator"] floating enable
+for_window [class="AusweisApp"] floating enable
 
 # switch to workspace
 bindsym $mod+1 workspace number $ws1
