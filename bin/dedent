@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+all_lines=( )
+min_spaces=9999 # start with something arbitrarily high
+while IFS= read -r line; do
+  all_lines+=( "$line" )
+  if [[ ${line:0:$min_spaces} =~ ^[[:space:]]*$ ]]; then
+    continue  # this line has at least as much whitespace as those preceding it
+  fi
+  # this line has *less* whitespace than those preceding it; we need to know how much.
+  [[ $line =~ ^([[:space:]]*) ]]
+  line_whitespace=${BASH_REMATCH[1]}
+  min_spaces=${#line_whitespace}
+done
+
+for line in "${all_lines[@]}"; do
+  printf '%s\n' "${line:$min_spaces}"
+done
