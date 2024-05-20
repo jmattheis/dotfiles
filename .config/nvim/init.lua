@@ -239,7 +239,7 @@ local plugins = {
                     "markdown", "go", "lua", "yaml", "json", "java",
                     "typescript", "bash", "diff", "dockerfile", "gitcommit",
                     "git_rebase", "gomod", "gosum", "ini", "kotlin", "sql",
-                    "tsx", "xml"
+                    "python", "tsx", "xml"
                 },
                 highlight = {enable = true},
                 autotag = {enable = true},
@@ -378,7 +378,7 @@ local plugins = {
         'neovim/nvim-lspconfig',
         ft = {
             "js", "typescript", "typescriptreact", "go", "rs", "markdown",
-            "java"
+            "java", 'python'
         },
         dependencies = {
             'ray-x/lsp_signature.nvim', -- lsp signature
@@ -464,7 +464,7 @@ local plugins = {
             -- Enable the following language servers
             local servers = {
                 'gopls', 'rust_analyzer', 'tsserver', 'jsonls', 'yamlls', 'zk',
-                "marksman"
+                "marksman", 'pyright'
             }
             local caps = require('cmp_nvim_lsp').default_capabilities()
             for _, lsp in ipairs(servers) do
