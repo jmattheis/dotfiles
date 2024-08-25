@@ -1,5 +1,6 @@
 input * {
-         xkb_layout "dvorak"
+         xkb_layout "us" 
+         xkb_variant "dvorak"
          repeat_delay 300
          repeat_rate 60
 }
@@ -12,3 +13,6 @@ unbindsym $mod+Shift+r
 bindsym $mod+Shift+r reload
 unbindsym $mod+p
 bindsym $mod+p exec bash -c "QT_QPA_PLATFORM=xcb flameshot gui"
+
+exec_always pkill kanshi; kanshi
+exec_always pkill waybar; waybar

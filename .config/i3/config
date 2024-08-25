@@ -82,6 +82,7 @@ bindsym $mod+p exec flameshot gui
 bindsym $mod+o layout tabbed
 bindsym $mod+comma layout tabbed
 bindsym $mod+period layout toggle split
+bindsym $mod+slash exec rofi-rbw
 
 # toggle tiling / floating
 bindsym $mod+Shift+space floating toggle
