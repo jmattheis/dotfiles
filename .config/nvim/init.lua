@@ -29,7 +29,7 @@ local plugins = {
     'akinsho/bufferline.nvim',
     dependencies = 'nvim-tree/nvim-web-devicons',
     config = function() require('bufferline').setup() end,
-  }, --
+  },
   {'tpope/vim-fugitive', cmd = 'Git'}, -- Git commands
   {'numToStr/Comment.nvim', config = function() require'Comment'.setup() end}, -- Code Comment stuff, f.ex gc
   'windwp/nvim-autopairs', -- autoclose ()
@@ -62,7 +62,7 @@ local plugins = {
 
       vim.cmd [[colorscheme gruvbox]]
     end,
-  }, --
+  },
   {
     'nvim-lualine/lualine.nvim',
     dependencies = {'arkav/lualine-lsp-progress'},
@@ -77,21 +77,7 @@ local plugins = {
         },
         sections = {
           lualine_a = {'mode'},
-          lualine_b = {
-            function()
-              local fn = vim.fn.expand('%:~:.')
-              -- https://github.com/nvim-lualine/lualine.nvim/issues/820#issuecomment-1516079714
-              if vim.startswith(fn, 'jdt://') then fn = string.sub(fn, 0, string.find(fn, '?') - 1) end
-              if fn == '' then fn = '[No Name]' end
-              if vim.bo.modified then fn = fn .. ' [+]' end
-              if vim.bo.modifiable == false or vim.bo.readonly == true then fn = fn .. ' [-]' end
-              local tfn = vim.fn.expand('%')
-              if tfn ~= '' and vim.bo.buftype == '' and vim.fn.filereadable(tfn) == 0 then
-                fn = fn .. ' [New]'
-              end
-              return fn
-            end,
-          },
+          lualine_b = {{'filename', file_status = true, path = 1}},
           lualine_c = {
             {'diagnostics', sources = {'nvim_diagnostic'}, symbols = {error = 'E', warn = 'W', info = 'I', hint = 'H'}},
             {'lsp_progress', color = {use = false}, display_components = {{'title', 'percentage', 'message'}}},
@@ -218,7 +204,12 @@ local plugins = {
         highlight = {enable = true},
         autotag = {enable = true},
         indent = {enable = false},
-        refactor = {highlight_definitions = {enable = true}},
+        refactor = {
+          highlight_definitions = {
+            enable = true,
+            disable = function(_, buf) return vim.api.nvim_buf_line_count(buf) > 5000 end,
+          },
+        },
         incremental_selection = {
           enable = true,
           keymaps = {init_selection = 'gnn', node_incremental = '.', scope_incremental = ';', node_decremental = 'g.'},
@@ -246,7 +237,7 @@ local plugins = {
         },
       }
     end,
-  }, --
+  },
   {'kevinhwang91/nvim-bqf', ft = 'qf'},
   {'https://gitlab.com/yorickpeterse/nvim-pqf.git', config = function() require('pqf').setup() end},
   { -- show trailing whitespaces in red
@@ -255,15 +246,35 @@ local plugins = {
   },
   { -- diagnostic list
     'folke/trouble.nvim',
-    keys = {{'<leader>da', ':TroubleToggle<CR>', silent = true, noremap = true}},
-    config = function()
-      require'trouble'.setup {
-        padding = false,
-        indent_lines = false,
-        icons = false,
-        signs = {error = 'E', warning = 'W', hint = 'H', information = 'I', other = '?'},
-      }
-    end,
+    cmd = 'Trouble',
+    keys = {
+      {'<leader>xx', '<cmd>Trouble diagnostics<cr>', silent = true, noremap = true},
+      {'<leader>xl', '<cmd>Trouble loclist<cr>', silent = true, noremap = true},
+      {'<leader>xq', '<cmd>Trouble quickfix<cr>', silent = true, noremap = true},
+      {
+        '[q',
+        function()
+          if require('trouble').is_open() then
+            require('trouble').prev({skip_groups = true, jump = true})
+          else
+            vim.cmd.cprev()
+          end
+        end,
+        desc = 'Previous trouble/quickfix item',
+      },
+      {
+        ']q',
+        function()
+          if require('trouble').is_open() then
+            require('trouble').next({skip_groups = true, jump = true})
+          else
+            vim.cmd.cnext()
+          end
+        end,
+        desc = 'Next trouble/quickfix item',
+      },
+    },
+    opts = {keys = {j = 'next', k = 'prev'}},
   },
   {
     'kyazdani42/nvim-tree.lua',
@@ -323,14 +334,6 @@ local plugins = {
       'simrat39/rust-tools.nvim', -- extra rust inline stuff
       'folke/lsp-colors.nvim', -- better lsp colors
       'gfanto/fzf-lsp.nvim', -- fzf lsp
-      'mfussenegger/nvim-jdtls', -- java
-      -- {
-      -- omnisharp stuff
-      -- Remove after https://github.com/OmniSharp/omnisharp-roslyn/issues/2238 is fixed
-      --   'Hoffs/omnisharp-extended-lsp.nvim',
-      --  disable = true,
-      -- requires = {'nvim-telescope/telescope.nvim'}
-      -- }
     },
     config = function()
       require'lsp_signature'.setup({
@@ -386,22 +389,20 @@ local plugins = {
         }
       end
 
-      -- omnisharp garbage
-      -- local omnisharp_bin = "/usr/bin/omnisharp"
-      -- local pid = vim.fn.getpid()
-      -- require'lspconfig'.omnisharp.setup {
-      --     on_attach = on_attach,
-      --     capabilities = caps,
-      --     handlers = {
-      --         ["textDocument/definition"] = require('omnisharp_extended').handler
-      --     },
-      --     cmd = {
-      --         omnisharp_bin, "--languageserver", "--hostPID",
-      --         tostring(pid)
-      --     }
-      -- }
-
-      require'rust-tools'.setup({server = {on_attach = on_attach, capabilities = caps}})
+      require'rust-tools'.setup({
+        server = {
+          on_attach = on_attach,
+          capabilities = caps,
+          settings = {
+            ['rust-analyzer'] = {
+              assist = {importEnforceGranularity = true, importPrefix = 'crate'},
+              cargo = {allFeatures = true},
+              checkOnSave = {command = {'cargo', 'clippy'}},
+            },
+            inlayHints = {lifetimeElisionHints = {enable = true, useParameterNames = true}},
+          },
+        },
+      })
 
       autocmd('FileType', {
         group = augroup('JdtlsLSP', {clear = true}),
