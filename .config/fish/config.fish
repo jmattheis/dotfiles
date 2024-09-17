@@ -1,4 +1,12 @@
 if status is-interactive
+    function take
+        if string match -qr '^([A-Za-z0-9]+@|https?|git|ssh|ftps?|rsync).*\.git/?$' $argv[1]
+            git clone $argv[1]; and cd (basename (string replace -r '\.git$' '' $argv[1]))
+        else
+            mkdir -p $argv[1]; and cd $argv[1]
+        end
+    end
+
     # faster command not found
     function fish_command_not_found
         __fish_default_command_not_found_handler $argv[1]
