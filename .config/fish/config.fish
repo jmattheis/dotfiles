@@ -7,6 +7,12 @@ if status is-interactive
         end
     end
 
+    function repeat
+        for i in (seq $argv[1])
+            $argv[2..-1]
+        end
+    end
+
     # faster command not found
     function fish_command_not_found
         __fish_default_command_not_found_handler $argv[1]
