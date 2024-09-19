@@ -19,6 +19,14 @@ if status is-interactive
     end
 
     # fasd
+    function __fasd_init -e fish_postexec -d "fasd takes record of the directories changed into"
+        set -lx RETVAL $status
+        if test $RETVAL -eq 0 # if there was no error
+            command fasd --proc (command fasd --sanitize "$argv" | tr -s " " \n) >/dev/null 2>&1 &
+            disown
+        end
+    end
+
     function __fasd_print_completion
         set cmd (commandline -po)
         test (count $cmd) -ge 2; and fasd $argv $cmd[2..-1] -l
@@ -43,6 +51,16 @@ if status is-interactive
         fasd_cd -d $argv
     end
     complete -c c -a "(__fasd_print_completion -d)" -f
+
+    function fasd_inline
+        set -l opts (fasd -lR (string replace -r '^,' '' $argv[1]))
+        if test (count $opts) -gt 1
+            printf '%s\n' $opts | fzf --height 10
+        else
+            echo $opts[1]
+        end
+        commandline -f repaint
+    end
 
     # get zsh like up/down
 
@@ -156,6 +174,7 @@ if status is-interactive
     abbr --add k kubectl
     abbr --add dkc docker-compose
     abbr --add xc xclip -sel clip
+    abbr --add fasd_inline --position anywhere --regex ',[^ ]+' --function fasd_inline
 
     if command -q eza
         function ll
