@@ -123,8 +123,8 @@ if status is-interactive
     end
     bind --preset \e\[B down-or-prefix-search
 
-    set puser (id -un)
-    set phost (hostname)
+    set puser (whoami)
+    set phost (prompt_hostname)
 
     function fish_prompt
         set -l last_status $status
