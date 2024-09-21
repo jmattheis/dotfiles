@@ -18,48 +18,51 @@ if status is-interactive
         __fish_default_command_not_found_handler $argv[1]
     end
 
-    # fasd
-    function __fasd_init -e fish_postexec -d "fasd takes record of the directories changed into"
-        set -lx RETVAL $status
-        if test $RETVAL -eq 0 # if there was no error
-            command fasd --proc (command fasd --sanitize "$argv" | tr -s " " \n) >/dev/null 2>&1 &
-            disown
+    if command -q fasd
+        # fasd
+        function __fasd_init -e fish_postexec -d "fasd takes record of the directories changed into"
+            set -lx RETVAL $status
+            if test $RETVAL -eq 0 # if there was no error
+                command fasd --proc (command fasd --sanitize "$argv" | tr -s " " \n) >/dev/null 2>&1 &
+                disown
+            end
         end
-    end
 
-    function __fasd_print_completion
-        set cmd (commandline -po)
-        test (count $cmd) -ge 2; and fasd $argv $cmd[2..-1] -l
-    end
-
-    function fasd_cd -d "fasd builtin cd"
-        if test (count $argv) -le 1
-            command fasd "$argv"
-        else
-            fasd -e 'printf %s' $argv | read -l ret
-            test -z "$ret"; and return
-            test -d "$ret"; and cd "$ret"; or printf "%s\n" $ret
+        function __fasd_print_completion
+            set cmd (commandline -po)
+            test (count $cmd) -ge 2; and fasd $argv $cmd[2..-1] -l
         end
-    end
 
-    function __fasd_print_completion
-        set cmd (commandline -po)
-        test (count $cmd) -ge 2; and fasd $argv $cmd[2..-1] -l
-    end
-
-    function c
-        fasd_cd -d $argv
-    end
-    complete -c c -a "(__fasd_print_completion -d)" -f
-
-    function fasd_inline
-        set -l opts (fasd -lR (string replace -r '^,' '' $argv[1]))
-        if test (count $opts) -gt 1
-            printf '%s\n' $opts | fzf --height 10
-        else
-            echo $opts[1]
+        function fasd_cd -d "fasd builtin cd"
+            if test (count $argv) -le 1
+                command fasd "$argv"
+            else
+                fasd -e 'printf %s' $argv | read -l ret
+                test -z "$ret"; and return
+                test -d "$ret"; and cd "$ret"; or printf "%s\n" $ret
+            end
         end
-        commandline -f repaint
+
+        function __fasd_print_completion
+            set cmd (commandline -po)
+            test (count $cmd) -ge 2; and fasd $argv $cmd[2..-1] -l
+        end
+
+        function c
+            fasd_cd -d $argv
+        end
+        complete -c c -a "(__fasd_print_completion -d)" -f
+
+        function fasd_inline
+            set -l opts (fasd -lR (string replace -r '^,' '' $argv[1]))
+            if test (count $opts) -gt 1
+                printf '%s\n' $opts | fzf --height 10
+            else
+                echo $opts[1]
+            end
+            commandline -f repaint
+        end
+        abbr --add fasd_inline --position anywhere --regex ',[^ ]+' --function fasd_inline
     end
 
     # get zsh like up/down
@@ -174,7 +177,6 @@ if status is-interactive
     abbr --add k kubectl
     abbr --add dkc docker-compose
     abbr --add xc xclip -sel clip
-    abbr --add fasd_inline --position anywhere --regex ',[^ ]+' --function fasd_inline
 
     if command -q eza
         function ll
