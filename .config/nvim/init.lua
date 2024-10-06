@@ -372,7 +372,7 @@ local plugins = {
       require'diagnosticls-configs'.init {on_attach = on_attach}
 
       -- Enable the following language servers
-      local servers = {'gopls', 'rust_analyzer', 'tsserver', 'jsonls', 'yamlls', 'zk', 'marksman', 'pyright'}
+      local servers = {'gopls', 'rust_analyzer', 'ts_ls', 'jsonls', 'yamlls', 'zk', 'marksman', 'pyright'}
       local caps = require('cmp_nvim_lsp').default_capabilities()
       for _, lsp in ipairs(servers) do
         nvim_lsp[lsp].setup {
