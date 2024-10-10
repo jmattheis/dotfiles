@@ -156,6 +156,31 @@ if status is-interactive
         string join '' -- [ $stat (set_color -o green) $puser@$phost (set_color -o grey) ' ' $prompt (set_color normal) $git_branch (set_color normal) ] ' '
     end
 
+    function _toggle_sudo
+        if not commandline | string length -q
+            return
+        end
+
+        set -l process (commandline -p | string collect)
+        set -l length (string length -- "$to_prepend")
+        set -l cursor_location (commandline -pC)
+
+        set -l next
+        if string match -qr '^\s*'$EDITOR'\s+' "$process"
+            set next (string replace -- "nvim" "sudo -e" "$process")
+        else if string match -qr '^\s*sudo -e\s+' "$process"
+            set next (string replace -- "sudo -e" "nvim" "$process")
+        else if string match -qr '^\s*sudo\s+' "$process"
+            set next (string replace -r -- "sudo\s+" "" "$process")
+        else
+            set next (string replace -r -- "^(\s*)" '$1sudo ' "$process")
+        end
+        if set -q next
+            commandline --replace -p -- $next
+            commandline -pC (math $cursor_location - (string length -- $next) - $length)
+        end
+    end
+
     set -g fish_greeting
     set -g fish_autosuggestion_enabled 0
 
@@ -222,4 +247,9 @@ if status is-interactive
     set -g fish_pager_color_description $comment
 
     bind \cc 'if test (commandline -b) = ""; echo ""; and commandline -f repaint; else; commandline -f cancel-commandline; end'
+
+    set -g fish_escape_delay_ms 300
+    # esc esc for sudo / unsudo
+    bind \e\e 'for cmd in sudo doas please; if command -q $cmd; fish_commandline_prepend $cmd; break; end; end'
+    bind \ca _toggle_sudo
 end
