@@ -14,6 +14,7 @@
 	sh = show --color-words='[^[:space:]]'
 	df = diff --color-words=.
 	last = show
+	dt = describe --tags --abbrev=0
 	r = rebase
 	st = status -sb
 	b = branch
