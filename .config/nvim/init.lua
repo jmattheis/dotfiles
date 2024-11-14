@@ -403,20 +403,6 @@ local plugins = {
           },
         },
       })
-
-      autocmd('FileType', {
-        group = augroup('JdtlsLSP', {clear = true}),
-        pattern = {'java'},
-        callback = function()
-          local config = {
-            handlers = {['language/status'] = function() end},
-            on_attach = on_attach,
-            cmd = {'java-lsp.sh', vim.fn.fnamemodify(root_dir, ':p:h:t')},
-            root_dir = vim.fs.dirname(vim.fs.find({'gradlew', '.git', 'mvnw'}, {upward = true})[1]),
-          }
-          require('jdtls').start_or_attach(config)
-        end,
-      })
     end,
   },
 }
