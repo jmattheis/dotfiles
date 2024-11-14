@@ -156,6 +156,11 @@ if status is-interactive
         string join '' -- [ $stat (set_color -o green) $puser@$phost (set_color -o grey) ' ' $prompt (set_color normal) $git_branch (set_color normal) ] ' '
     end
 
+    function kc_abbr
+        echo 'kubectl --context '(kubectl config get-contexts -o name | fzf --height 10); and commandline -f repaint
+    end
+    abbr --add kc --function kc_abbr
+
     set -g fish_greeting
     set -g fish_autosuggestion_enabled 0
 
