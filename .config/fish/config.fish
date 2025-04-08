@@ -65,6 +65,11 @@ if status is-interactive
         abbr --add fasd_inline --position anywhere --regex ',[^ ]+' --function fasd_inline
     end
 
+    function __abbr_date
+        date -d (string replace -r '^,d(-?\d+)' '$1' $argv[1])" days" "+%Y-%m-%d"
+    end
+    abbr --add dateoffset --position anywhere --regex ',d-?\d+' --function __abbr_date
+
     # get zsh like up/down
 
     # from: type up-or-search
