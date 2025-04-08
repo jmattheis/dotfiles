@@ -85,7 +85,7 @@ local plugins = {
           lualine_x = {
             function()
               local clients = {}
-              for _, client in pairs(vim.lsp.buf_get_clients()) do table.insert(clients, client.name) end
+              for _, client in pairs(vim.lsp.get_clients()) do table.insert(clients, client.name) end
               return table.concat(clients, ' ')
             end,
           },
@@ -367,7 +367,7 @@ local plugins = {
         buf_keymap('n', '<leader>dN', '<cmd>lua vim.diagnostic.goto_prev()<CR>', {silent = true, noremap = true})
       end
 
-      local eslint = require 'diagnosticls-configs.linters.eslint'
+      local eslint = require 'diagnosticls-configs.linters.eslint_d'
       require'diagnosticls-configs'.setup {['typescript'] = {linter = eslint}, ['typescriptreact'] = {linter = eslint}}
       require'diagnosticls-configs'.init {on_attach = on_attach}
 
