@@ -177,6 +177,7 @@ if status is-interactive
     else if command -q vi
         set -Ux EDITOR vi
     end
+    set -Ux NODE_OPTIONS --use-openssl-ca
 
     abbr --add ts tig status
     abbr --add t tig
