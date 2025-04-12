@@ -1,0 +1,236 @@
+#!/usr/bin/node --no-warnings
+
+import fs from "node:fs/promises";
+import path from "node:path";
+import crypto from "node:crypto";
+import util from "node:util";
+import { execFile } from "node:child_process";
+import { createReadStream } from "fs";
+import { createInterface } from "readline";
+
+const exec = util.promisify(execFile);
+
+const FORCE = process.argv.includes("--force");
+
+const marker = "; hledger-sync-include; generated DO NOT EDIT";
+
+const main = async () => {
+  const root = await findRoot();
+  const initFile = path.join(root, "init.journal");
+
+  if (process.argv.includes("csv")) {
+    await importCsvs({ root, initFile });
+  }
+  if (process.argv.includes("price")) {
+    await importPrices({ root, initFile });
+  }
+  await collectIncludable({ root, initFile: "init.journal" });
+};
+
+async function importPrices({ root }) {
+  const priceRelatives = fs.glob("prices/*.journal", { cwd: root });
+  for await (const priceRelative of priceRelatives) {
+    const price = path.join(root, priceRelative);
+    const lines = (await fs.readFile(price, "utf8"))
+      .toString()
+      .split("\n")
+      .filter((x) => x);
+
+    const jsonPartMatch = lines[0].match(/^; hledger-sync-price ({.*})/);
+    if (!jsonPartMatch) continue;
+
+    const meta = JSON.parse(jsonPartMatch[1]);
+    if (!isPastDate(meta.updated)) {
+      console.log(`[price][${meta.wkn ?? meta.crypto}] up-to-date`);
+
+      continue;
+    }
+
+    if (meta.crypto) {
+      const resp = await fetch(
+        `https://api.tiingo.com/tiingo/crypto/prices?tickers=${meta.crypto}${meta.target}&startDate=${meta.last}&resampleFreq=1day&token=${process.env.TIINGO_TOKEN}`,
+        {},
+      ).then((x) => x.json());
+
+      const prices = resp[0].priceData;
+
+      meta.updated = new Date().toISOString().slice(0, 10);
+      meta.last = prices[prices.length - 1].date.slice(0, 10);
+
+      lines[0] = `; hledger-sync-price ${JSON.stringify(meta)}`;
+
+      const updated = [
+        ...lines,
+        ...prices
+          .filter(({ date }) => new Date(date).getDay() === 0)
+          .map(
+            ({ date, close }) =>
+              `P ${date.slice(0, 10)} "${meta.crypto}" ${close} ${meta.target}`,
+          ),
+      ];
+      await fs.writeFile(price, updated.join("\n") + "\n", "utf8");
+      console.log(`[price][${meta.crypto}] Added ${prices.length} prices`);
+    }
+
+    if (meta.wkn) {
+      const matches = await fetch(
+        "https://api.portfolio-report.net/v1/securities/search?q=" + meta.wkn,
+        {},
+      ).then((x) => x.json());
+
+      if (matches.length !== 1) {
+        console.log("wkn not unique", meta.wkn, matches);
+        process.exit(1);
+      }
+      const { uuid } = matches[0];
+
+      const prices = await fetch(
+        `https://api.portfolio-report.net/securities/uuid/${uuid}/prices/${meta.target}?from=${meta.last}`,
+        {},
+      ).then((x) => x.json());
+
+      meta.updated = new Date().toISOString().slice(0, 10);
+      meta.last = prices[prices.length - 1].date;
+
+      lines[0] = `; hledger-sync-price ${JSON.stringify(meta)}`;
+
+      const updated = [
+        ...lines,
+        ...prices.map(
+          ({ date, close }) =>
+            `P ${date} "${meta.wkn}" ${close} ${meta.target}`,
+        ),
+      ];
+      await fs.writeFile(price, updated.join("\n") + "\n", "utf8");
+      console.log(`[price][${meta.wkn}] Added ${prices.length} prices`);
+    }
+  }
+}
+
+async function importCsvs({ root, initFile }) {
+  const cache = JSON.parse(
+    await fs.readFile(path.join(root, "cache.json"), "utf8").catch(() => "{}"),
+  );
+
+  const inFiles = fs.glob("*/*/**/*.csv", { cwd: root });
+  for await (const inFileRelative of inFiles) {
+    const inFile = path.join(root, inFileRelative);
+
+    const journal = path.join(
+      root,
+      inFileRelative.replace(/.csv$/, ".journal"),
+    );
+    const rule = await getRules(root, inFileRelative);
+
+    const inSha256 = await sha256([inFile, rule, initFile]);
+    if (cache[inFileRelative] === inSha256 && !FORCE) {
+      console.log("CACHED", inFileRelative);
+      continue;
+    }
+    cache[inFileRelative] = inSha256;
+    console.log("IMPORTED", inFile);
+
+    await hledgerImport({ initFile, journal, rule, inFile });
+  }
+
+  await fs.writeFile(
+    path.join(root, "cache.json"),
+    JSON.stringify(cache, null, "  "),
+    "utf8",
+  );
+}
+
+main();
+
+async function collectIncludable({ root, initFile }) {
+  const journalFiles = fs.glob("*/**/*.journal", { cwd: root });
+
+  const includes = [initFile];
+  const withoutManual = [initFile];
+
+  for await (const journalFilesRel of journalFiles) {
+    const line = await readFirstLine(path.join(root, journalFilesRel));
+    if (line.match(/^; hledger-sync-(include|price)/)) {
+      includes.push(journalFilesRel);
+      if (!journalFilesRel.includes("manual")) {
+        withoutManual.push(journalFilesRel);
+      }
+    }
+  }
+
+  await write(root, "main.journal", includes);
+  await write(root, "nomanual.journal", withoutManual);
+}
+
+async function write(root, file, includes) {
+  const content = includes.map((journal) => `include ${journal}\n`).join("");
+  await fs.writeFile(path.join(root, file), content, "utf8");
+}
+
+async function readFirstLine(path) {
+  const inputStream = createReadStream(path);
+  try {
+    for await (const line of createInterface(inputStream)) return line;
+    return "";
+  } finally {
+    inputStream.destroy();
+  }
+}
+
+async function sha256(files) {
+  let sha = crypto.createHash("sha256");
+  for (const file of files) {
+    const content = await fs.readFile(file, "utf8");
+    sha.update(content.toString(), "utf8");
+  }
+  return sha.digest("hex").toString();
+}
+
+async function getRules(root, inFileRelative) {
+  const parts = inFileRelative.split("/");
+  const checks = Array.from({ length: parts.length - 1 }, (_, i) =>
+    parts.slice(0, i + 2),
+  )
+    .map(
+      (p, i, arr) =>
+        p.join("/") + (arr.length - 1 === i ? ".rules" : "/main.rules"),
+    )
+    .map((rule) => path.join(root, rule))
+    .reverse();
+
+  for (const rule of checks) {
+    const ok = await fs
+      .stat(rule)
+      .then(() => true)
+      .catch(() => false);
+    if (ok) {
+      return rule;
+    }
+  }
+
+  console.error("ERROR", path.join(root, inFileRelative));
+  console.error(`No rule file found. Searched:`);
+  console.error(checks.map((check) => "  " + check).join("\n"));
+  process.exit(1);
+}
+
+async function hledgerImport({ initFile, journal, rule, inFile }) {
+  await fs.mkdir(path.dirname(journal), { recursive: true });
+  const args = ["-f", initFile, "-f", inFile, `--rules-file=${rule}`, "print"];
+  const out = await exec("hledger", args);
+
+  console.log("WRITING", journal);
+  await fs.writeFile(journal, marker + "\n\n" + out.stdout, "utf8");
+}
+
+async function findRoot() {
+  return (await exec("git", ["rev-parse", "--show-toplevel"])).stdout.trim();
+}
+
+function isPastDate(dateString) {
+  const inputDate = new Date(dateString);
+  const yesterday = new Date();
+  inputDate.setHours(0, 0, 0, 0);
+  yesterday.setHours(0, 0, 0, 0);
+  return inputDate < yesterday;
+}
