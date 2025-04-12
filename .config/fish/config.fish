@@ -232,5 +232,7 @@ if status is-interactive
     set -g fish_pager_color_completion $foreground
     set -g fish_pager_color_description $comment
 
+    alias hl='hledger --infer-equity'
+
     bind \cc 'if test (commandline -b) = ""; echo ""; and commandline -f repaint; else; commandline -f cancel-commandline; end'
 end
