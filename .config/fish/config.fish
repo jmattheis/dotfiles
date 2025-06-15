@@ -190,9 +190,7 @@ if status is-interactive
     abbr --add xc xclip -sel clip
 
     if command -q eza
-        function ll
-            eza -la
-        end
+        alias ll "eza -la"
     end
 
     if functions -q fzf_key_bindings
