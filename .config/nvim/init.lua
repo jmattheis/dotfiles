@@ -41,7 +41,7 @@ local plugins = {
 			end,
 		},
 	},
-	"windwp/nvim-autopairs", -- autoclose ()
+	{ "windwp/nvim-autopairs", opts = { check_ts = true } }, -- autoclose ()
 	{ "kylechui/nvim-surround", config = true }, -- surround operations
 	{
 		"sindrets/diffview.nvim",
@@ -396,55 +396,28 @@ local plugins = {
 		end,
 	},
 	{ -- autocomplete
-		"hrsh7th/nvim-cmp",
-		event = "InsertEnter",
-		dependencies = {
-			"hrsh7th/cmp-nvim-lsp",
-			"hrsh7th/cmp-buffer",
-			"hrsh7th/cmp-path",
-			"L3MON4D3/LuaSnip",
-			"saadparwaiz1/cmp_luasnip",
+		"saghen/blink.cmp",
+		version = "1.*",
+		opts = {
+			keymap = {
+				preset = "none",
+				["<Down>"] = { "select_next", "fallback" },
+				["<Up>"] = { "select_prev", "fallback" },
+				["<C-b>"] = { "scroll_documentation_up", "fallback" },
+				["<C-f>"] = { "scroll_documentation_down", "fallback" },
+				["<C-Space>"] = { "show", "fallback" },
+				["<CR>"] = { "accept", "fallback" },
+			},
+			signature = { enabled = true },
+			completion = {
+				list = { selection = { preselect = true, auto_insert = true } },
+				documentation = { auto_show = true },
+			},
+			sources = { default = { "lsp", "path" } },
 		},
-		config = function()
-			require("nvim-autopairs").setup({ check_ts = true })
-
-			local cmp_autopairs = require("nvim-autopairs.completion.cmp")
-			local cmp = require("cmp")
-
-			cmp.setup({
-				snippet = {
-					expand = function(args)
-						require("luasnip").lsp_expand(args.body)
-					end,
-				},
-				mapping = {
-					["<Down>"] = cmp.mapping(cmp.mapping.select_next_item(), { "i" }),
-					["<Up>"] = cmp.mapping(cmp.mapping.select_prev_item(), { "i" }),
-					["<C-b>"] = cmp.mapping(cmp.mapping.scroll_docs(-4), { "i", "c" }),
-					["<C-f>"] = cmp.mapping(cmp.mapping.scroll_docs(4), { "i", "c" }),
-					["<C-Space>"] = cmp.mapping(cmp.mapping.complete(), { "i", "c" }),
-					["<CR>"] = cmp.mapping.confirm({ select = true }),
-				},
-				sources = cmp.config.sources({ { name = "nvim_lsp" }, { name = "path" } }),
-			})
-			cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done({ map_chrr = { tex = "" } }))
-		end,
 	},
 	"neovim/nvim-lspconfig",
 	{ "j-hui/fidget.nvim", event = "LspAttach", opts = {} },
-	{
-		"ray-x/lsp_signature.nvim",
-		event = "LspAttach",
-		config = function()
-			require("lsp_signature").setup({
-				bind = true,
-				doc_lines = 0,
-				floating_window_off_x = 0,
-				hint_enable = false,
-				handler_opts = { border = "none" },
-			})
-		end,
-	},
 }
 
 require("lazy").setup({ spec = plugins, install = { colorscheme = { "gruvbox" } }, checker = { enabled = false } })
@@ -488,18 +461,7 @@ autocmd("LspAttach", {
 
 -- LSP server configs (defaults from nvim-lspconfig, overrides only)
 vim.lsp.config("*", {
-	capabilities = require("cmp_nvim_lsp").default_capabilities(),
-})
-
-vim.lsp.config("rust_analyzer", {
-	settings = {
-		["rust-analyzer"] = {
-			assist = { importEnforceGranularity = true, importPrefix = "crate" },
-			cargo = { allFeatures = true },
-			checkOnSave = { command = { "cargo", "clippy" } },
-			inlayHints = { lifetimeElisionHints = { enable = true, useParameterNames = true } },
-		},
-	},
+	capabilities = require("blink.cmp").get_lsp_capabilities(),
 })
 
 vim.lsp.config("yamlls", {
@@ -522,7 +484,6 @@ autocmd("FileType", {
 	end,
 })
 
--- https://github.com/hrsh7th/nvim-compe#how-to-remove-pattern-not-found
 vim.o.shortmess = vim.o.shortmess .. "c"
 
 -- Incremental live completion
