@@ -35,22 +35,23 @@ local plugins = {
 	{ "tpope/vim-fugitive", cmd = "Git" }, -- Git commands
 	{
 		"numToStr/Comment.nvim",
-		config = function()
-			require("Comment").setup()
-		end,
-	}, -- Code Comment stuff, f.ex gc
+		opts = {
+			pre_hook = function()
+				return vim.bo.commentstring
+			end,
+		},
+	},
 	"windwp/nvim-autopairs", -- autoclose ()
 	{ "kylechui/nvim-surround", config = true }, -- surround operations
-	{ "sindrets/diffview.nvim", cmd = { "DiffviewOpen", "DiffviewFileHistory" } }, -- file history
-	"christoomey/vim-tmux-navigator",
-	{ -- undo tree
-		"mbbill/undotree",
-		keys = { { "<leader>au", ":UndotreeToggle<CR>", silent = true, noremap = true } },
-		init = function()
-			vim.g.undotree_WindowLayout = 2
-			vim.g.undotree_SetFocusWhenToggle = 1
-		end,
+	{
+		"sindrets/diffview.nvim",
+		cmd = { "DiffviewOpen", "DiffviewFileHistory" },
+		keys = {
+			{ "<leader>gh", "<cmd>DiffviewFileHistory %<CR>", mode = "n", noremap = true },
+			{ "<leader>gh", "<Esc><cmd>'<,'>DiffviewFileHistory<CR>", mode = "v", noremap = true },
+		},
 	},
+	"christoomey/vim-tmux-navigator",
 	{ -- startup tracking
 		"dstein64/vim-startuptime",
 		cmd = "StartupTime",
@@ -84,12 +85,11 @@ local plugins = {
 		},
 	},
 	{ -- theme
-		"morhetz/gruvbox",
+		"ellisonleao/gruvbox.nvim",
+		priority = 1000,
 		config = function()
-			if vim.fn.has("termguicolors") then
-				vim.o.termguicolors = true
-			end
-
+			vim.o.termguicolors = true
+			require("gruvbox").setup({})
 			vim.cmd([[colorscheme gruvbox]])
 		end,
 	},
@@ -139,12 +139,6 @@ local plugins = {
 			})
 		end,
 	},
-	{ -- show spaces / tabs everywhere
-		"lukas-reineke/indent-blankline.nvim",
-		config = function()
-			require("ibl").setup({ scope = { enabled = false }, indent = { char = { "│" } } })
-		end,
-	},
 	{ -- show git signs at the left side
 		"lewis6991/gitsigns.nvim",
 		dependencies = { "nvim-lua/plenary.nvim" },
@@ -183,28 +177,129 @@ local plugins = {
 		end,
 	}, -- navigation
 	{
-		"junegunn/fzf.vim",
+		"folke/snacks.nvim",
 		lazy = false,
 		keys = {
-			{ "<leader>f", ":Rg<CR>", silent = true, noremap = true },
-			{ "<leader>n", ":GFiles --cached --others --exclude-standar<CR>", silent = true, noremap = true },
-			{ "<leader>N", ":Files<CR>", silent = true, noremap = true },
-			{ "<leader>b", ":Buffers<CR>", silent = true, noremap = true },
+			{
+				"<leader>f",
+				function()
+					Snacks.picker.grep()
+				end,
+				silent = true,
+				noremap = true,
+			},
+			{
+				"<leader>n",
+				function()
+					Snacks.picker.git_files()
+				end,
+				silent = true,
+				noremap = true,
+			},
+			{
+				"<leader>N",
+				function()
+					Snacks.picker.files()
+				end,
+				silent = true,
+				noremap = true,
+			},
+			{
+				"<leader>b",
+				function()
+					Snacks.picker.buffers()
+				end,
+				silent = true,
+				noremap = true,
+			},
+			{
+				"<leader>r",
+				function()
+					Snacks.picker.resume()
+				end,
+				silent = true,
+				noremap = true,
+			},
+			{
+				"<leader>go",
+				function()
+					Snacks.gitbrowse()
+				end,
+				desc = "Open in browser",
+				mode = { "n", "v" },
+			},
 		},
-		dependencies = { "junegunn/fzf" },
-		init = function()
-			vim.g.fzf_layout = { down = "35%" }
-		end,
-	}, -- find string in whole project
+		opts = {
+			gitbrowse = { enabled = true },
+			indent = { char = "│", scope = { enabled = false } },
+			picker = {
+				layout = {
+					reverse = true,
+					layout = {
+						backdrop = false,
+						row = -1,
+						width = 0,
+						height = 0.5,
+						box = "vertical",
+						border = "top",
+						{ win = "preview", border = "bottom" },
+						{ win = "list", border = "none", height = 0.6 },
+						{ win = "input", height = 1, border = "top" },
+					},
+				},
+				sources = { select = { layout = { layout = { preview = false } } } },
+				win = { input = { keys = { ["<Esc>"] = { "close", mode = { "n", "i" } } } } },
+			},
+		},
+	},
 	{
-		"dyng/ctrlsf.vim",
-		keys = { { "<leader>as", ":CtrlSF", noremap = true } },
-		init = function()
-			vim.g.ctrlsf_auto_preview = 1
-			vim.g.ctrlsf_auto_focus = { at = "start" }
-			vim.g.ctrlsf_mapping = { next = "n", prev = "N" }
+		"folke/flash.nvim",
+		event = "VeryLazy",
+		---@type Flash.Config
+		opts = {},
+		keys = {
+			{
+				"s",
+				mode = { "n", "x", "o" },
+				function()
+					require("flash").jump()
+				end,
+				desc = "Flash",
+			},
+			{
+				"S",
+				mode = { "n", "x", "o" },
+				function()
+					require("flash").treesitter()
+				end,
+				desc = "Flash Treesitter",
+			},
+			{
+				"<c-s>",
+				mode = { "c" },
+				function()
+					require("flash").toggle()
+				end,
+				desc = "Toggle Flash Search",
+			},
+		},
+	},
+	{
+		"MagicDuck/grug-far.nvim",
+		cmd = "GrugFar",
+		keys = { { "<leader>as", "<cmd>GrugFar<CR>", noremap = true } },
+		opts = {},
+	},
+	{
+		"rachartier/tiny-inline-diagnostic.nvim",
+		event = "VeryLazy",
+		priority = 1000,
+		config = function()
+			require("tiny-inline-diagnostic").setup()
+			vim.diagnostic.config({ virtual_text = false }) -- Disable Neovim's default virtual text diagnostics
 		end,
 	},
+	"b0o/schemastore.nvim",
 	{ -- tree sitter
 		"nvim-treesitter/nvim-treesitter",
 		lazy = false,
@@ -235,58 +330,6 @@ local plugins = {
 				"xml",
 				"yaml",
 			})
-		end,
-	},
-	{ -- treesitter textobjects
-		"nvim-treesitter/nvim-treesitter-textobjects",
-		branch = "main",
-		config = function()
-			require("nvim-treesitter-textobjects").setup({
-				select = { lookahead = true },
-			})
-
-			local select_to = require("nvim-treesitter-textobjects.select")
-			for _, mode in ipairs({ "x", "o" }) do
-				vim.keymap.set(mode, "af", function()
-					select_to.select_textobject("@function.outer", "textobjects")
-				end)
-				vim.keymap.set(mode, "if", function()
-					select_to.select_textobject("@function.inner", "textobjects")
-				end)
-				vim.keymap.set(mode, "ab", function()
-					select_to.select_textobject("@block.outer", "textobjects")
-				end)
-				vim.keymap.set(mode, "ib", function()
-					select_to.select_textobject("@block.inner", "textobjects")
-				end)
-				vim.keymap.set(mode, "ac", function()
-					select_to.select_textobject("@conditional.outer", "textobjects")
-				end)
-				vim.keymap.set(mode, "ic", function()
-					select_to.select_textobject("@conditional.inner", "textobjects")
-				end)
-				vim.keymap.set(mode, "al", function()
-					select_to.select_textobject("@loop.outer", "textobjects")
-				end)
-				vim.keymap.set(mode, "il", function()
-					select_to.select_textobject("@loop.inner", "textobjects")
-				end)
-			end
-
-			local swap = require("nvim-treesitter-textobjects.swap")
-			vim.keymap.set("n", "<Leader><Right>", function()
-				swap.swap_next("@parameter.inner")
-			end)
-			vim.keymap.set("n", "<Leader><Left>", function()
-				swap.swap_previous("@parameter.inner")
-			end)
-		end,
-	},
-	{ "kevinhwang91/nvim-bqf", ft = "qf" },
-	{
-		"https://gitlab.com/yorickpeterse/nvim-pqf.git",
-		config = function()
-			require("pqf").setup()
 		end,
 	},
 	{ -- show trailing whitespaces in red
@@ -402,7 +445,6 @@ local plugins = {
 			})
 		end,
 	},
-	"gfanto/fzf-lsp.nvim",
 }
 
 require("lazy").setup({ spec = plugins, install = { colorscheme = { "gruvbox" } }, checker = { enabled = false } })
@@ -415,14 +457,26 @@ autocmd("LspAttach", {
 		vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
 		vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, opts)
 		vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
-		vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-		vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
-		vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
-		vim.keymap.set("n", "gm", ":DocumentSymbols<CR>", opts)
-		vim.keymap.set("n", "gM", vim.lsp.buf.workspace_symbol, opts)
+		vim.keymap.set("n", "gd", function()
+			Snacks.picker.lsp_definitions()
+		end, opts)
+		vim.keymap.set("n", "gi", function()
+			Snacks.picker.lsp_implementations()
+		end, opts)
+		vim.keymap.set("n", "gr", function()
+			Snacks.picker.lsp_references()
+		end, opts)
+		vim.keymap.set("n", "gm", function()
+			Snacks.picker.lsp_symbols()
+		end, opts)
+		vim.keymap.set("n", "gM", function()
+			Snacks.picker.lsp_workspace_symbols()
+		end, opts)
 		vim.keymap.set("n", "<leader>ar", vim.lsp.buf.rename, opts)
-		vim.keymap.set("n", "<leader>ad", vim.lsp.buf.definition, opts)
-		vim.keymap.set("n", "<leader>aa", ":CodeActions<CR>", opts)
+		vim.keymap.set("n", "<leader>ad", function()
+			Snacks.picker.lsp_definitions()
+		end, opts)
+		vim.keymap.set("n", "<leader>aa", vim.lsp.buf.code_action, opts)
 		vim.keymap.set("n", "<leader>aF", vim.lsp.buf.format, opts)
 		vim.keymap.set("n", "<leader>dl", function()
 			vim.diagnostic.open_float({ bufnr = 0 })
@@ -450,14 +504,13 @@ vim.lsp.config("rust_analyzer", {
 
 vim.lsp.config("yamlls", {
 	settings = {
-		yaml = {
-			schemas = {
-				["http://json.schemastore.org/gitlab-ci.json"] = "*.gitlab-ci.*{yml,yaml}",
-				["https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/schemas/v3.1/schema.json"] = "openapi.yaml",
-			},
-		},
+		yaml = { schemaStore = { enable = false, url = "" }, schemas = require("schemastore").yaml.schemas() },
 	},
 })
+vim.lsp.config(
+	"jsonls",
+	{ settings = { json = { schemas = require("schemastore").json.schemas(), validate = { enable = true } } } }
+)
 
 vim.lsp.enable({ "gopls", "rust_analyzer", "ts_ls", "jsonls", "yamlls", "zk", "marksman", "pyright" })
 
@@ -524,7 +577,7 @@ vim.o.ignorecase = true
 vim.o.smartcase = true
 
 -- Decrease update time
-vim.o.updatetime = 250
+vim.o.updatetime = 100
 vim.wo.signcolumn = "yes"
 
 -- Highlight on yank
