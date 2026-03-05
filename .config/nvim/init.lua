@@ -195,79 +195,79 @@ local plugins = {
 	},
 	{ -- tree sitter
 		"nvim-treesitter/nvim-treesitter",
+		lazy = false,
 		build = ":TSUpdate",
 		dependencies = {
 			{ "windwp/nvim-ts-autotag", ft = { "html", "typescriptreact" } }, -- close html tags via treesitter
-			"nvim-treesitter/nvim-treesitter-refactor",
-			"nvim-treesitter/nvim-treesitter-textobjects",
 			{ "JoosepAlviste/nvim-ts-context-commentstring", ft = { "html", "typescriptreact" } },
 		},
 		config = function()
-			require("nvim-treesitter.configs").setup({
-				ensure_installed = {
-					"markdown",
-					"go",
-					"lua",
-					"yaml",
-					"json",
-					"java",
-					"typescript",
-					"bash",
-					"diff",
-					"dockerfile",
-					"gitcommit",
-					"git_rebase",
-					"gomod",
-					"gosum",
-					"ini",
-					"kotlin",
-					"sql",
-					"python",
-					"tsx",
-					"xml",
-				},
-				highlight = { enable = true },
-				autotag = { enable = true },
-				indent = { enable = false },
-				refactor = {
-					highlight_definitions = {
-						enable = true,
-						disable = function(_, buf)
-							return vim.api.nvim_buf_line_count(buf) > 5000
-						end,
-					},
-				},
-				incremental_selection = {
-					enable = true,
-					keymaps = {
-						init_selection = "gnn",
-						node_incremental = ".",
-						scope_incremental = ";",
-						node_decremental = "g.",
-					},
-				},
-				textobjects = {
-					select = {
-						enable = true,
-						lookahead = true,
-						keymaps = {
-							["af"] = "@function.outer",
-							["if"] = "@function.inner",
-							["ab"] = "@block.outer",
-							["ib"] = "@block.inner",
-							["ac"] = "@conditional.outer",
-							["ic"] = "@conditional.inner",
-							["al"] = "@loop.outer",
-							["il"] = "@loop.inner",
-						},
-					},
-					swap = {
-						enable = true,
-						swap_next = { ["<Leader><Right>"] = "@parameter.inner" },
-						swap_previous = { ["<Leader><Left>"] = "@parameter.inner" },
-					},
-				},
+			require("nvim-treesitter").install({
+				"bash",
+				"diff",
+				"dockerfile",
+				"gitcommit",
+				"git_rebase",
+				"go",
+				"gomod",
+				"gosum",
+				"ini",
+				"java",
+				"json",
+				"kotlin",
+				"lua",
+				"markdown",
+				"python",
+				"tsx",
+				"typescript",
+				"xml",
+				"yaml",
 			})
+		end,
+	},
+	{ -- treesitter textobjects
+		"nvim-treesitter/nvim-treesitter-textobjects",
+		branch = "main",
+		config = function()
+			require("nvim-treesitter-textobjects").setup({
+				select = { lookahead = true },
+			})
+
+			local select_to = require("nvim-treesitter-textobjects.select")
+			for _, mode in ipairs({ "x", "o" }) do
+				vim.keymap.set(mode, "af", function()
+					select_to.select_textobject("@function.outer", "textobjects")
+				end)
+				vim.keymap.set(mode, "if", function()
+					select_to.select_textobject("@function.inner", "textobjects")
+				end)
+				vim.keymap.set(mode, "ab", function()
+					select_to.select_textobject("@block.outer", "textobjects")
+				end)
+				vim.keymap.set(mode, "ib", function()
+					select_to.select_textobject("@block.inner", "textobjects")
+				end)
+				vim.keymap.set(mode, "ac", function()
+					select_to.select_textobject("@conditional.outer", "textobjects")
+				end)
+				vim.keymap.set(mode, "ic", function()
+					select_to.select_textobject("@conditional.inner", "textobjects")
+				end)
+				vim.keymap.set(mode, "al", function()
+					select_to.select_textobject("@loop.outer", "textobjects")
+				end)
+				vim.keymap.set(mode, "il", function()
+					select_to.select_textobject("@loop.inner", "textobjects")
+				end)
+			end
+
+			local swap = require("nvim-treesitter-textobjects.swap")
+			vim.keymap.set("n", "<Leader><Right>", function()
+				swap.swap_next("@parameter.inner")
+			end)
+			vim.keymap.set("n", "<Leader><Left>", function()
+				swap.swap_previous("@parameter.inner")
+			end)
 		end,
 	},
 	{ "kevinhwang91/nvim-bqf", ft = "qf" },
@@ -447,6 +447,14 @@ vim.lsp.config("yamlls", {
 })
 
 vim.lsp.enable({ "gopls", "rust_analyzer", "ts_ls", "jsonls", "yamlls", "zk", "marksman", "pyright" })
+
+-- Enable treesitter highlighting for installed parsers
+autocmd("FileType", {
+	group = augroup("TreesitterHighlight", { clear = true }),
+	callback = function()
+		pcall(vim.treesitter.start)
+	end,
+})
 
 -- https://github.com/hrsh7th/nvim-compe#how-to-remove-pattern-not-found
 vim.o.shortmess = vim.o.shortmess .. "c"
