@@ -371,7 +371,7 @@ local plugins = {
 		opts = { keys = { j = "next", k = "prev" } },
 	},
 	{
-		"kyazdani42/nvim-tree.lua",
+		"nvim-tree/nvim-tree.lua",
 		dependencies = { "nvim-tree/nvim-web-devicons" },
 		keys = { { "<leader>e", ":NvimTreeFindFileToggle<CR>", silent = true, noremap = true } },
 		config = function()
@@ -383,10 +383,10 @@ local plugins = {
 			autocmd("BufEnter", {
 				group = augroup("NvimTreeClose", { clear = true }),
 				callback = function()
-					local layout = vim.api.nvim_call_function("winlayout", {})
+					local layout = vim.fn.winlayout()
 					if
 						layout[1] == "leaf"
-						and vim.api.nvim_buf_get_option(vim.api.nvim_win_get_buf(layout[2]), "filetype") == "NvimTree"
+						and vim.bo[vim.api.nvim_win_get_buf(layout[2])].filetype == "NvimTree"
 						and layout[3] == nil
 					then
 						vim.cmd("quit")
