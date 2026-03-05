@@ -41,7 +41,6 @@ local plugins = {
 	}, -- Code Comment stuff, f.ex gc
 	"windwp/nvim-autopairs", -- autoclose ()
 	"tpope/vim-surround", -- surround operations
-	"editorconfig/editorconfig-vim", -- use tabstop / tabwidth from .editorconfig
 	{ "sindrets/diffview.nvim", cmd = { "DiffviewOpen", "DiffviewFileHistory" } }, -- file history
 	"christoomey/vim-tmux-navigator",
 	{ -- undo tree
@@ -49,7 +48,7 @@ local plugins = {
 		keys = { { "<leader>au", ":UndotreeToggle<CR>", silent = true, noremap = true } },
 		init = function()
 			vim.g.undotree_WindowLayout = 2
-			vim.g.undetree_SetFocusWhenToggle = 1
+			vim.g.undotree_SetFocusWhenToggle = 1
 		end,
 	},
 	{ -- startup tracking
@@ -204,7 +203,6 @@ local plugins = {
 			{ "JoosepAlviste/nvim-ts-context-commentstring", ft = { "html", "typescriptreact" } },
 		},
 		config = function()
-			require("nvim-treesitter.configs").setup({})
 			require("nvim-treesitter.configs").setup({
 				ensure_installed = {
 					"markdown",
@@ -391,7 +389,6 @@ local plugins = {
 			})
 		end,
 	},
-	"folke/lsp-colors.nvim",
 	"gfanto/fzf-lsp.nvim",
 }
 
@@ -462,9 +459,6 @@ vim.o.tabstop = 4
 vim.o.shiftwidth = 4
 
 vim.o.confirm = true
-
--- lua filetype
-vim.g.do_filetype_lua = true
 
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = "menu,menuone,noselect"
