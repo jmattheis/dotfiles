@@ -95,7 +95,6 @@ local plugins = {
 	},
 	{
 		"nvim-lualine/lualine.nvim",
-		dependencies = { "arkav/lualine-lsp-progress" },
 		config = function()
 			require("lualine").setup({
 				options = {
@@ -113,11 +112,6 @@ local plugins = {
 							"diagnostics",
 							sources = { "nvim_diagnostic" },
 							symbols = { error = "E", warn = "W", info = "I", hint = "H" },
-						},
-						{
-							"lsp_progress",
-							color = { use = false },
-							display_components = { { "title", "percentage", "message" } },
 						},
 					},
 					lualine_x = {
@@ -394,6 +388,7 @@ local plugins = {
 		end,
 	},
 	"neovim/nvim-lspconfig",
+	{ "j-hui/fidget.nvim", event = "LspAttach", opts = {} },
 	{
 		"ray-x/lsp_signature.nvim",
 		event = "LspAttach",
