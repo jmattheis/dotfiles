@@ -89,7 +89,9 @@ local plugins = {
 		priority = 1000,
 		config = function()
 			vim.o.termguicolors = true
-			require("gruvbox").setup({})
+			require("gruvbox").setup({
+				italic = { strings = false, emphasis = false, comments = false, operators = false },
+			})
 			vim.cmd([[colorscheme gruvbox]])
 		end,
 	},
