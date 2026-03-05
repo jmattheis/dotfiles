@@ -409,17 +409,10 @@ local plugins = {
 			cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done({ map_chrr = { tex = "" } }))
 		end,
 	},
-	{ -- lsp
-		"neovim/nvim-lspconfig",
-		ft = { "js", "typescript", "typescriptreact", "go", "rs", "markdown", "java", "python" },
-		dependencies = {
-			"ray-x/lsp_signature.nvim", -- lsp signature
-			"iamcco/diagnostic-languageserver", -- show inline diagnostics
-			"creativenull/diagnosticls-configs-nvim",
-			"simrat39/rust-tools.nvim", -- extra rust inline stuff
-			"folke/lsp-colors.nvim", -- better lsp colors
-			"gfanto/fzf-lsp.nvim", -- fzf lsp
-		},
+	"neovim/nvim-lspconfig",
+	{
+		"ray-x/lsp_signature.nvim",
+		event = "LspAttach",
 		config = function()
 			require("lsp_signature").setup({
 				bind = true,
@@ -428,102 +421,65 @@ local plugins = {
 				hint_enable = false,
 				handler_opts = { border = "none" },
 			})
-
-			local nvim_lsp = require("lspconfig")
-			local on_attach = function(client, bufnr)
-				local function buf_keymap(...)
-					vim.api.nvim_buf_set_keymap(bufnr, ...)
-				end
-
-				vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
-				buf_keymap("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", { silent = true, noremap = true })
-				buf_keymap("n", "<C-k>", "<cmd>lua vim.lsp.buf.signature_help()<CR>", { silent = true, noremap = true })
-				buf_keymap("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>", { silent = true, noremap = true })
-				buf_keymap("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", { silent = true, noremap = true })
-				buf_keymap("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>", { silent = true, noremap = true })
-				buf_keymap("n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>", { silent = true, noremap = true })
-				buf_keymap("n", "gm", ":DocumentSymbols<CR>", { silent = true, noremap = true })
-				buf_keymap("n", "gM", "<cmd>lua vim.lsp.buf.workspace_symbol()<CR>", { silent = true, noremap = true })
-				buf_keymap("n", "<leader>ar", "<cmd>lua vim.lsp.buf.rename()<CR>", { silent = true, noremap = true })
-				buf_keymap(
-					"n",
-					"<leader>ad",
-					"<cmd>lua vim.lsp.buf.definition()<CR>",
-					{ silent = true, noremap = true }
-				)
-				buf_keymap("n", "<leader>aa", ":CodeActions<CR>", { silent = true, noremap = true })
-				buf_keymap(
-					"n",
-					"<leader>aF",
-					"<cmd>lua vim.lsp.buf.formatting()<CR>",
-					{ silent = true, noremap = true }
-				)
-				buf_keymap(
-					"n",
-					"<leader>dl",
-					"<cmd>lua vim.diagnostic.open_float({bufno = 0})<CR>",
-					{ silent = true, noremap = true }
-				)
-				buf_keymap(
-					"n",
-					"<leader>dn",
-					"<cmd>lua vim.diagnostic.goto_next()<CR>",
-					{ silent = true, noremap = true }
-				)
-				buf_keymap(
-					"n",
-					"<leader>dN",
-					"<cmd>lua vim.diagnostic.goto_prev()<CR>",
-					{ silent = true, noremap = true }
-				)
-			end
-
-			local eslint = require("diagnosticls-configs.linters.eslint_d")
-			require("diagnosticls-configs").setup({
-				["typescript"] = { linter = eslint },
-				["typescriptreact"] = { linter = eslint },
-			})
-			require("diagnosticls-configs").init({ on_attach = on_attach })
-
-			-- Enable the following language servers
-			local servers = { "gopls", "rust_analyzer", "ts_ls", "jsonls", "yamlls", "zk", "marksman", "pyright" }
-			local caps = require("cmp_nvim_lsp").default_capabilities()
-			for _, lsp in ipairs(servers) do
-				nvim_lsp[lsp].setup({
-					on_attach = on_attach,
-					capabilities = caps,
-					settings = {
-						yaml = {
-							schemas = {
-								["http://json.schemastore.org/gitlab-ci.json"] = "*.gitlab-ci.*{yml,yaml}",
-								["https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/schemas/v3.1/schema.json"] = "openapi.yaml",
-							},
-						},
-					},
-				})
-			end
-
-			require("rust-tools").setup({
-				server = {
-					on_attach = on_attach,
-					capabilities = caps,
-					settings = {
-						["rust-analyzer"] = {
-							assist = { importEnforceGranularity = true, importPrefix = "crate" },
-							cargo = { allFeatures = true },
-							checkOnSave = { command = { "cargo", "clippy" } },
-						},
-						inlayHints = { lifetimeElisionHints = { enable = true, useParameterNames = true } },
-					},
-				},
-			})
 		end,
 	},
+	"folke/lsp-colors.nvim",
+	"gfanto/fzf-lsp.nvim",
 }
 
-local opts = {}
-
 require("lazy").setup({ spec = plugins, install = { colorscheme = { "gruvbox" } }, checker = { enabled = false } })
+
+-- LSP keybindings on attach
+autocmd("LspAttach", {
+	group = augroup("LspKeybindings", { clear = true }),
+	callback = function(ev)
+		local opts = { buffer = ev.buf, silent = true, noremap = true }
+		vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+		vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, opts)
+		vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
+		vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+		vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
+		vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+		vim.keymap.set("n", "gm", ":DocumentSymbols<CR>", opts)
+		vim.keymap.set("n", "gM", vim.lsp.buf.workspace_symbol, opts)
+		vim.keymap.set("n", "<leader>ar", vim.lsp.buf.rename, opts)
+		vim.keymap.set("n", "<leader>ad", vim.lsp.buf.definition, opts)
+		vim.keymap.set("n", "<leader>aa", ":CodeActions<CR>", opts)
+		vim.keymap.set("n", "<leader>aF", function() vim.lsp.buf.format() end, opts)
+		vim.keymap.set("n", "<leader>dl", function() vim.diagnostic.open_float({ bufnr = 0 }) end, opts)
+		vim.keymap.set("n", "<leader>dn", vim.diagnostic.goto_next, opts)
+		vim.keymap.set("n", "<leader>dN", vim.diagnostic.goto_prev, opts)
+	end,
+})
+
+-- LSP server configs (defaults from nvim-lspconfig, overrides only)
+vim.lsp.config("*", {
+	capabilities = require("cmp_nvim_lsp").default_capabilities(),
+})
+
+vim.lsp.config("rust_analyzer", {
+	settings = {
+		["rust-analyzer"] = {
+			assist = { importEnforceGranularity = true, importPrefix = "crate" },
+			cargo = { allFeatures = true },
+			checkOnSave = { command = { "cargo", "clippy" } },
+			inlayHints = { lifetimeElisionHints = { enable = true, useParameterNames = true } },
+		},
+	},
+})
+
+vim.lsp.config("yamlls", {
+	settings = {
+		yaml = {
+			schemas = {
+				["http://json.schemastore.org/gitlab-ci.json"] = "*.gitlab-ci.*{yml,yaml}",
+				["https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/schemas/v3.1/schema.json"] = "openapi.yaml",
+			},
+		},
+	},
+})
+
+vim.lsp.enable({ "gopls", "rust_analyzer", "ts_ls", "jsonls", "yamlls", "zk", "marksman", "pyright" })
 
 -- https://github.com/hrsh7th/nvim-compe#how-to-remove-pattern-not-found
 vim.o.shortmess = vim.o.shortmess .. "c"
