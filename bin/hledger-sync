@@ -80,8 +80,9 @@ async function importPrices({ root }) {
     }
 
     if (meta.symbol) {
+      await new Promise(resolve => setTimeout(resolve, 1000))
       const response = await fetch(
-        `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${meta.symbol}&outputsize=full&apikey=${process.env.ALPHAVANTAGE_API_KEY}`,
+        `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${meta.symbol}&outputsize=compact&apikey=${process.env.ALPHAVANTAGE_API_KEY}`,
       ).then((x) => x.json());
 
       if (response["Error Message"] || !response["Time Series (Daily)"]) {
