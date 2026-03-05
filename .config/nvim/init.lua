@@ -40,7 +40,7 @@ local plugins = {
 		end,
 	}, -- Code Comment stuff, f.ex gc
 	"windwp/nvim-autopairs", -- autoclose ()
-	"tpope/vim-surround", -- surround operations
+	{ "kylechui/nvim-surround", config = true }, -- surround operations
 	{ "sindrets/diffview.nvim", cmd = { "DiffviewOpen", "DiffviewFileHistory" } }, -- file history
 	"christoomey/vim-tmux-navigator",
 	{ -- undo tree
@@ -59,11 +59,29 @@ local plugins = {
 		end,
 	},
 	{ -- format everything
-		"sbdchd/neoformat",
-		keys = { { "<leader>af", ":Neoformat<CR>", noremap = true } },
-		config = function()
-			vim.g.neoformat_rust_rustfmt = { exe = "rustfmt", args = { "--edition 2021" }, stdin = 1 }
-		end,
+		"stevearc/conform.nvim",
+		keys = {
+			{
+				"<leader>af",
+				function()
+					require("conform").format({ lsp_fallback = true })
+				end,
+				noremap = true,
+			},
+		},
+		opts = {
+			formatters_by_ft = {
+				rust = { "rustfmt" },
+				go = { "goimports" },
+				lua = { "stylua" },
+				javascript = { "prettier" },
+				typescript = { "prettier" },
+				typescriptreact = { "prettier" },
+				json = { "prettier" },
+				yaml = { "prettier" },
+			},
+			formatters = { rustfmt = { prepend_args = { "--edition", "2021" } } },
+		},
 	},
 	{ -- theme
 		"morhetz/gruvbox",
