@@ -128,38 +128,6 @@ local plugins = {
 			})
 		end,
 	},
-	{
-		"yetone/avante.nvim",
-		event = "VeryLazy",
-		version = false, -- Never set this value to "*"! Never!
-		opts = {
-			provider = "openai",
-			openai = {
-				endpoint = "https://openrouter.ai/api/v1",
-				model = "anthropic/claude-3.7-sonnet",
-				api_key_name = "OPENROUTER_API_KEY_AVANTE",
-				temperature = 0.6,
-				max_tokens = 8000,
-			},
-		},
-		-- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
-		build = "make",
-		-- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
-		dependencies = {
-			"nvim-treesitter/nvim-treesitter",
-			"stevearc/dressing.nvim",
-			"nvim-lua/plenary.nvim",
-			"MunifTanjim/nui.nvim",
-			{
-				-- Make sure to set this up properly if you have lazy=true
-				"MeanderingProgrammer/render-markdown.nvim",
-				opts = {
-					file_types = { "Avante" },
-				},
-				ft = { "Avante" },
-			},
-		},
-	},
 	{ -- show spaces / tabs everywhere
 		"lukas-reineke/indent-blankline.nvim",
 		config = function()
@@ -445,8 +413,10 @@ autocmd("LspAttach", {
 		vim.keymap.set("n", "<leader>ar", vim.lsp.buf.rename, opts)
 		vim.keymap.set("n", "<leader>ad", vim.lsp.buf.definition, opts)
 		vim.keymap.set("n", "<leader>aa", ":CodeActions<CR>", opts)
-		vim.keymap.set("n", "<leader>aF", function() vim.lsp.buf.format() end, opts)
-		vim.keymap.set("n", "<leader>dl", function() vim.diagnostic.open_float({ bufnr = 0 }) end, opts)
+		vim.keymap.set("n", "<leader>aF", vim.lsp.buf.format, opts)
+		vim.keymap.set("n", "<leader>dl", function()
+			vim.diagnostic.open_float({ bufnr = 0 })
+		end, opts)
 		vim.keymap.set("n", "<leader>dn", vim.diagnostic.goto_next, opts)
 		vim.keymap.set("n", "<leader>dN", vim.diagnostic.goto_prev, opts)
 	end,
