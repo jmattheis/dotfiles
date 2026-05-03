@@ -76,7 +76,9 @@ local plugins = {
 				go = { "goimports" },
 				lua = { "stylua" },
 				javascript = { "prettier" },
+				markdown = { "prettier" },
 				typescript = { "prettier" },
+				html = { "prettier" },
 				typescriptreact = { "prettier" },
 				json = { "prettier" },
 				yaml = { "prettier" },
@@ -329,6 +331,7 @@ local plugins = {
 				"python",
 				"tsx",
 				"typescript",
+				"javascript",
 				"xml",
 				"yaml",
 			})
