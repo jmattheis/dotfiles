@@ -307,6 +307,7 @@ local plugins = {
 	{ -- tree sitter
 		"nvim-treesitter/nvim-treesitter",
 		lazy = false,
+		branch = "main",
 		build = ":TSUpdate",
 		dependencies = {
 			{ "windwp/nvim-ts-autotag", ft = { "html", "typescriptreact" } }, -- close html tags via treesitter
@@ -420,6 +421,79 @@ local plugins = {
 			},
 			sources = { default = { "lsp", "path" } },
 		},
+	},
+	{ -- postfix snippets (.const, .let, .var)
+		"L3MON4D3/LuaSnip",
+		version = "v2.*",
+		keys = {
+			{
+				"<C-j>",
+				function()
+					require("luasnip").expand()
+				end,
+				mode = "i",
+				desc = "Expand postfix snippet",
+			},
+		},
+		config = function()
+			local ls = require("luasnip")
+			local sn = ls.snippet_node
+			local t = ls.text_node
+			local i = ls.insert_node
+			local d = ls.dynamic_node
+			local tp = require("luasnip.extras.postfix").treesitter_postfix
+
+			local js_query =
+				[[ [ (call_expression) (member_expression) (identifier) (subscript_expression) (new_expression) (await_expression) (parenthesized_expression) ] @prefix ]]
+			local java_query =
+				[[ [ (method_invocation) (field_access) (identifier) (object_creation_expression) ] @prefix ]]
+
+			local function make_postfix(trig, decl, query, lang)
+				return tp({
+					trig = "." .. trig,
+					matchTSNode = { query = query, query_lang = lang },
+					reparseBuffer = "live",
+				}, {
+					d(1, function(_, parent)
+						local match = table.concat(parent.snippet.env.LS_TSMATCH, "\n")
+						local row = vim.api.nvim_win_get_cursor(0)[1]
+						local line = vim.api.nvim_get_current_line()
+						local col = vim.api.nvim_win_get_cursor(0)[2]
+						local before = line:sub(1, col)
+						local after = line:sub(col + 1)
+						local indent = line:match("^(%s*)")
+						local is_inline = vim.trim(before) ~= "" or vim.trim(after):gsub(";", "") ~= ""
+
+						if is_inline then
+							local var = vim.fn.input("Name: ")
+							if var == "" then
+								var = "name"
+							end
+							vim.schedule(function()
+								local r = vim.api.nvim_win_get_cursor(0)[1]
+								vim.api.nvim_buf_set_lines(0, r - 1, r - 1, false, {
+									indent .. decl .. " " .. var .. " = " .. match,
+								})
+							end)
+							return sn(nil, { t(var) })
+						else
+							return sn(nil, { t(decl .. " "), i(1, "name"), t(" = " .. match) })
+						end
+					end),
+				})
+			end
+
+			local ft_lang = { typescript = "typescript", typescriptreact = "tsx", javascript = "javascript" }
+			for ft, lang in pairs(ft_lang) do
+				ls.add_snippets(ft, {
+					make_postfix("const", "const", js_query, lang),
+					make_postfix("let", "let", js_query, lang),
+				})
+			end
+			ls.add_snippets("java", {
+				make_postfix("var", "var", java_query, "java"),
+			})
+		end,
 	},
 	"neovim/nvim-lspconfig",
 	{ "j-hui/fidget.nvim", event = "LspAttach", opts = {} },
