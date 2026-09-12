@@ -441,7 +441,7 @@ local plugins = {
 			local t = ls.text_node
 			local i = ls.insert_node
 			local d = ls.dynamic_node
-			local tp = require("luasnip.extras.postfix").treesitter_postfix
+			local tp = require("luasnip.extras.treesitter_postfix").treesitter_postfix
 
 			local js_query =
 				[[ [ (call_expression) (member_expression) (identifier) (subscript_expression) (new_expression) (await_expression) (parenthesized_expression) ] @prefix ]]
