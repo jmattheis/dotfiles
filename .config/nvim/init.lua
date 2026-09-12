@@ -33,14 +33,6 @@ local plugins = {
 		end,
 	},
 	{ "tpope/vim-fugitive", cmd = "Git" }, -- Git commands
-	{
-		"numToStr/Comment.nvim",
-		opts = {
-			pre_hook = function()
-				return vim.bo.commentstring
-			end,
-		},
-	},
 	{ "windwp/nvim-autopairs", opts = { check_ts = true } }, -- autoclose ()
 	{ "kylechui/nvim-surround", config = true }, -- surround operations
 	{
@@ -311,7 +303,6 @@ local plugins = {
 		build = ":TSUpdate",
 		dependencies = {
 			{ "windwp/nvim-ts-autotag", ft = { "html", "typescriptreact" }, opts = {} }, -- close html tags via treesitter
-			{ "JoosepAlviste/nvim-ts-context-commentstring", ft = { "html", "typescriptreact" } },
 		},
 		config = function()
 			require("nvim-treesitter").install({
