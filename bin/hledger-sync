@@ -133,7 +133,12 @@ async function importCsvs({ root, initFile }) {
     await fs.readFile(path.join(root, "cache.json"), "utf8").catch(() => "{}"),
   );
 
-  const inFiles = fs.glob("*/*/**/*.csv", { cwd: root });
+  await preprocessRaws({ root, cache });
+
+  const inFiles = fs.glob("*/*/**/*.csv", {
+    cwd: root,
+    exclude: ["**/*.raw.csv"],
+  });
   for await (const inFileRelative of inFiles) {
     const inFile = path.join(root, inFileRelative);
 
@@ -242,6 +247,55 @@ async function hledgerImport({ initFile, journal, rule, inFile }) {
 
   console.log("WRITING", journal);
   await fs.writeFile(journal, marker + "\n\n" + out.stdout, "utf8");
+}
+
+async function preprocessRaws({ root, cache }) {
+  const rawFiles = fs.glob("*/*/**/*.raw.*", { cwd: root });
+  for await (const rawRelative of rawFiles) {
+    const rawFile = path.join(root, rawRelative);
+    const outFile = path.join(
+      root,
+      rawRelative.replace(/\.raw\.[^/]+$/, ".csv"),
+    );
+
+    const preprocess = await findPreprocess(root, rawFile);
+
+    const rawSha256 = await sha256([rawFile, preprocess]);
+    if (cache[rawRelative] === rawSha256 && !FORCE) {
+      console.log("CACHED", rawRelative);
+      continue;
+    }
+    cache[rawRelative] = rawSha256;
+
+    console.log("PREPROCESS", rawFile);
+    const out = await exec(preprocess, [path.basename(rawFile)], {
+      cwd: path.dirname(rawFile),
+      maxBuffer: 64 * 1024 * 1024,
+    });
+    await fs.writeFile(outFile, out.stdout, "utf8");
+  }
+}
+
+async function findPreprocess(root, rawFile) {
+  let dir = path.dirname(rawFile);
+  while (true) {
+    const candidate = path.join(dir, "preprocess");
+    const ok = await fs
+      .stat(candidate)
+      .then((s) => s.isFile())
+      .catch(() => false);
+    if (ok) return candidate;
+    if (path.resolve(dir) === path.resolve(root)) break;
+    const parent = path.dirname(dir);
+    if (parent === dir) break;
+    dir = parent;
+  }
+
+  console.error("ERROR", rawFile);
+  console.error(
+    `No preprocess binary found from ${path.dirname(rawFile)} up to ${root}`,
+  );
+  process.exit(1);
 }
 
 async function findRoot() {
