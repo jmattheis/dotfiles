@@ -310,7 +310,7 @@ local plugins = {
 		branch = "main",
 		build = ":TSUpdate",
 		dependencies = {
-			{ "windwp/nvim-ts-autotag", ft = { "html", "typescriptreact" } }, -- close html tags via treesitter
+			{ "windwp/nvim-ts-autotag", ft = { "html", "typescriptreact" }, opts = {} }, -- close html tags via treesitter
 			{ "JoosepAlviste/nvim-ts-context-commentstring", ft = { "html", "typescriptreact" } },
 		},
 		config = function()
